@@ -16,6 +16,7 @@ var message = require('./modulo/config.js')
 //Import do arquivo DAO para acessar dados do aluno no BD
 var cursoDAO = require('../model/DAO/cursoDAO.js')
 
+
 //Retorna todos os cursos
 const ctlGetCursos = async () => {
     let dadosCursoJSON = {}
