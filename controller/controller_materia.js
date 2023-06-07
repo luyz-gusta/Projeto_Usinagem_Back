@@ -8,6 +8,8 @@
 //Import do arquivo DAO para acessar dados da materia no BD
 var materiaDAO = require('../model/DAO/materiaDAO.js')
 
+var controllerCurso = require('./controller_curso.js')
+
 var cursoDAO = require('../model/DAO/cursoDAO.js')
 
 var message = require('./modulo/config.js')
@@ -92,6 +94,31 @@ const ctlGetBuscarMateriaSigla = async function (sigla) {
         return dadosMateriaJSON
     } else {
         return message.ERROR_INVALID_SIGLA;
+    }
+}
+
+//Retorna uma lista de materia filtrando pelo id do curso
+const ctlGetBuscarMateriaIdCurso = async function (idCurso) {
+
+    let dadosMateriaJSON = {}
+
+    let verificacaoCurso = await controllerCurso.ctlGetCursosID(idCurso)
+
+    if (verificacaoCurso) {
+        let dadosMateria = await materiaDAO.mdlSelectByIdCurso(idCurso)
+
+        if (dadosMateria) {
+            dadosMateriaJSON = {
+                status: message.SUCCESS_CREATED_ITEM.status,
+                message: message.SUCCESS_CREATED_ITEM.message,
+                materias: dadosMateria
+            }
+            return dadosMateriaJSON
+        }else{
+            return message.ERROR_REGISTER_NOT_FOUND
+        }
+    }else{
+        return message.ERROR_INVALID_ID_CURSO
     }
 }
 
@@ -207,6 +234,7 @@ module.exports = {
     ctlGetMateriaByID,
     ctlGetBuscarMateriaNome,
     ctlGetBuscarMateriaSigla,
+    ctlGetBuscarMateriaIdCurso,
     ctlInserirMateria,
     ctlAtualizarMateria,
     ctlDeletarMateriaPeloID

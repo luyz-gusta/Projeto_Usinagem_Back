@@ -68,45 +68,45 @@ var message = require('./controller/modulo/config.js')
 //EndPoint: Retorna todos os dados de alunos
 app.get('/v1/projeto-usinagem/aluno', cors(), async function (request, response) {
 
-   
+
 })
 
 //EndPoint: Retorna todos os dados de alunos
 app.get('/v1/projeto-usinagem/aluno', cors(), async function (request, response) {
 
-    
+
 
 })
 
 //EndPoint: Retorna o aluno filtrando pelo ID
 app.get('/v1/projeto-usinagem/aluno/:id', cors(), async function (request, response) {
 
-    
+
 
 })
 
 //EndPoint: Retorna o aluno filtrando pelo nome
 app.get('/v1/projeto-usinagem/aluno/nome/:nome', cors(), async function (request, response) {
 
-    
+
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/aluno', cors(), bodyParserJson, async function (request, response) {
 
-    
+
 })
 
 //EndPoint: Atualiza um aluno existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/aluno/:id', cors(), bodyParserJson, async function (request, response) {
 
-   
+
 })
 
 //EndPoint: Exclui um aluno, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/aluno/:id', cors(), async function (request, response) {
 
-    
+
 })
 
 
@@ -206,8 +206,6 @@ app.delete('/v1/projeto-usinagem/professor/:id', cors(), async function (request
 * Autor: Luiz e Muryllo
 * Versão: 1.0
 ******************************************************************************************************************/
-
-var controllerUsuario = require('./controller/controller_usuario.js')
 
 //EndPoint: Retorna todos os dados de usuario
 app.get('/v1/projeto-usinagem/usuario', cors(), async function (request, response) {
@@ -428,23 +426,21 @@ app.delete('/v1/projeto-usinagem/status-usuario/:id', cors(), async function (re
 * Versão: 1.0
 ******************************************************************************************************************/
 
-var controllerTurma = require('./controller/controller_turma.js')
-
 //EndPoint: Retorna todos os dados de turma
 app.get('/v1/projeto-usinagem/turma', cors(), async function (request, response) {
-   
+
 })
 
 //EndPoint: Retorna a turma filtrando pelo ID
 app.get('/v1/projeto-usinagem/turma/:id', cors(), async function (request, response) {
 
-    
+
 })
 
 //EndPoint: Retorna a turma filtrando pelo nome
 app.get('/v1/projeto-usinagem/turma/nome/:nome', cors(), async function (request, response) {
 
-   
+
 })
 
 //EndPoint: Retorna a turma filtrando pela sigla da turma
@@ -455,13 +451,13 @@ app.get('/v1/projeto-usinagem/turma/sigla/:sigla', cors(), async function (reque
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/turma', cors(), bodyParserJson, async function (request, response) {
 
-    
+
 })
 
 //EndPoint: Atualiza uma turma existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/turma/:id', cors(), bodyParserJson, async function (request, response) {
 
-    
+
 })
 
 //EndPoint: Exclui uma turma, filtrando pelo ID
@@ -478,9 +474,6 @@ app.delete('/v1/projeto-usinagem/turma/:id', cors(), async function (request, re
 * Autor: Luiz e Muryllo
 * Versão: 1.0
 ******************************************************************************************************************/
-
-//Import do arquivo da controller que irá solicitar a model os dados do BD
-var controllerCurso = require('./controller/controller_curso.js')
 
 //EndPoint: Retorna todos os dados de curso
 app.get('/v1/projeto-usinagem/curso', cors(), async function (request, response) {
@@ -585,47 +578,119 @@ app.delete('/v1/projeto-usinagem/curso/:id', cors(), async function (request, re
 * Versão: 1.0
 ******************************************************************************************************************/
 
+//Import do arquivo da controller que irá solicitar a model os dados do BD
+var controllerMateria = require('./controller/controller_materia.js')
 
 //EndPoint: Retorna todos os dados de materia
 app.get('/v1/projeto-usinagem/materia', cors(), async function (request, response) {
+    let idCurso = request.query.idCurso
 
-  
+    if (idCurso) {
+        //Recebe os dados da controller de materia
+        let dadosMateria = await controllerMateria.ctlGetBuscarMateriaIdCurso(idCurso);
+
+        response.status(dadosMateria.status);
+        response.json(dadosMateria);
+    } else {
+        //Recebe os dados da controller de materia
+        let dadosMateria = await controllerMateria.ctlGetMaterias();
+
+        response.status(dadosMateria.status);
+        response.json(dadosMateria);
+    }
 })
 
 //EndPoint: Retorna a materia filtrando pelo ID
 app.get('/v1/projeto-usinagem/materia/:id', cors(), async function (request, response) {
 
-    
+    let idMateria = request.params.id
+
+    let dadosMateria = await controllerMateria.ctlGetMateriaByID(idMateria)
+
+    response.status(dadosMateria.status)
+    response.json(dadosMateria)
 })
 
 //EndPoint: Retorna a materia filtrando pelo NOME
 app.get('/v1/projeto-usinagem/materia/nome/:nome', cors(), async function (request, response) {
 
- 
+    let materia = request.params.nome;
+
+    //Recebe os dados da controller da materia
+    let dadosMateria = await controllerMateria.ctlGetBuscarMateriaNome(materia);
+
+    response.status(dadosMateria.status)
+    response.json(dadosMateria)
 })
 
 //EndPoint: Retorna a materia filtrando pela SIGLA
 app.get('/v1/projeto-usinagem/materia/sigla/:sigla', cors(), async function (request, response) {
 
+    let materia = request.params.sigla;
+
+    //Recebe os dados da controller da materia
+    let dadosMateria = await controllerMateria.ctlGetBuscarMateriaSigla(materia);
+
+    response.status(dadosMateria.status)
+    response.json(dadosMateria)
 
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/materia', cors(), bodyParserJson, async function (request, response) {
 
-   
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosMateria = await controllerMateria.ctlInserirMateria(dadosBody)
+
+        response.status(resultDadosMateria.status)
+        response.json(resultDadosMateria)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Atualiza uma materia existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/materia/:id', cors(), bodyParserJson, async function (request, response) {
 
-    
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da materia pelo parametro
+        let idMateria = request.params.id;
+
+        let dadosBody = request.body
+
+        let resultDadosMateria = await controllerMateria.ctlAtualizarMateria(dadosBody, idMateria)
+
+        response.status(resultDadosMateria.status)
+        response.json(resultDadosMateria)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
 })
 
 //EndPoint: Exclui uma materia, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/materia/:id', cors(), async function (request, response) {
 
-   
+    //Recebe o ID da materia pelo parametro
+    let idMateria = request.params.id;
+
+    let resultDadosMateria = await controllerMateria.ctlDeletarMateriaPeloID(idMateria)
+
+    response.status(resultDadosMateria.status)
+    response.json(resultDadosMateria)
+
 })
 
 
@@ -799,8 +864,6 @@ app.delete('/v1/projeto-usinagem/criterio/:id', cors(), async function (request,
 * Autor: Luiz e Muryllo
 * Versão: 1.0
 ******************************************************************************************************************/
-
-var controllerMargemErro = require('./controller/controller_margem-erro.js')
 
 //EndPoint: Retorna todos os dados de Margem_Erro
 app.get('/v1/projeto-usinagem/margem-erro', cors(), async function (request, response) {

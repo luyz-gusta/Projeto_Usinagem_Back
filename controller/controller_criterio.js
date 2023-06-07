@@ -15,7 +15,6 @@ var message = require('./modulo/config.js')
 
 //Import do arquivo DAO para acessar dados do aluno no BD
 var criterioDAO = require('../model/DAO/criterioDAO.js')
-var controllerMargemErro = require('./controller_margem-erro.js')
 
 //Retorna a lista de todos os professores
 const ctlGetCriterios = async () => {
