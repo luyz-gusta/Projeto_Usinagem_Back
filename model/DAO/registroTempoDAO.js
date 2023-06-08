@@ -1,7 +1,7 @@
 /************************************************************************************************
  * Objetivo: Responsável pea manipulação de dados de REGISTRO DE TEMPO no Banco de Dados
  * Autor: Luiz Gustavo e Muryllo Vieira
- * Data: 22/05/2023
+ * Data: 08/06/2023
  * Versão: 1.0
 ************************************************************************************************/
 
@@ -20,15 +20,16 @@ var prisma = new PrismaClient();
 const mdlSelectAllRegistroTempo = async function () {
 
     //Script para buscar todos os itens no BD
-    let sql = `select date_format(tbl_registro_tempo.data_projeto, '%d/%m') as data_projeto, 
-    time_format(tbl_registro_tempo.duracao_inicio, '%H:%i') as duracao_inicio,
-    time_format(tbl_registro_tempo.duracao_termino, '%H:%i') as duracao_termino,
-    time_format(tbl_registro_tempo.desconto, '%H:%i') as desconto,
-    time_format(tbl_registro_tempo.liquido, '%H:%i') as liquido,
-    time_format(tbl_registro_tempo.total_geral, '%H:%i') as total_geral,
-    tbl_registro_tempo.id_tarefa,
-    tbl_registro_tempo.id_aluno
-from tbl_registro_tempo;`;
+    let sql = `select tbl_registro_tempo.id,
+        date_format(tbl_registro_tempo.data_inicio, '%d/%m') as data_inicio, 
+        time_format(tbl_registro_tempo.duracao_inicio, '%H:%i') as duracao_inicio,
+        time_format(tbl_registro_tempo.duracao_termino, '%H:%i') as duracao_termino,
+        time_format(tbl_registro_tempo.desconto, '%H:%i') as desconto,
+        time_format(tbl_registro_tempo.liquido, '%H:%i') as liquido,
+        time_format(tbl_registro_tempo.tempo_geral, '%H:%i') as tempo_geral,
+        tbl_registro_tempo.id_tarefa,
+        tbl_registro_tempo.id_matricula
+    from tbl_registro_tempo;`;
 
     //$queryRawUnsafe(sql) - permite interpretar uma variavel como sendo um sriptSQL
     //queryRaw('select * from tbl_registro_tempo') - permite interpretar o scriptSQL direto no metodo
@@ -48,7 +49,15 @@ const mdlSelectByIdRegistroTempo = async function (id) {
     let idRegistroTempo = id
 
     //Script para buscar uma RegistroTempo filtrando pelo ID
-    let sql = `select * from tbl_registro_tempo where id = ${idRegistroTempo}`;
+    let sql = `select date_format(tbl_registro_tempo.data_inicio, '%d/%m') as data_inicio, 
+                    time_format(tbl_registro_tempo.duracao_inicio, '%H:%i') as duracao_inicio,
+                    time_format(tbl_registro_tempo.duracao_termino, '%H:%i') as duracao_termino,
+                    time_format(tbl_registro_tempo.desconto, '%H:%i') as desconto,
+                    time_format(tbl_registro_tempo.liquido, '%H:%i') as liquido,
+                    time_format(tbl_registro_tempo.tempo_geral, '%H:%i') as tempo_geral,
+                    tbl_registro_tempo.id_tarefa,
+                    tbl_registro_tempo.id_matricula
+                from tbl_registro_tempo where id = ${idRegistroTempo}`;
 
     //console.log(sql);
     let rsRegistroTempo = await prisma.$queryRawUnsafe(sql)
@@ -63,23 +72,24 @@ const mdlSelectByIdRegistroTempo = async function (id) {
 
 //Inserir dados de RegistroTempo no Banco de dados
 const mdlInsertRegistroTempo = async function (dadosRegistroTempo) {
-    let sql = `insert into tbl_registro_tempo(data_projeto,
+
+    let sql = `insert into tbl_registro_tempo(data_inicio,
                     duracao_inicio,
                     duracao_termino,
                     desconto,
-                    id_tarefa,
-                    id_aluno,
                     liquido,
-                    total_geral
+                    tempo_geral,
+                    id_tarefa,
+                    id_matricula
                 ) values (
-                    '${dadosRegistroTempo.data_projeto}',
+                    '${dadosRegistroTempo.data_inicio}',
                     time_format('${dadosRegistroTempo.duracao_inicio}', '%H:%i'),
                     time_format('${dadosRegistroTempo.duracao_termino}', '%H:%i'),
                     time_format('${dadosRegistroTempo.desconto}', '%H:%i'),
-                    ${dadosRegistroTempo.id_tarefa},
-                    ${dadosRegistroTempo.id_aluno},
                     time_format('${dadosRegistroTempo.liquido}', '%H:%i'),
-                    time_format('${dadosRegistroTempo.total_geral}', '%H:%i')
+                    time_format('${dadosRegistroTempo.tempo_geral}', '%H:%i'),
+                    ${dadosRegistroTempo.id_tarefa},
+                    ${dadosRegistroTempo.id_matricula}
                     );`
                 
 
@@ -96,15 +106,16 @@ const mdlInsertRegistroTempo = async function (dadosRegistroTempo) {
 
 //Atualizar uma RegistroTempo existente 
 const mdlUpdateRegistroTempo = async function (dadosRegistroTempo) {
+
     let sql = `update tbl_registro_tempo
-    set data_projeto = '${dadosRegistroTempo.data_projeto}',
+    set data_inicio = '${dadosRegistroTempo.data_inicio}',
         duracao_inicio = '${dadosRegistroTempo.duracao_inicio}',
         duracao_termino = '${dadosRegistroTempo.duracao_termino}',
         desconto = '${dadosRegistroTempo.desconto}',
-        id_tarefa = ${dadosRegistroTempo.id_tarefa},
-        id_aluno = ${dadosRegistroTempo.id_aluno},
         liquido = '${dadosRegistroTempo.liquido}',
-        total_geral = '${dadosRegistroTempo.total_geral}'
+        tempo_geral = '${dadosRegistroTempo.tempo_geral}',
+        id_tarefa = ${dadosRegistroTempo.id_tarefa},
+        id_matricula = ${dadosRegistroTempo.id_matricula}
     where id = ${dadosRegistroTempo.id};
     `
     //Executa o scriptSQL no banco de dados
