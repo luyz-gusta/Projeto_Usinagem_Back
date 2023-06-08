@@ -49,13 +49,13 @@ const atualizarAlunoPeloID = async function (dadosAluno, idAluno) {
 
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 100 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
-        dadosAluno.cpf == '' || dadosAluno.cpf == undefined || dadosAluno.cpf.length > 15
+        dadosAluno.cpf.length > 15
     ) {
         return message.ERROR_REQUIRE_FIELDS
         //Validaçaõ do ID incorreto ou não informado
     } else if (idAluno == '' || idAluno == undefined || isNaN(idAluno)) {
         return message.ERROR_INVALID_ID
-    } else if (dadosAluno.data_nascimento == '' || !isNaN(dadosAluno.data_nascimento)) {
+    } else if (dadosAluno.data_nascimento == '') {
         return message.ERROR_DATE_BIRTH_INVALID
     } else {
         //Adiciona o ID do aluno no JSON dos dados
