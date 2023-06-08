@@ -217,7 +217,6 @@ module.exports = {
     mdlSelectByIdMateria,
     mdlInsertMateria,
     mdlSelectLastId,
-    mdlSelectByNameMateria,
     mdlSelectBySiglaMateria,
     mdlSelectByIdCurso,
     mdlUpdateMateria,
