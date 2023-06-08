@@ -207,6 +207,8 @@ app.delete('/v1/projeto-usinagem/professor/:id', cors(), async function (request
 * Versão: 1.0
 ******************************************************************************************************************/
 
+var controllerUsuario = require('./controller/controller_usuario.js')
+
 //EndPoint: Retorna todos os dados de usuario
 app.get('/v1/projeto-usinagem/usuario', cors(), async function (request, response) {
     let nivelUsuario = request.query.nivel
@@ -251,6 +253,16 @@ app.get('/v1/projeto-usinagem/usuario/email/:email', cors(), async function (req
     let emailUsuario = request.params.email
 
     let dadosUsuariosJSON = await controllerUsuario.ctlGetUsuarioEmail(emailUsuario)
+
+    response.status(dadosUsuariosJSON.status)
+    response.json(dadosUsuariosJSON)
+})
+
+//EndPoint: Retorna o usuario filtrando pelo nivel
+app.get('/v1/projeto-usinagem/usuario/nivel/:nivel', cors(), async function (request, response) {
+    let nivelUsuario = request.params.nivel
+
+    let dadosUsuariosJSON = await controllerUsuario.ctlGetUsuarioNivel(nivelUsuario)
 
     response.status(dadosUsuariosJSON.status)
     response.json(dadosUsuariosJSON)
@@ -1247,34 +1259,104 @@ app.delete('/v1/projeto-usinagem/matricula/:id', cors(), async function (request
 * Versão: 1.0
 ******************************************************************************************************************/
 
+var controllerStatusMatricula = require('./controller/controller_status-matricula.js')
+
 //EndPoint: Retorna todos os dados de status da Matricula
 app.get('/v1/projeto-usinagem/status-matricula', cors(), async function (request, response) {
+
+    //Recebe os dados da controller de status da matricula
+    let dadosStatusMatricula = await controllerStatusMatricula.ctlGetStatusMatricula()
+
+    response.status(dadosStatusMatricula.status);
+    response.json(dadosStatusMatricula);
 
 })
 
 //EndPoint: Retorna a status da matricula filtrando pelo ID
 app.get('/v1/projeto-usinagem/status-matricula/:id', cors(), async function (request, response) {
 
+    let id = request.params.id;
+
+    //Recebe os dados da controller da status da matricula
+    let dadosStatusMatricula = await controllerStatusMatricula.ctlGetStatusMatriculaByID(id);
+
+    response.status(dadosStatusMatricula.status)
+    response.json(dadosStatusMatricula)
+
 })
 
-//EndPoint: Retorna a status da matricula filtrando pelo nome da matricula
+//EndPoint: Retorna a status da matricula filtrando pelo nome do status da matricula
 app.get('/v1/projeto-usinagem/status-matricula/nome/:nome', cors(), async function (request, response) {
+
+    let nome = request.params.nome;
+
+    //Recebe os dados da controller da status da matricula
+    let dadosStatusMatricula = await controllerStatusMatricula.ctlGetStatusMatriculaByName(nome);
+
+    response.status(dadosStatusMatricula.status)
+    response.json(dadosStatusMatricula)
 
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/status-matricula', cors(), bodyParserJson, async function (request, response) {
 
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosStatusMatricula = await controllerStatusMatricula.ctlInserirStatusMatricula(dadosBody)
+
+        response.status(resultDadosStatusMatricula.status)
+        response.json(resultDadosStatusMatricula)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+
 })
 
 //EndPoint: Atualiza um status da matricula existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/status-matricula/:id', cors(), bodyParserJson, async function (request, response) {
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do aluno pelo parametro
+        let idStatusMatricula = request.params.id;
+
+        //Recebe os dados encaminhados no corpo da requisição
+        let dadosBody = request.body;
+
+        //Encaminha os dados para a controller
+        let resultDadosStatusMatricula = await controllerStatusMatricula.ctlAtualizarStatusMatricula(dadosBody, idStatusMatricula);
+
+        response.status(resultDadosStatusMatricula.status);
+        response.json(resultDadosStatusMatricula);
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 
 })
 
 
 //EndPoint: Exclui um status da matricula, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/status-matricula/:id', cors(), async function (request, response) {
+
+    let id = request.params.id;
+
+    //Recebe os dados da controller da status da matricula
+    let dadosStatusMatricula = await controllerStatusMatricula.ctlDeletarStatusMatriculaPeloID(id);
+
+    response.status(dadosStatusMatricula.status)
+    response.json(dadosStatusMatricula)
 
 })
 
