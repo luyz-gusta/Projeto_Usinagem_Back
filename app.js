@@ -65,49 +65,125 @@ const bodyParserJson = bodyParser.json();
 //Import do arquivo de configuração das variaveis, constantes e funções globais
 var message = require('./controller/modulo/config.js')
 
+var controllerAluno = require('./controller/controller_aluno.js')
+
 //EndPoint: Retorna todos os dados de alunos
 app.get('/v1/projeto-usinagem/aluno', cors(), async function (request, response) {
 
+    //Recebe os dados da controller do aluno
+    let dadosAluno = await controllerAluno.getAlunos();
 
+    response.status(dadosAluno.status);
+    response.json(dadosAluno);
 })
 
 //EndPoint: Retorna todos os dados de alunos
 app.get('/v1/projeto-usinagem/aluno', cors(), async function (request, response) {
 
+    //Recebe os dados da controller do aluno
+    let dadosAluno = await controllerAluno.getAlunos();
 
+    response.status(dadosAluno.status);
+    response.json(dadosAluno);
 
 })
 
 //EndPoint: Retorna o aluno filtrando pelo ID
 app.get('/v1/projeto-usinagem/aluno/:id', cors(), async function (request, response) {
 
+    let idAluno = request.params.id;
 
+    //Recebe os dados da controller do aluno
+    let dadosAluno = await controllerAluno.getBuscarAlunoID(idAluno);
+
+    response.status(dadosAluno.status);
+    response.json(dadosAluno)
 
 })
 
 //EndPoint: Retorna o aluno filtrando pelo nome
 app.get('/v1/projeto-usinagem/aluno/nome/:nome', cors(), async function (request, response) {
 
+    let nome = request.params.nome;
 
+    //Import do arquivo da controller que irá solicitar a model os dados do BD
+    let controllerAluno = require('./controller/controller_aluno.js')
+
+    //Recebe os dados da controller do aluno
+    let dadosAluno = await controllerAluno.getBuscarAlunoNome(nome);
+
+    if (dadosAluno) {
+        response.json(dadosAluno);
+        response.status(200);
+    } else {
+        response.json();
+        response.status(404);
+    }
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/aluno', cors(), bodyParserJson, async function (request, response) {
 
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosAluno = await controllerAluno.inserirAluno(dadosBody)
+
+        response.status(resultDadosAluno.status)
+        response.json(resultDadosAluno)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Atualiza um aluno existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/aluno/:id', cors(), bodyParserJson, async function (request, response) {
 
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do aluno pelo parametro
+        let idAluno = request.params.id;
+
+        //Recebe os dados encaminhados no corpo da requisição
+        let dadosBody = request.body;
+
+        //Encaminha os dados para a controller
+        let resultDadosAluno = await controllerAluno.atualizarAlunoPeloID(dadosBody, idAluno);
+
+        response.status(resultDadosAluno.status);
+        response.json(resultDadosAluno);
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Exclui um aluno, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/aluno/:id', cors(), async function (request, response) {
 
+    // Recebe o ID do aluno pelo parametro
+    let idAluno = request.params.id
 
+    // Encaminha os dados para a controller
+    let resultDadosAluno = await controllerAluno.deletarAlunoPeloID(idAluno)
+
+    if (resultDadosAluno.length != 0) {
+        response.status(resultDadosAluno.status)
+        response.json(resultDadosAluno)
+    } else {
+        message.ERROR_INVALID_ID
+    }
 })
+
 
 
 /*****************************************************************************************************************

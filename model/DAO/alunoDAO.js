@@ -24,39 +24,27 @@ const insertAluno = async function (dadosAluno) {
         //ScriptSQL para inserir dados
         sql = `insert into tbl_aluno (
                                 nome,
-                                matricula,
                                 cpf,
                                 data_nascimento,
-                                email, 
-                                id_usuario,
-                                id_turma 
+                                email
                             ) values (
                                 '${dadosAluno.nome}',
-                                '${dadosAluno.matricula}',
                                 '${dadosAluno.cpf}',
                                 ${dadosAluno.data_nascimento},
-                                '${dadosAluno.email}',
-                                '${dadosAluno.id_usuario}',
-                                '${dadosAluno.id_turma}'
+                                '${dadosAluno.email}'
                             )`;
     } else {
         //ScriptSQL para inserir dados
         sql = `insert into tbl_aluno (
         nome,
-        matricula,
         cpf,
         data_nascimento,
-        email, 
-        id_usuario,
-        id_turma 
+        email
     ) values (
         '${dadosAluno.nome}',
-        '${dadosAluno.matricula}',
         '${dadosAluno.cpf}',
         '${dadosAluno.data_nascimento}',
-        '${dadosAluno.email}',
-        '${dadosAluno.id_usuario}',
-        '${dadosAluno.id_turma}'
+        '${dadosAluno.email}'
     )`;
 
     }
@@ -75,28 +63,22 @@ const updateAluno = async function (dadosAluno) {
 
     let sql = '';
 
-    if(dadosAluno.data_nascimento == null) {
+    if (dadosAluno.data_nascimento == null) {
         sql = `update tbl_aluno set 
                         nome = '${dadosAluno.nome}',
-                        matricula = '${dadosAluno.matricula}',
                         cpf = '${dadosAluno.cpf}',
                         data_nascimento = ${dadosAluno.data_nascimento},
-                        email = '${dadosAluno.email}',
-                        id_usuario = '${dadosAluno.id_usuario}',
-                        id_turma = '${dadosAluno.id_turma}'
+                        email = '${dadosAluno.email}'
                 where id = ${dadosAluno.id}`;
     } else {
         sql = `update tbl_aluno set 
                         nome = '${dadosAluno.nome}',
-                        matricula = '${dadosAluno.matricula}',
                         cpf = '${dadosAluno.cpf}',
                         data_nascimento = '${dadosAluno.data_nascimento}',
-                        email = '${dadosAluno.email}',
-                        id_usuario = '${dadosAluno.id_usuario}',
-                        id_turma = '${dadosAluno.id_turma}'
+                        email = '${dadosAluno.email}'
                 where id = ${dadosAluno.id}`;
     }
-     
+
 
     //Executa o scriptSQL no banco de dados
     let resultStatus = await prisma.$executeRawUnsafe(sql);
@@ -128,7 +110,12 @@ const deleteAluno = async function (id) {
 const selectAllAlunos = async function () {
 
     //Script para buscar todos os itens no BD
-    let sql = 'select * from tbl_aluno';
+    let sql = `select tbl_aluno.id,
+                tbl_aluno.nome as nome_aluno, 
+                tbl_aluno.cpf as cpf,
+                date_format(tbl_aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
+                tbl_aluno.email as email_aluno
+    from tbl_aluno`;
 
     //$queryRawUnsafe(sql) - permite interpretar uma variavel como sendo um sriptSQL
     //queryRaw('select * from tbl_aluno') - permite interpretar o scriptSQL direto no metodo
@@ -148,7 +135,12 @@ const selectByIdAluno = async function (id) {
     let idAluno = id
 
     //Script para buscar um aluno filtrando pelo ID
-    let sql = `select * from tbl_aluno where id = ${idAluno}`;
+    let sql = `select tbl_aluno.id,
+        tbl_aluno.nome as nome_aluno, 
+        tbl_aluno.cpf as cpf,
+        date_format(tbl_aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
+        tbl_aluno.email as email_aluno
+    from tbl_aluno where id = ${idAluno}`;
 
     //console.log(sql);
     let rsAluno = await prisma.$queryRawUnsafe(sql)
@@ -167,7 +159,12 @@ const selectByNameAluno = async function (nome) {
     let nameAluno = nome
 
     //Script para buscar um aluno filtrando pelo ID
-    let sql = `select * from tbl_aluno where nome like '%${nameAluno}%'`;
+    let sql = `select aluno.id,
+        aluno.nome as nome_aluno, 
+        aluno.cpf as cpf,
+        date_format(aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
+        aluno.email as email_aluno 
+    from tbl_aluno where nome like '%${nameAluno}%'`;
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 
