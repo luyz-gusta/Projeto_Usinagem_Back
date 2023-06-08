@@ -8,7 +8,7 @@
 //Import do arquivo DAO para acessar dados da Registro de Tempo no BD
 var registroTempoDAO = require('../model/DAO/registroTempoDAO.js')
 
-var alunoDAO = require('../model/DAO/alunoDAO.js')
+var matriculaDAO = require('../model/DAO/matriculaDAO.js')
 
 var tarefaDAO = require('../model/DAO/tarefaDAO.js')
 
@@ -64,22 +64,22 @@ const ctlInserirRegistroTempo = async function (dadosRegistroTempo) {
 
     let resultDadosRegistroTempo;
 
-    if (dadosRegistroTempo.data_projeto == '' || dadosRegistroTempo.data_projeto == undefined ||
+    if (dadosRegistroTempo.data_inicio == '' || dadosRegistroTempo.data_inicio == undefined ||
         dadosRegistroTempo.duracao_inicio == '' || dadosRegistroTempo.duracao_inicio == undefined ||
         dadosRegistroTempo.duracao_termino == '' || dadosRegistroTempo.duracao_termino == undefined ||
         dadosRegistroTempo.desconto == '' || dadosRegistroTempo.desconto == undefined || 
         dadosRegistroTempo.liquido == '' || dadosRegistroTempo.liquido == undefined || 
-        dadosRegistroTempo.total_geral == '' || dadosRegistroTempo.total_geral == undefined || 
+        dadosRegistroTempo.tempo_geral == '' || dadosRegistroTempo.tempo_geral == undefined || 
         dadosRegistroTempo.id_tarefa == '' || dadosRegistroTempo.id_tarefa == undefined || isNaN(dadosRegistroTempo.id_tarefa) ||
-        dadosRegistroTempo.id_aluno == '' || dadosRegistroTempo.id_aluno == undefined || isNaN(dadosRegistroTempo.id_aluno)
+        dadosRegistroTempo.id_matricula == '' || dadosRegistroTempo.id_matricula == undefined || isNaN(dadosRegistroTempo.id_matricula)
     ) {
         return message.ERROR_REQUIRE_FIELDS
     } else {
-        let verificacaoAluno = await alunoDAO.selectByIdAluno(dadosRegistroTempo.id_aluno)
+        let verificacaoMatricula = await matriculaDAO.mdlSelectByIdMatricula(dadosRegistroTempo.id_matricula)
         let verificacaoTarefa = await tarefaDAO.mdlSelectByIdTarefa(dadosRegistroTempo.id_tarefa)
 
-        if (verificacaoAluno == false || verificacaoTarefa == false) {
-            return message.ERROR_INVALID_ID_ALUNO_TAREFA
+        if (verificacaoMatricula == false || verificacaoTarefa == false) {
+            return message.ERROR_INVALID_ID_MATRICULA_TAREFA
         } else {
             //Envia os dados para a model inserir no Banco de Dados
             resultDadosRegistroTempo = await registroTempoDAO.mdlInsertRegistroTempo(dadosRegistroTempo);
@@ -105,24 +105,24 @@ const ctlInserirRegistroTempo = async function (dadosRegistroTempo) {
 //Atualizar uma RegistroTempo
 const ctlAtualizarRegistroTempo = async function (dadosRegistroTempo, idRegistroTempo) {
 
-    if (dadosRegistroTempo.data_projeto == '' || dadosRegistroTempo.data_projeto == undefined ||
+    if (dadosRegistroTempo.data_inicio == '' || dadosRegistroTempo.data_inicio == undefined ||
         dadosRegistroTempo.duracao_inicio == '' || dadosRegistroTempo.duracao_inicio == undefined ||
         dadosRegistroTempo.duracao_termino == '' || dadosRegistroTempo.duracao_termino == undefined ||
         dadosRegistroTempo.desconto == '' || dadosRegistroTempo.desconto == undefined ||
         dadosRegistroTempo.liquido == '' || dadosRegistroTempo.liquido == undefined || 
-        dadosRegistroTempo.total_geral == '' || dadosRegistroTempo.total_geral == undefined || 
+        dadosRegistroTempo.tempo_geral == '' || dadosRegistroTempo.tempo_geral == undefined || 
         dadosRegistroTempo.id_tarefa == '' || dadosRegistroTempo.id_tarefa == undefined || isNaN(dadosRegistroTempo.id_tarefa) ||
-        dadosRegistroTempo.id_aluno == '' || dadosRegistroTempo.id_aluno == undefined || isNaN(dadosRegistroTempo.id_aluno)
+        dadosRegistroTempo.id_matricula == '' || dadosRegistroTempo.id_matricula == undefined || isNaN(dadosRegistroTempo.id_matricula)
     ) {
         return message.ERROR_REQUIRE_FIELDS
     } else if (idRegistroTempo == '' || idRegistroTempo == undefined || isNaN(idRegistroTempo)) {
         return message.ERROR_INVALID_ID
     } else {
-        let verificacaoAluno = await alunoDAO.selectByIdAluno(dadosRegistroTempo.id_aluno)
+        let verificacaoMatricula = await matriculaDAO.mdlSelectByIdMatricula(dadosRegistroTempo.id_matricula)
         let verificacaoTarefa = await tarefaDAO.mdlSelectByIdTarefa(dadosRegistroTempo.id_tarefa)
 
-        if (verificacaoAluno == false || verificacaoTarefa == false) {
-            return message.ERROR_INVALID_ID_ALUNO_TAREFA
+        if (verificacaoMatricula == false || verificacaoTarefa == false) {
+            return message.ERROR_INVALID_ID_MATRICULA_TAREFA
         } else {
             //Adiciona o ID da RegistroTempo no JSON dos dados
             dadosRegistroTempo.id = idRegistroTempo

@@ -7,10 +7,9 @@
 
 //Import do arquivo DAO para acessar dados da Tarefa no BD
 var tarefaDAO = require('../model/DAO/tarefaDAO.js')
-
 var professorDAO = require('../model/DAO/professorDAO.js')
-
 var materiaDAO = require('../model/DAO/materiaDAO.js')
+var tipoTarefaDAO = require('../controller/controller_tipo-tarefa.js')
 
 var message = require('./modulo/config.js')
 
@@ -23,11 +22,14 @@ const ctlGetTarefa = async function () {
     let dadosTarefa = await tarefaDAO.mdlSelectAllTarefas();
 
     if (dadosTarefa) {
-        //Criando um JSON com o atributo Tarefas, para encaminhar um array de Tarefas
-        dadosTarefaJSON.status = message.SUCCESS_REQUEST.status;
-        dadosTarefaJSON.message = message.SUCCESS_REQUEST.message;
-        dadosTarefaJSON.quantidade = dadosTarefa.length;
-        dadosTarefaJSON.tarefas = dadosTarefa
+
+        dadosTarefaJSON = {
+            status: message.SUCCESS_REQUEST.status,
+            message: message.SUCCESS_REQUEST.message,
+            quantidade: dadosTarefa.length,
+            tarefas: dadosTarefa
+        }
+
         return dadosTarefaJSON
     } else {
         return message.ERROR_REGISTER_NOT_FOUND;
@@ -37,21 +39,21 @@ const ctlGetTarefa = async function () {
 //Retorna um registro de tarefa filtrada pelo ID
 const ctlGetTarefaByID = async function (id) {
 
-    let idNumero = id
-
     //Validação do ID
-    if (idNumero == '' || id == undefined || isNaN(idNumero)) {
+    if (id == '' || id == undefined || isNaN(id)) {
         return message.ERROR_INVALID_ID
     } else {
         let dadosTarefaJSON = {}
 
-        let dadosTarefa = await tarefaDAO.mdlSelectByIdTarefa(idNumero)
+        let dadosTarefa = await tarefaDAO.mdlSelectByIdTarefa(id)
 
         if (dadosTarefa) {
             //Criando um JSON com o atributo Tarefa, para encaminhar um array de Tarefas
-            dadosTarefaJSON.status = message.SUCCESS_REQUEST.status;
-            dadosTarefaJSON.message = message.SUCCESS_REQUEST.message;
-            dadosTarefaJSON.tarefa = dadosTarefa
+            dadosTarefaJSON = {
+                status: message.SUCCESS_REQUEST.status,
+                message: message.SUCCESS_REQUEST.message,
+                tarefas: dadosTarefa
+            }
             return dadosTarefaJSON
         } else {
             return message.ERROR_REGISTER_NOT_FOUND;
@@ -78,6 +80,30 @@ const ctlGetBuscarTarefaNome = async function (nome) {
     }
 }
 
+//Retorna uma Tarefa filtrando pelo tipo da tarefa
+const ctlGetBuscarTarefaTipoTarefa = async function (idTipoTarefa) {
+
+    let dadosTarefaJSON = {}
+
+    let verificacaoTipoTarefa = await tipoTarefaDAO.ctlGetTipoTarefaByID(idTipoTarefa)
+
+    if (verificacaoTipoTarefa.status == 200) {
+        let dadosTarefa = await tarefaDAO.mdlSelectByIdTarefa(idTipoTarefa)
+
+        if (dadosTarefa) {
+            dadosTarefaJSON.status = message.SUCCESS_REQUEST.status;
+            dadosTarefaJSON.message = message.SUCCESS_REQUEST.message;
+            dadosTarefaJSON.quantidade = dadosTarefa.length;
+            dadosTarefaJSON.tarefa = dadosTarefa
+            return dadosTarefaJSON
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND;
+        }
+    } else {
+            return message.ERROR_INVALID_ID_TIPO_TAREFA
+    }
+}
+
 //Inserir uma nova Tarefa
 const ctlInserirTarefa = async function (dadosTarefa) {
 
@@ -86,18 +112,15 @@ const ctlInserirTarefa = async function (dadosTarefa) {
     if (dadosTarefa.nome == '' || dadosTarefa.nome == undefined || dadosTarefa.nome.length > 100 ||
         dadosTarefa.tempo_previsto == '' || dadosTarefa.tempo_previsto == undefined ||
         dadosTarefa.numero == '' || dadosTarefa.numero == undefined ||
-        dadosTarefa.foto_peca == '' || dadosTarefa.foto_peca == undefined || dadosTarefa.foto_peca.length > 150 ||
-        dadosTarefa.id_tipo_tarefa == '' || dadosTarefa.id_tipo_tarefa == undefined || isNaN(dadosTarefa.id_tipo_tarefa) ||
-        dadosTarefa.id_professor == '' || dadosTarefa.id_professor == undefined || isNaN(dadosTarefa.id_professor) ||
-        dadosTarefa.id_materia == '' || dadosTarefa.id_materia == undefined || isNaN(dadosTarefa.id_materia)
+        dadosTarefa.foto_peca == '' || dadosTarefa.foto_peca == undefined || dadosTarefa.foto_peca.length > 500 ||
+        dadosTarefa.id_tipo_tarefa == '' || dadosTarefa.id_tipo_tarefa == undefined || isNaN(dadosTarefa.id_tipo_tarefa)
     ) {
         return message.ERROR_REQUIRE_FIELDS
     } else {
-        let verificacaoProfessor = await professorDAO.mdlSelectProfessorByID(dadosTarefa.id_professor)
-        let verificacaoMateria = await materiaDAO.mdlSelectByIdMateria(dadosTarefa.id_materia)
+        let verificacaoTipoTarefa = await tipoTarefaDAO.ctlGetTipoTarefaByID(dadosTarefa.id_tipo_tarefa)
 
-        if (verificacaoProfessor == false || verificacaoMateria == false) {
-            return message.ERROR_INVALID_ID_PROFESSOR_MATERIA
+        if (verificacaoTipoTarefa.status != 200) {
+            return message.ERROR_INVALID_ID_TIPO_TAREFA
         } else {
             //Envia os dados para a model inserir no Banco de Dados
             resultDadosTarefa = await tarefaDAO.mdlInsertTarefa(dadosTarefa);
@@ -127,19 +150,16 @@ const ctlAtualizarTarefa = async function (dadosTarefa, idTarefa) {
         dadosTarefa.tempo_previsto == '' || dadosTarefa.tempo_previsto == undefined ||
         dadosTarefa.numero == '' || dadosTarefa.numero == undefined ||
         dadosTarefa.foto_peca == '' || dadosTarefa.foto_peca == undefined || dadosTarefa.foto_peca.length > 150 ||
-        dadosTarefa.id_tipo_tarefa == '' || dadosTarefa.id_tipo_tarefa == undefined ||
-        dadosTarefa.id_professor == '' || dadosTarefa.id_professor == undefined ||
-        dadosTarefa.id_materia == '' || dadosTarefa.id_materia == undefined
+        dadosTarefa.id_tipo_tarefa == '' || dadosTarefa.id_tipo_tarefa == undefined
     ) {
         return message.ERROR_REQUIRE_FIELDS
     } else if (idTarefa == '' || idTarefa == undefined || isNaN(idTarefa)) {
         return message.ERROR_INVALID_ID
     } else {
-        let verificacaoProfessor = await professorDAO.mdlSelectProfessorByID(dadosTarefa.id_professor)
-        let verificacaoMateria = await materiaDAO.mdlSelectByIdMateria(dadosTarefa.id_materia)
+        let verificacaoTipoTarefa = await tipoTarefaDAO.ctlGetTipoTarefaByID(dadosTarefa.id_tipo_tarefa)
 
-        if (verificacaoProfessor == false || verificacaoMateria == false) {
-            return message.ERROR_INVALID_ID_PROFESSOR_MATERIA
+        if (verificacaoTipoTarefa.status != 200) {
+            return message.ERROR_INVALID_ID_TIPO_TAREFA
         } else {
             //Adiciona o ID da Tarefa no JSON dos dados
             dadosTarefa.id = idTarefa
@@ -150,11 +170,11 @@ const ctlAtualizarTarefa = async function (dadosTarefa, idTarefa) {
                 let resultDadosTarefa = await tarefaDAO.mdlUpdateTarefa(dadosTarefa);
 
                 if (resultDadosTarefa) {
-
                     let dadosTarefaJSON = {};
                     dadosTarefaJSON.status = message.SUCCESS_UPDATED_ITEM.status;
                     dadosTarefaJSON.message = message.SUCCESS_UPDATED_ITEM.message;
-                    dadosTarefaJSON.tarefa = dadosTarefa;
+                    dadosTarefaJSON.tarefa_antiga = statusID;
+                    dadosTarefaJSON.tarefa_nova = dadosTarefa;
 
                     return dadosTarefaJSON
                 } else {
@@ -193,6 +213,7 @@ module.exports = {
     ctlGetTarefa,
     ctlGetTarefaByID,
     ctlGetBuscarTarefaNome,
+    ctlGetBuscarTarefaTipoTarefa,
     ctlInserirTarefa,
     ctlAtualizarTarefa,
     ctlDeletarTarefaPeloID

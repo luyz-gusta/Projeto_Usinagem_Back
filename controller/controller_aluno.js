@@ -16,12 +16,10 @@ const inserirAluno = async function (dadosAluno) {
     let resultDadosAluno;
 
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 100 ||
-        dadosAluno.matricula == '' || dadosAluno.matricula == undefined || dadosAluno.matricula.length > 15 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
-        dadosAluno.id_usuario == '' || dadosAluno.id_usuario == undefined ||
-        dadosAluno.id_turma == '' || dadosAluno.id_turma == undefined
+        dadosAluno.cpf.length > 15
     ) {
-        console.log(dadosAluno);
+        //console.log(dadosAluno);
         return message.ERROR_REQUIRE_FIELDS
     } else if (dadosAluno.data_nascimento == '') {
         return message.ERROR_DATE_BIRTH_INVALID
@@ -37,6 +35,7 @@ const inserirAluno = async function (dadosAluno) {
 
             let dadosAlunosJSON = {};
             dadosAlunosJSON.status = message.SUCCESS_CREATED_ITEM.status;
+            dadosAlunosJSON.message = message.SUCCESS_CREATED_ITEM.message
             dadosAlunosJSON.aluno = novoAluno;
             return dadosAlunosJSON
         } else {
@@ -49,16 +48,14 @@ const inserirAluno = async function (dadosAluno) {
 const atualizarAlunoPeloID = async function (dadosAluno, idAluno) {
 
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 100 ||
-        dadosAluno.matricula == '' || dadosAluno.matricula == undefined || dadosAluno.matricula.length > 15 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
-        dadosAluno.id_usuario == '' || dadosAluno.id_usuario == undefined ||
-        dadosAluno.id_turma == '' || dadosAluno.id_turma == undefined
+        dadosAluno.cpf.length > 15
     ) {
         return message.ERROR_REQUIRE_FIELDS
         //Validaçaõ do ID incorreto ou não informado
     } else if (idAluno == '' || idAluno == undefined || isNaN(idAluno)) {
         return message.ERROR_INVALID_ID
-    } else if (dadosAluno.data_nascimento == '' || !isNaN(dadosAluno.data_nascimento)) {
+    } else if (dadosAluno.data_nascimento == '') {
         return message.ERROR_DATE_BIRTH_INVALID
     } else {
         //Adiciona o ID do aluno no JSON dos dados
@@ -94,7 +91,7 @@ const deletarAlunoPeloID = async function (id) {
     } else {
         let buscarAluno = await alunoDAO.selectByIdAluno(id);
 
-        if (buscarAluno  == false) {
+        if (buscarAluno == false) {
             return message.ERROR_REGISTER_NOT_FOUND
         } else {
             let status = await alunoDAO.deleteAluno(id)
@@ -146,7 +143,7 @@ const getBuscarAlunoID = async function (id) {
             //Criando um JSON com o atributo aluno, para encaminhar um array de alunos
             dadosAlunosJSON.status = message.SUCCESS_REQUEST.status;
             dadosAlunosJSON.message = message.SUCCESS_REQUEST.message;
-            dadosAlunosJSON.alunos = dadosAluno
+            dadosAlunosJSON.aluno = dadosAluno
             return dadosAlunosJSON
         } else {
             return message.ERROR_REGISTER_NOT_FOUND;
@@ -160,17 +157,23 @@ const getBuscarAlunoNome = async function (nome) {
 
     let nomeAluno = nome
 
-    let dadosAlunosJSON = {}
-
-    let dadosAluno = await alunoDAO.selectByNameAluno(nomeAluno)
-
-    if (dadosAluno) {
-        dadosAlunosJSON.aluno = dadosAluno
-        return dadosAlunosJSON
+    if (nomeAluno == '' || nomeAluno == undefined) {
+        return message.ERROR_INVALID_NOME
     } else {
-        return false;
-    }
+        let dadosAlunosJSON = {}
 
+        let dadosAluno = await alunoDAO.selectByNameAluno(nomeAluno)
+
+        if (dadosAluno) {
+            //Criando um JSON com o atributo aluno, para encaminhar um array de alunos
+            dadosAlunosJSON.status = message.SUCCESS_REQUEST.status;
+            dadosAlunosJSON.message = message.SUCCESS_REQUEST.message;
+            dadosAlunosJSON.aluno = dadosAluno
+            return dadosAlunosJSON
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND;
+        }
+    }
 }
 
 module.exports = {

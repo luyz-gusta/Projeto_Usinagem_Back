@@ -65,49 +65,125 @@ const bodyParserJson = bodyParser.json();
 //Import do arquivo de configuração das variaveis, constantes e funções globais
 var message = require('./controller/modulo/config.js')
 
+var controllerAluno = require('./controller/controller_aluno.js')
+
 //EndPoint: Retorna todos os dados de alunos
 app.get('/v1/projeto-usinagem/aluno', cors(), async function (request, response) {
 
+    //Recebe os dados da controller do aluno
+    let dadosAluno = await controllerAluno.getAlunos();
 
+    response.status(dadosAluno.status);
+    response.json(dadosAluno);
 })
 
 //EndPoint: Retorna todos os dados de alunos
 app.get('/v1/projeto-usinagem/aluno', cors(), async function (request, response) {
 
+    //Recebe os dados da controller do aluno
+    let dadosAluno = await controllerAluno.getAlunos();
 
+    response.status(dadosAluno.status);
+    response.json(dadosAluno);
 
 })
 
 //EndPoint: Retorna o aluno filtrando pelo ID
 app.get('/v1/projeto-usinagem/aluno/:id', cors(), async function (request, response) {
 
+    let idAluno = request.params.id;
 
+    //Recebe os dados da controller do aluno
+    let dadosAluno = await controllerAluno.getBuscarAlunoID(idAluno);
+
+    response.status(dadosAluno.status);
+    response.json(dadosAluno)
 
 })
 
 //EndPoint: Retorna o aluno filtrando pelo nome
 app.get('/v1/projeto-usinagem/aluno/nome/:nome', cors(), async function (request, response) {
 
+    let nome = request.params.nome;
 
+    //Import do arquivo da controller que irá solicitar a model os dados do BD
+    let controllerAluno = require('./controller/controller_aluno.js')
+
+    //Recebe os dados da controller do aluno
+    let dadosAluno = await controllerAluno.getBuscarAlunoNome(nome);
+
+    if (dadosAluno) {
+        response.json(dadosAluno);
+        response.status(200);
+    } else {
+        response.json();
+        response.status(404);
+    }
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/aluno', cors(), bodyParserJson, async function (request, response) {
 
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosAluno = await controllerAluno.inserirAluno(dadosBody)
+
+        response.status(resultDadosAluno.status)
+        response.json(resultDadosAluno)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Atualiza um aluno existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/aluno/:id', cors(), bodyParserJson, async function (request, response) {
 
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do aluno pelo parametro
+        let idAluno = request.params.id;
+
+        //Recebe os dados encaminhados no corpo da requisição
+        let dadosBody = request.body;
+
+        //Encaminha os dados para a controller
+        let resultDadosAluno = await controllerAluno.atualizarAlunoPeloID(dadosBody, idAluno);
+
+        response.status(resultDadosAluno.status);
+        response.json(resultDadosAluno);
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Exclui um aluno, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/aluno/:id', cors(), async function (request, response) {
 
+    // Recebe o ID do aluno pelo parametro
+    let idAluno = request.params.id
 
+    // Encaminha os dados para a controller
+    let resultDadosAluno = await controllerAluno.deletarAlunoPeloID(idAluno)
+
+    if (resultDadosAluno.length != 0) {
+        response.status(resultDadosAluno.status)
+        response.json(resultDadosAluno)
+    } else {
+        message.ERROR_INVALID_ID
+    }
 })
+
 
 
 /*****************************************************************************************************************
@@ -704,17 +780,17 @@ app.get('/v1/projeto-usinagem/materia/:id', cors(), async function (request, res
     response.json(dadosMateria)
 })
 
-//EndPoint: Retorna a materia filtrando pelo NOME
-app.get('/v1/projeto-usinagem/materia/nome/:nome', cors(), async function (request, response) {
+// //EndPoint: Retorna a materia filtrando pelo NOME
+// app.get('/v1/projeto-usinagem/materia/nome/:nome', cors(), async function (request, response) {
 
-    let materia = request.params.nome;
+//     let materia = request.params.nome;
 
-    //Recebe os dados da controller da materia
-    let dadosMateria = await controllerMateria.ctlGetBuscarMateriaNome(materia);
+//     //Recebe os dados da controller da materia
+//     let dadosMateria = await controllerMateria.ctlGetBuscarMateriaNome(materia);
 
-    response.status(dadosMateria.status)
-    response.json(dadosMateria)
-})
+//     response.status(dadosMateria.status)
+//     response.json(dadosMateria)
+// })
 
 //EndPoint: Retorna a materia filtrando pela SIGLA
 app.get('/v1/projeto-usinagem/materia/sigla/:sigla', cors(), async function (request, response) {
@@ -1012,12 +1088,21 @@ var controllerTarefa = require('./controller/controller_tarefa.js')
 //EndPoint: Retorna todos os dados de TAREFA
 app.get('/v1/projeto-usinagem/tarefa', cors(), async function (request, response) {
 
-    //Recebe os dados da controller de tarefa
-    let dadosTarefa = await controllerTarefa.ctlGetTarefa()
+    let idTipoTarefa = request.query.idTipoTarefa
 
-    response.status(dadosTarefa.status);
-    response.json(dadosTarefa);
+    if (idTipoTarefa) {
+        //Recebe os dados da controller de tarefa
+        let dadosTarefa = await controllerTarefa.ctlGetBuscarTarefaTipoTarefa(idTipoTarefa)
 
+        response.status(dadosTarefa.status);
+        response.json(dadosTarefa);
+    } else {
+        //Recebe os dados da controller de tarefa
+        let dadosTarefa = await controllerTarefa.ctlGetTarefa()
+
+        response.status(dadosTarefa.status);
+        response.json(dadosTarefa);
+    }
 })
 
 //EndPoint: Retorna a tarefa filtrando pelo ID
@@ -1302,34 +1387,104 @@ app.delete('/v1/projeto-usinagem/avaliacao-professor/sigla/:sigla', cors(), asyn
 * Versão: 1.0
 ******************************************************************************************************************/
 
+var controllerMatricula = require('./controller/controller_matricula.js')
+
 //EndPoint: Retorna todos os dados de Matricula
 app.get('/v1/projeto-usinagem/matricula', cors(), async function (request, response) {
+
+    //Recebe os dados da controller do matricula
+    let dadosMatricula = await controllerMatricula.ctlGetMatriculas();
+
+    response.status(dadosMatricula.status);
+    response.json(dadosMatricula);
 
 })
 
 //EndPoint: Retorna a matricula filtrando pelo ID
 app.get('/v1/projeto-usinagem/matricula/:id', cors(), async function (request, response) {
 
+    let idMatricula = request.params.id;
+
+    //Recebe os dados da controller da matricula
+    let dadosMatricula = await controllerMatricula.ctlGetBuscarMatriculaID(idMatricula);
+
+    response.status(dadosMatricula.status);
+    response.json(dadosMatricula);
+
 })
 
 //EndPoint: Retorna a matricula filtrando pelo numero da matricula
 app.get('/v1/projeto-usinagem/matricula/numero/:numero', cors(), async function (request, response) {
+
+    let numeroMatricula = request.params.numero;
+
+    //Recebe os dados da controller da matricula
+    let dadosMatricula = await controllerMatricula.ctlGetBuscarMatriculaNumero(numeroMatricula);
+
+    response.status(dadosMatricula.status);
+    response.json(dadosMatricula);
 
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/matricula', cors(), bodyParserJson, async function (request, response) {
 
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosMatricula = await controllerMatricula.ctlInserirMatricula(dadosBody)
+
+        response.status(resultDadosMatricula.status)
+        response.json(resultDadosMatricula)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+
 })
 
 //EndPoint: Atualiza um matricula existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/matricula/:id', cors(), bodyParserJson, async function (request, response) {
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do aluno pelo parametro
+        let idMatricula = request.params.id;
+
+        //Recebe os dados encaminhados no corpo da requisição
+        let dadosBody = request.body;
+
+        //Encaminha os dados para a controller
+        let resultDadosMatricula = await controllerMatricula.ctlAtualizarMatriculaPeloID(dadosBody, idMatricula);
+
+        response.status(resultDadosMatricula.status);
+        response.json(resultDadosMatricula);
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 
 })
 
 
 //EndPoint: Exclui um matricula, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/matricula/:id', cors(), async function (request, response) {
+
+    let id = request.params.id;
+
+    //Recebe os dados da controller da matricula
+    let dadosMatricula = await controllerMatricula.ctlDeletarMatriculaPeloID(id);
+
+    response.status(dadosMatricula.status)
+    response.json(dadosMatricula)
 
 })
 
