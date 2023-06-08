@@ -59,24 +59,24 @@ const ctlGetMateriaByID = async function (id) {
     }
 }
 
-//Retorna uma materia filtrando pelo nome
-const ctlGetBuscarMateriaNome = async function (nome) {
+// //Retorna uma materia filtrando pelo nome
+// const ctlGetBuscarMateriaNome = async function (nome) {
 
-    let nomeMateria = nome
+//     let nomeMateria = nome
 
-    let dadosMateriaJSON = {}
+//     let dadosMateriaJSON = {}
 
-    let dadosMateria = await materiaDAO.mdlSelectByNameMateria(nomeMateria)
+//     let dadosMateria = await materiaDAO.mdlSelectByNameMateria(nomeMateria)
 
-    if (dadosMateria) {
-        dadosMateriaJSON.status = message.SUCCESS_REQUEST.status;
-        dadosMateriaJSON.message = message.SUCCESS_REQUEST.message;
-        dadosMateriaJSON.materia = dadosMateria
-        return dadosMateriaJSON
-    } else {
-        return message.ERROR_INVALID_NOME;
-    }
-}
+//     if (dadosMateria) {
+//         dadosMateriaJSON.status = message.SUCCESS_REQUEST.status;
+//         dadosMateriaJSON.message = message.SUCCESS_REQUEST.message;
+//         dadosMateriaJSON.materia = dadosMateria
+//         return dadosMateriaJSON
+//     } else {
+//         return message.ERROR_INVALID_NOME;
+//     }
+// }
 
 //Retorna uma materia filtrando pelo sigla
 const ctlGetBuscarMateriaSigla = async function (sigla) {

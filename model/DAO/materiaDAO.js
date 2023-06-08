@@ -99,10 +99,19 @@ const mdlSelectAllMaterias = async function () {
 //Retorna a materia filtrando pelo ID
 const mdlSelectByIdMateria = async function (id) {
 
-    let idMateria = id
-
     //Script para buscar uma materia filtrando pelo ID
-    let sql = `select * from tbl_materia where id = ${idMateria}`;
+    let sql = `
+    select materia.nome as nome_materia, 
+        materia.carga_horaria as carga_horaria_materia,
+        materia.sigla as sigla_materia,
+        materia.descricao as descricao_materia
+    from tbl_materia as materia 
+        inner join tbl_curso_materia as curso_materia 
+            on curso_materia.id_materia = materia.id
+        inner join tbl_curso as curso 
+            on curso.id = curso_materia.id_curso
+        where materia.id = ${id}
+        `;
 
     //console.log(sql);
     let rsMateria = await prisma.$queryRawUnsafe(sql)
@@ -115,23 +124,23 @@ const mdlSelectByIdMateria = async function (id) {
     }
 }
 
-//Retorna a materia filtrando pelo nome
-const mdlSelectByNameMateria = async function (nome) {
+// //Retorna a materia filtrando pelo nome
+// const mdlSelectByNameMateria = async function (nome) {
 
-    let nameMateria = nome
+//     let nameMateria = nome
 
-    //Script para buscar uma materia filtrando pelo ID
-    let sql = `select * from tbl_materia where nome like '%${nameMateria}%'`;
+//     //Script para buscar uma materia filtrando pelo ID
+//     let sql = `select * from tbl_materia where nome like '%${nameMateria}%'`;
 
-    let rsMateria = await prisma.$queryRawUnsafe(sql)
+//     let rsMateria = await prisma.$queryRawUnsafe(sql)
 
-    //Valida de o Banco de Dados retornou algum registro
-    if (rsMateria.length > 0) {
-        return rsMateria
-    } else {
-        return false;
-    }
-}
+//     //Valida de o Banco de Dados retornou algum registro
+//     if (rsMateria.length > 0) {
+//         return rsMateria
+//     } else {
+//         return false;
+//     }
+// }
 
 //Retorna a materia filtrando pelo sigla
 const mdlSelectBySiglaMateria = async function (sigla) {
@@ -190,18 +199,26 @@ const mdlSelectByIdCurso = async (idCurso) => {
     }
 }
 
-const mdlSelectByIdCursod = async (idCurso) => {
+const mdlSelectByIdTurma = async (idTurma, idProfessor) => {
     let sql = `
-    select materia.nome as nome_materia, 
-        materia.carga_horaria as carga_horaria_materia,
-        materia.sigla as sigla_materia,
-        materia.descricao as descricao_materia
-    from tbl_materia as materia 
-        inner join tbl_curso_materia as curso_materia 
-            on curso_materia.id_materia = materia.id
-        inner join tbl_curso as curso 
-            on curso.id = curso_materia.id_curso
-        where curso.id = ${idCurso};
+    select tbl_turma_curso_materia_professor.id,
+	    turma.id as id_turma, turma.nome as nome_turma, turma.semestre as semestre_turma, turma.data_inicio as data_inicio_turma, turma.descricao as descricao_turma, 
+        turma.data_conclusao as conclusao_turma, 
+	    curso.nome as nome_curso, curso.sigla as sigla_curso, curso.descricao as descricao_curso, curso.carga_horaria as carga_horaria_curso,
+        materia.id as id_materia, materia.nome as nome_materia, materia.sigla as sigla_materia, 
+        materia.carga_horaria as carga_horaria_materia, materia.descricao as descricao_materia
+    from tbl_turma_curso_materia_professor
+	    inner join tbl_turma as turma
+		    on turma.id = tbl_turma_curso_materia_professor.id_turma
+	    inner join tbl_professor as professor 
+		    on professor.id = tbl_turma_curso_materia_professor.id_professor
+	    inner join tbl_curso_materia 
+		    on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+	    inner join tbl_curso as curso 
+		    on tbl_curso_materia.id_curso = curso.id
+	    inner join tbl_materia as materia
+		    on tbl_curso_materia.id_materia = materia.id 
+    where professor.id = 1 and turma.id = 1;
     `
 
     let rsMateria = await prisma.$queryRawUnsafe(sql);

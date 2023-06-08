@@ -699,17 +699,17 @@ app.get('/v1/projeto-usinagem/materia/:id', cors(), async function (request, res
     response.json(dadosMateria)
 })
 
-//EndPoint: Retorna a materia filtrando pelo NOME
-app.get('/v1/projeto-usinagem/materia/nome/:nome', cors(), async function (request, response) {
+// //EndPoint: Retorna a materia filtrando pelo NOME
+// app.get('/v1/projeto-usinagem/materia/nome/:nome', cors(), async function (request, response) {
 
-    let materia = request.params.nome;
+//     let materia = request.params.nome;
 
-    //Recebe os dados da controller da materia
-    let dadosMateria = await controllerMateria.ctlGetBuscarMateriaNome(materia);
+//     //Recebe os dados da controller da materia
+//     let dadosMateria = await controllerMateria.ctlGetBuscarMateriaNome(materia);
 
-    response.status(dadosMateria.status)
-    response.json(dadosMateria)
-})
+//     response.status(dadosMateria.status)
+//     response.json(dadosMateria)
+// })
 
 //EndPoint: Retorna a materia filtrando pela SIGLA
 app.get('/v1/projeto-usinagem/materia/sigla/:sigla', cors(), async function (request, response) {
@@ -1007,12 +1007,21 @@ var controllerTarefa = require('./controller/controller_tarefa.js')
 //EndPoint: Retorna todos os dados de TAREFA
 app.get('/v1/projeto-usinagem/tarefa', cors(), async function (request, response) {
 
-    //Recebe os dados da controller de tarefa
-    let dadosTarefa = await controllerTarefa.ctlGetTarefa()
+    let idTipoTarefa = request.query.idTipoTarefa
 
-    response.status(dadosTarefa.status);
-    response.json(dadosTarefa);
+    if (idTipoTarefa) {
+        //Recebe os dados da controller de tarefa
+        let dadosTarefa = await controllerTarefa.ctlGetBuscarTarefaTipoTarefa(idTipoTarefa)
 
+        response.status(dadosTarefa.status);
+        response.json(dadosTarefa);
+    } else {
+        //Recebe os dados da controller de tarefa
+        let dadosTarefa = await controllerTarefa.ctlGetTarefa()
+
+        response.status(dadosTarefa.status);
+        response.json(dadosTarefa);
+    }
 })
 
 //EndPoint: Retorna a tarefa filtrando pelo ID
