@@ -124,24 +124,6 @@ const mdlSelectByIdMateria = async function (id) {
     }
 }
 
-// //Retorna a materia filtrando pelo nome
-// const mdlSelectByNameMateria = async function (nome) {
-
-//     let nameMateria = nome
-
-//     //Script para buscar uma materia filtrando pelo ID
-//     let sql = `select * from tbl_materia where nome like '%${nameMateria}%'`;
-
-//     let rsMateria = await prisma.$queryRawUnsafe(sql)
-
-//     //Valida de o Banco de Dados retornou algum registro
-//     if (rsMateria.length > 0) {
-//         return rsMateria
-//     } else {
-//         return false;
-//     }
-// }
-
 //Retorna a materia filtrando pelo sigla
 const mdlSelectBySiglaMateria = async function (sigla) {
 
