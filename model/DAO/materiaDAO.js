@@ -190,6 +190,29 @@ const mdlSelectByIdCurso = async (idCurso) => {
     }
 }
 
+const mdlSelectByIdCursod = async (idCurso) => {
+    let sql = `
+    select materia.nome as nome_materia, 
+        materia.carga_horaria as carga_horaria_materia,
+        materia.sigla as sigla_materia,
+        materia.descricao as descricao_materia
+    from tbl_materia as materia 
+        inner join tbl_curso_materia as curso_materia 
+            on curso_materia.id_materia = materia.id
+        inner join tbl_curso as curso 
+            on curso.id = curso_materia.id_curso
+        where curso.id = ${idCurso};
+    `
+
+    let rsMateria = await prisma.$queryRawUnsafe(sql);
+
+    if (rsMateria.length > 0) {
+        return rsMateria;
+    } else {
+        return false;
+    }
+}
+
 module.exports = {
     mdlSelectAllMaterias,
     mdlSelectByIdMateria,
