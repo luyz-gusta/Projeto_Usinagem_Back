@@ -434,48 +434,129 @@ app.delete('/v1/projeto-usinagem/status-usuario/:id', cors(), async function (re
 /*****************************************************************************************************************
 * Objetivo: API de controle de TURMA
 * Data: 20/05/2023
-* Autor: Luiz e Muryllo
+* Autor: Luiz, Muryllo e Millena
 * Versão: 1.0
 ******************************************************************************************************************/
 
+
+var controllerTurmas = require('./controller/controller_turmas.js')
+
 //EndPoint: Retorna todos os dados de turma
 app.get('/v1/projeto-usinagem/turma', cors(), async function (request, response) {
+    let idCurso = request.query.idCurso
 
+    if (idCurso) {
+        //Recebe os dados da controller do status de usuario    
+        let dadosTurmas = await controllerTurmas.ctlGetTurmasIDCurso(idCurso)
+
+        response.status(dadosTurmas.status);
+        response.json(dadosTurmas);
+    } else {
+        //Recebe os dados da controller do status de usuario    
+        let dadosTurmas = await controllerTurmas.ctlGetTurmas()
+
+        response.status(dadosTurmas.status);
+        response.json(dadosTurmas);
+    }
 })
 
 //EndPoint: Retorna a turma filtrando pelo ID
 app.get('/v1/projeto-usinagem/turma/:id', cors(), async function (request, response) {
+    // Recebe o ID do status de usuario pelo parametro
+    let idTurma = request.params.id
 
+    // Encaminha os dados para a controller
+    let resultDadosTurmas = await controllerTurmas.ctlGetTurmasID(idTurma)
+
+    if (resultDadosTurmas.length != 0) {
+        response.status(resultDadosTurmas.status)
+        response.json(resultDadosTurmas)
+    } else {
+        message.ERROR_INVALID_ID
+    }
 
 })
 
 //EndPoint: Retorna a turma filtrando pelo nome
 app.get('/v1/projeto-usinagem/turma/nome/:nome', cors(), async function (request, response) {
 
+    // Recebe o ID do status de usuario pelo parametro
+    let nomeTurma = request.params.nome
 
-})
+    // Encaminha os dados para a controller
+    let resultDadosTurmas = await controllerTurmas.ctlGetTurmasNome(nomeTurma)
 
-//EndPoint: Retorna a turma filtrando pela sigla da turma
-app.get('/v1/projeto-usinagem/turma/sigla/:sigla', cors(), async function (request, response) {
-
+    if (resultDadosTurmas.length != 0) {
+        response.status(resultDadosTurmas.status)
+        response.json(resultDadosTurmas)
+    } else {
+        message.ERROR_INVALID_ID
+    }
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/turma', cors(), bodyParserJson, async function (request, response) {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosTurmas = await controllerTurmas.ctlGetInserirTurma(dadosBody)
+
+        response.status(resultDadosTurmas.status)
+        response.json(resultDadosTurmas)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 
 })
 
 //EndPoint: Atualiza uma turma existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/turma/:id', cors(), bodyParserJson, async function (request, response) {
 
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        // Recebe o ID do status de usuario pelo parametro
+        let idTurma = request.params.id
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosTurmas = await controllerTurmas.ctlAtualizarTurma(dadosBody, idTurma)
+
+        //console.log(resultDadosTurmas);
+
+        response.status(resultDadosTurmas.status)
+        response.json(resultDadosTurmas)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 
 })
 
 //EndPoint: Exclui uma turma, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/turma/:id', cors(), async function (request, response) {
 
+    // Recebe o ID do status de usuario pelo parametro
+    let idTurma = request.params.id
 
+    // Encaminha os dados para a controller
+    let resultDadosTurma = await controllerTurmas.ctlDeletarTurma(idTurma)
+
+    if (resultDadosTurma.length != 0) {
+        response.status(resultDadosTurma.status)
+        response.json(resultDadosTurma)
+    } else {
+        message.ERROR_INVALID_ID
+    }
 })
 
 
@@ -1404,6 +1485,7 @@ app.delete('/v1/projeto-usinagem/resultado-desejado/:id', cors(), async function
 * Autor: Muryllo, Luiz e Millena
 * Versão: 1.0
 ******************************************************************************************************************/
+
 
 //EndPoint: Retorna todos os dados de turma-matricula
 app.get('/v1/projeto-usinagem/turma-matricula', cors(), async function (request, response) {

@@ -1,6 +1,6 @@
 /************************************************************************************************
  * Objetivo: Responsável pela manipulação de dados dos TURMAS no Banco de Dados
- * Autor: Luiz Gustavo, Muryllo Vieira e Millena
+ * Autor: Luiz Gustavo, Muryllo Vieira e Millena Ferreira
  * Data: 22/05/2023
  * Versão: 1.0
 ************************************************************************************************/
@@ -122,9 +122,29 @@ const mdlSelectByNameTurma = async function (nome) {
 
 }
 
+// Retorna o Turma filtrando pelo ID de Curso
+const mdlSelectTurmaByIDCurso = async function (idCurso) {
+    let idTurmaCurso = idCurso
+
+    let sql = ` select 
+                    tbl_turma.id, tbl_turma.nome as nome_turma,
+                    tbl_turma.data_inicio, tbl_turma.data_conclusao,
+                    tbl_turma.descricao, tbl_turma.semestre 
+                from tbl_turma where tbl_turma.id_curso = ${idTurmaCurso};`;
+
+    let rsTurma = await prisma.$queryRawUnsafe(sql)
+
+    if (rsTurma.length > 0) {
+        return rsTurma
+    } else {
+        return false;
+    }
+
+}
+
 //Retorna o ultimo id inserido no BD
 const mdlSelectLastId = async function () {
-    
+
     let sql = 'select * from tbl_turma order by id desc limit 1'
 
     let rsTurma = await prisma.$queryRawUnsafe(sql);
@@ -143,5 +163,6 @@ module.exports = {
     mdlSelectAllTurma,
     mdlSelectByIdTurma,
     mdlSelectByNameTurma,
+    mdlSelectTurmaByIDCurso,
     mdlSelectLastId
 }
