@@ -541,7 +541,7 @@ app.get('/v1/projeto-usinagem/turma', cors(), async function (request, response)
 
 //EndPoint: Retorna a turma filtrando pelo ID
 app.get('/v1/projeto-usinagem/turma/:id', cors(), async function (request, response) {
-    // Recebe o ID do status de usuario pelo parametro
+    // Recebe o ID da turma pelo parametro
     let idTurma = request.params.id
 
     // Encaminha os dados para a controller
@@ -559,7 +559,7 @@ app.get('/v1/projeto-usinagem/turma/:id', cors(), async function (request, respo
 //EndPoint: Retorna a turma filtrando pelo nome
 app.get('/v1/projeto-usinagem/turma/nome/:nome', cors(), async function (request, response) {
 
-    // Recebe o ID do status de usuario pelo parametro
+    // Recebe o Nome da turma pelo parametro
     let nomeTurma = request.params.nome
 
     // Encaminha os dados para a controller
@@ -602,15 +602,13 @@ app.put('/v1/projeto-usinagem/turma/:id', cors(), bodyParserJson, async function
 
     if (String(contentType).toLowerCase() == 'application/json') {
 
-        // Recebe o ID do status de usuario pelo parametro
+        // Recebe o ID da turma pelo parametro
         let idTurma = request.params.id
 
         //Recebe os dados encaminhados na requisição
         let dadosBody = request.body;
 
         let resultDadosTurmas = await controllerTurmas.ctlAtualizarTurma(dadosBody, idTurma)
-
-        //console.log(resultDadosTurmas);
 
         response.status(resultDadosTurmas.status)
         response.json(resultDadosTurmas)
@@ -624,7 +622,7 @@ app.put('/v1/projeto-usinagem/turma/:id', cors(), bodyParserJson, async function
 //EndPoint: Exclui uma turma, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/turma/:id', cors(), async function (request, response) {
 
-    // Recebe o ID do status de usuario pelo parametro
+    // Recebe o ID da turma pelo parametro
     let idTurma = request.params.id
 
     // Encaminha os dados para a controller
@@ -1023,7 +1021,7 @@ app.post('/v1/projeto-usinagem/criterio', cors(), bodyParserJson, async function
 //EndPoint: Atualiza um criterio, filtrando pelo ID
 app.put('/v1/projeto-usinagem/criterio/:id', cors(), bodyParserJson, async function (request, response) {
     let idCriterio = request.params.id
-    
+
     //Recebe o content-type da requisição
     let contentType = request.headers['content-type'];
 
@@ -1049,8 +1047,8 @@ app.delete('/v1/projeto-usinagem/criterio/:id', cors(), async function (request,
 
 /*****************************************************************************************************************
 * Objetivo: API de controle de MARGEM DE ERRO
-* Data: 01/06/2023
-* Autor: Luiz e Muryllo
+* Data: 09/06/2023
+* Autor: Luiz, Muryllo e Millena
 * Versão: 1.0
 ******************************************************************************************************************/
 
@@ -1059,7 +1057,7 @@ var controllerMargemErro = require('./controller/controller_margem-erro.js')
 
 //EndPoint: Retorna todos os dados de Margem_Erro
 app.get('/v1/projeto-usinagem/margem-erro', cors(), async function (request, response) {
-    //Recebe os dados da controller do status de usuario    
+    //Recebe os dados da controller de margem de erro  
     let dadosMargemErro = await controllerMargemErro.ctlGetMargemErro()
 
     response.status(dadosMargemErro.status);
@@ -1068,22 +1066,78 @@ app.get('/v1/projeto-usinagem/margem-erro', cors(), async function (request, res
 
 //EndPoint: Retorna o margem-erro filtrando pelo ID
 app.get('/v1/projeto-usinagem/margem-erro/:id', cors(), async function (request, response) {
-    
+    // Recebe o ID margem de erro
+    let idMargemErro = request.params.id
+
+    // Encaminha os dados para a controller
+    let resultDadosMargemErro = await controllerMargemErro.ctlGetMargemErroID(idMargemErro)
+
+    if (resultDadosMargemErro.length != 0) {
+        response.status(resultDadosMargemErro.status)
+        response.json(resultDadosMargemErro)
+    } else {
+        message.ERROR_INVALID_ID
+    }
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/margem-erro', cors(), bodyParserJson, async function (request, response) {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosMargemErro = await controllerMargemErro.ctlInserirMargemErro(dadosBody)
+
+        response.status(resultDadosMargemErro.status)
+        response.json(resultDadosMargemErro)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Atualiza um margem-erro existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/margem-erro/:id', cors(), bodyParserJson, async function (request, response) {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        // Recebe o ID de margem de erro de usuario pelo parametro
+        let idMargemErro = request.params.id
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosMargemErro = await controllerMargemErro.ctlAtualizarMargemErro(dadosBody, idMargemErro)
+
+        response.status(resultDadosMargemErro.status)
+        response.json(resultDadosMargemErro)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Exclui um  margem-erro, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/margem-erro/:id', cors(), async function (request, response) {
 
+    // Recebe o ID do status de usuario pelo parametro
+    let idMargemErro = request.params.id
+
+    // Encaminha os dados para a controller
+    let resultDadosMargemErro = await controllerMargemErro.ctlDeletarMargemErro(idMargemErro)
+
+    if (resultDadosMargemErro.length != 0) {
+        response.status(resultDadosMargemErro.status)
+        response.json(resultDadosMargemErro)
+    } else {
+        message.ERROR_INVALID_ID
+    }
 })
 
 /*****************************************************************************************************************
