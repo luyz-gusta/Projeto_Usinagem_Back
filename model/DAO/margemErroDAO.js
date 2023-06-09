@@ -83,7 +83,6 @@ const mdlSelectAllMargemErro = async function () {
     }
 }
 
-
 //Retorna o MargemErro filtrando pelo ID
 const mdlSelectByIdMargemErro = async function (id) {
     let idMargemErro = id
@@ -91,6 +90,23 @@ const mdlSelectByIdMargemErro = async function (id) {
     let sql = `select * from tbl_margem_erro where id = ${idMargemErro}`;
 
     //console.log(sql);
+    let rsMargemErro = await prisma.$queryRawUnsafe(sql)
+
+    if (rsMargemErro.length > 0) {
+        return rsMargemErro
+    } else {
+        return false;
+    }
+}
+
+//Retorna o MargemErro filtrando pelo ID de Resultado Desejado
+const mdlSelectMargemErroByIdResultadoDesejado = async function (idResultadoDesejado) {
+    let id_resultado_desejado = idResultadoDesejado
+
+    let sql = `select margem_erro.id, margem_erro.minimo, margem_erro.maximo     
+                from tbl_margem_erro as margem_erro 
+                    where margem_erro.id_resultado_desejado = ${id_resultado_desejado};`;
+
     let rsMargemErro = await prisma.$queryRawUnsafe(sql)
 
     if (rsMargemErro.length > 0) {
@@ -121,5 +137,6 @@ module.exports = {
     mdlDeleteMargemErro,
     mdlSelectAllMargemErro,
     mdlSelectByIdMargemErro,
+    mdlSelectMargemErroByIdResultadoDesejado,
     mdlSelectLastId
 }
