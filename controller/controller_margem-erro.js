@@ -12,6 +12,7 @@ var margemErroDAO = require('../model/DAO/margemErroDAO.js')
 
 var resultadoDesejadoDAO = require('../model/DAO/resultadoDesejadoDAO.js')
 
+
 // Retorna a lista de todas as margem erro
 const ctlGetMargemErro = async () => {
     let dadosMargemErroJSON = {}
@@ -32,7 +33,7 @@ const ctlGetMargemErro = async () => {
     }
 }
 
-// Retorna a lista de todas as margem erro
+// Retorna a lista de margem de erro pelo ID
 const ctlGetMargemErroID = async (id) => {
     let dadosMargemErroJSON = {}
 
@@ -40,6 +41,29 @@ const ctlGetMargemErroID = async (id) => {
         return message.ERROR_REQUIRE_FIELDS
     } else {
         let dadosMargemErro = await margemErroDAO.mdlSelectByIdMargemErro(id)
+
+        if (dadosMargemErro) {
+
+            dadosMargemErroJSON = {
+                status: message.SUCCESS_REQUEST.status,
+                message: message.SUCCESS_REQUEST.message,
+                margem_erro: dadosMargemErro
+            }
+            return dadosMargemErroJSON
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND
+        }
+    }
+}
+
+// Retorna a lista de margem de erro pelo IDResultadoDesejado
+const ctlGetMargemErroIDResultadoDesejado = async (idResultadoDesejado) => {
+    let dadosMargemErroJSON = {}
+
+    if (idResultadoDesejado == null || idResultadoDesejado == undefined || idResultadoDesejado == '') {
+        return message.ERROR_REQUIRE_FIELDS
+    } else {
+        let dadosMargemErro = await margemErroDAO.mdlSelectMargemErroByIdResultadoDesejado(idResultadoDesejado)
 
         if (dadosMargemErro) {
 
@@ -64,7 +88,7 @@ const ctlInserirMargemErro = async (dadosMargemErro) => {
         return message.ERROR_REQUIRE_FIELDS
     } else {
 
-        let verificarIdResultadoDesejado = await resultadoDesejadoDAO.mdlSelectAllResultadoDesejado(dadosMargemErro.id_resultado_desejado)
+        let verificarIdResultadoDesejado = await resultadoDesejadoDAO.mdlSelectResultadoDesejadoByID(dadosMargemErro.id_resultado_desejado)
 
         if (verificarIdResultadoDesejado == false) {
             return message.ERROR_INVALID_ID_RESULTADO_DESEJADO
@@ -131,6 +155,7 @@ const ctlAtualizarMargemErro = async (dadosMargemErro, idMargemErro) => {
 const ctlDeletarMargemErro = async (idMargemErro) => {
 
     if (idMargemErro == '' || idMargemErro == undefined || idMargemErro == null || isNaN(idMargemErro)) {
+        console.log(idMargemErro);
         return message.ERROR_REQUIRE_FIELDS
     } else {
         let buscarMargemErro = await margemErroDAO.mdlSelectByIdMargemErro(idMargemErro)
@@ -153,6 +178,7 @@ const ctlDeletarMargemErro = async (idMargemErro) => {
 module.exports = {
     ctlGetMargemErro,
     ctlGetMargemErroID,
+    ctlGetMargemErroIDResultadoDesejado,
     ctlInserirMargemErro,
     ctlAtualizarMargemErro,
     ctlDeletarMargemErro

@@ -522,8 +522,6 @@ var controllerTurmas = require('./controller/controller_turmas.js')
 app.get('/v1/projeto-usinagem/turma', cors(), async function (request, response) {
     let idCurso = request.query.idCurso
 
-    console.log('app-turma');
-
     if (idCurso) {
         //Recebe os dados da controller do status de usuario    
         let dadosTurmas = await controllerTurmas.ctlGetTurmasIDCurso(idCurso)
@@ -628,12 +626,9 @@ app.delete('/v1/projeto-usinagem/turma/:id', cors(), async function (request, re
     // Encaminha os dados para a controller
     let resultDadosTurma = await controllerTurmas.ctlDeletarTurma(idTurma)
 
-    if (resultDadosTurma.length != 0) {
-        response.status(resultDadosTurma.status)
-        response.json(resultDadosTurma)
-    } else {
-        message.ERROR_INVALID_ID
-    }
+    response.status(resultDadosTurma.status)
+    response.json(resultDadosTurma)
+
 })
 
 
@@ -1044,7 +1039,12 @@ app.put('/v1/projeto-usinagem/criterio/:id', cors(), bodyParserJson, async funct
 
 //EndPoint: Exclui um criterio, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/criterio/:id', cors(), async function (request, response) {
+    let idCriterio = request.params.id;
 
+    let resultDadosCriterio = await controllerCriterio.ctlExcluirCriterio(idCriterio)
+
+    response.status(resultDadosCriterio.status)
+    response.json(resultDadosCriterio)
 })
 
 /*****************************************************************************************************************
@@ -1128,18 +1128,15 @@ app.put('/v1/projeto-usinagem/margem-erro/:id', cors(), bodyParserJson, async fu
 //EndPoint: Exclui um  margem-erro, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/margem-erro/:id', cors(), async function (request, response) {
 
-    // Recebe o ID do status de usuario pelo parametro
+    // Recebe o ID da margem erro pelo parametro
     let idMargemErro = request.params.id
 
     // Encaminha os dados para a controller
     let resultDadosMargemErro = await controllerMargemErro.ctlDeletarMargemErro(idMargemErro)
 
-    if (resultDadosMargemErro.length != 0) {
-        response.status(resultDadosMargemErro.status)
-        response.json(resultDadosMargemErro)
-    } else {
-        message.ERROR_INVALID_ID
-    }
+    response.status(resultDadosMargemErro.status)
+    response.json(resultDadosMargemErro)
+
 })
 
 /*****************************************************************************************************************
