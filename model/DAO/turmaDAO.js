@@ -79,6 +79,8 @@ const mdlDeleteTurma = async function (id) {
 //Retorna a lista de todos os Turma
 const mdlSelectAllTurma = async function () {
 
+    console.log('dao-turma');
+
     let sql = `select * from tbl_turma`;
 
     let rsTurma = await prisma.$queryRawUnsafe(sql)
