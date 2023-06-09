@@ -1022,7 +1022,24 @@ app.post('/v1/projeto-usinagem/criterio', cors(), bodyParserJson, async function
 
 //EndPoint: Atualiza um criterio, filtrando pelo ID
 app.put('/v1/projeto-usinagem/criterio/:id', cors(), bodyParserJson, async function (request, response) {
+    let idCriterio = request.params.id
+    
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosCriterio = await controllerCriterio.ctlAtualizarCriterio(dadosBody, idCriterio)
+
+        response.status(resultDadosCriterio.status)
+        response.json(resultDadosCriterio)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Exclui um criterio, filtrando pelo ID

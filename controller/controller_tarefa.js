@@ -181,7 +181,7 @@ const ctlAtualizarTarefa = async function (dadosTarefa, idTarefa) {
                     return message.ERROR_INTERNAL_SERVER
                 }
             } else {
-                return message.ERROR_NOT_FOUND;
+                return message.ERROR_INVALID_ID_TAREFA;
             }
         }
     }
