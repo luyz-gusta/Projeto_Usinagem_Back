@@ -94,7 +94,7 @@ const mdlInsertRegistroTempo = async function (dadosRegistroTempo) {
                 
 
     //Executa o scriptSQL no banco de dados
-    console.log(sql);
+    //console.log(sql);
     let resultStatus = await prisma.$executeRawUnsafe(sql);
 
     if (resultStatus) {

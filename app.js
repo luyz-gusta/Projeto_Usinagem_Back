@@ -1606,8 +1606,26 @@ app.delete('/v1/projeto-usinagem/status-matricula/:id', cors(), async function (
 * Versão: 1.0
 ******************************************************************************************************************/
 
+var controllerResultadoDesejado = require('./controller/controller_resultado-desejado.js')
+
 //EndPoint: Retorna todos os dados de resultado desejado
 app.get('/v1/projeto-usinagem/resultado-desejado', cors(), async function (request, response) {
+
+    let idCriterioResultadoDesejado = request.query.idCriterio
+
+    if (idCriterioResultadoDesejado) {
+        //Recebe os dados da controller do aluno
+        let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByIdCriterio(idCriterioResultadoDesejado)
+
+        response.status(dadosResultadoDesejado.status)
+        response.json(dadosResultadoDesejado)
+    } else {
+        //Recebe os dados da controller do aluno
+        let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejado()
+
+        response.status(dadosResultadoDesejado.status)
+        response.json(dadosResultadoDesejado)
+    }
 
 })
 
