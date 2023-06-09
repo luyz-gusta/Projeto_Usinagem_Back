@@ -18,8 +18,8 @@ const mdlInsertMargemErro = async function (dadosMargemErro) {
                                         maximo,
                                         id_resultado_desejado
                                         )values(
-                                            "${dadosMargemErro.minimo}", 
-                                            "${dadosMargemErro.maximo}", 
+                                            '${dadosMargemErro.minimo}', 
+                                            '${dadosMargemErro.maximo}', 
                                             ${dadosMargemErro.id_resultado_desejado}
                                         );`
 
