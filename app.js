@@ -521,6 +521,8 @@ var controllerTurmas = require('./controller/controller_turmas.js')
 app.get('/v1/projeto-usinagem/turma', cors(), async function (request, response) {
     let idCurso = request.query.idCurso
 
+    console.log('app-turma');
+
     if (idCurso) {
         //Recebe os dados da controller do status de usuario    
         let dadosTurmas = await controllerTurmas.ctlGetTurmasIDCurso(idCurso)
