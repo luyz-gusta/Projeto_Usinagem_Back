@@ -1,7 +1,7 @@
 /**************************************************************************************
  *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de TRUMAS
  *  Autor: Luiz, Muryllo e Millena
- *  Data: 19/06/2023
+ *  Data: 09/06/2023
  *  Versão: 1.0
  **************************************************************************************/
 
