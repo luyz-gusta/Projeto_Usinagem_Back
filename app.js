@@ -401,7 +401,7 @@ app.delete('/v1/projeto-usinagem/usuario/:id', cors(), async function (request, 
 
 /*****************************************************************************************************************
 * Objetivo: API de controle de STATUS DE USUARIO
-* Data: 20/05/2023
+* Data: 09/06/2023
 * Autor: Luiz e Muryllo
 * Versão: 1.0
 ******************************************************************************************************************/
@@ -1662,21 +1662,75 @@ app.get('/v1/projeto-usinagem/resultado-desejado/:id', cors(), async function (r
 //EndPoint: Retorna o resultado desejado filtrando pelo valor do resultado desejado
 app.get('/v1/projeto-usinagem/resultado-desejado/valor/:valor', cors(), async function (request, response) {
 
+    let valor = request.params.valor;
+
+    //Recebe os dados da controller do resultado desejado
+    let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByValor(valor);
+
+    response.status(dadosResultadoDesejado.status)
+    response.json(dadosResultadoDesejado)
+
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/resultado-desejado', cors(), bodyParserJson, async function (request, response) {
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosResultadoDesejado = await controllerResultadoDesejado.ctlInserirResultadoDesejado(dadosBody)
+
+        response.status(resultDadosResultadoDesejado.status)
+        response.json(resultDadosResultadoDesejado)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 
 })
 
 //EndPoint: Atualiza um resultado desejado existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/resultado-desejado/:id', cors(), bodyParserJson, async function (request, response) {
 
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do aluno pelo parametro
+        let idResultadoDesejado = request.params.id;
+
+        //Recebe os dados encaminhados no corpo da requisição
+        let dadosBody = request.body;
+
+        //Encaminha os dados para a controller
+        let resultDadosResultadoDesejado = await controllerResultadoDesejado.ctlAtualizarResultadoDesejado(dadosBody, idResultadoDesejado);
+
+        response.status(resultDadosResultadoDesejado.status);
+        response.json(resultDadosResultadoDesejado);
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+
 })
 
 
 //EndPoint: Exclui um resultado desejado, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/resultado-desejado/:id', cors(), async function (request, response) {
+
+    let id = request.params.id;
+
+    //Recebe os dados da controller da status da matricula
+    let dadosResultadoDesejado = await controllerResultadoDesejado.ctlDeletarResultadoDesejado(id);
+
+    response.status(dadosResultadoDesejado.status)
+    response.json(dadosResultadoDesejado)
 
 })
 

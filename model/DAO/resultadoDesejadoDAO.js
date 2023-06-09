@@ -70,8 +70,100 @@ const mdlSelectResultadoDesejadoByID = async (idResultadoDesejado) => {
     }
 }
 
+const mdlSelectResultadoDesejadoByValor = async (valorResultadoDesejado) => {
+    let sql = `
+    select *
+    from tbl_resultado_desejado
+    where valor like '%${valorResultadoDesejado}%';
+    `
+
+    let rsResultadoDesejado = await prisma.$queryRawUnsafe(sql)
+
+    if (rsResultadoDesejado.length > 0) {
+        return rsResultadoDesejado
+    } else {
+        return false
+    }
+}
+
+//Inserir dados de ResultadoDesejado no Banco de dados
+const mdlInsertResultadoDesejado = async function (dadosResultadoDesejado) {
+
+    let sql = `insert into tbl_resultado_desejado(  
+                valor,
+                id_criterio
+             ) values (
+                '${dadosResultadoDesejado.valor}',
+                ${dadosResultadoDesejado.id_criterio}
+                );`
+                
+
+    //Executa o scriptSQL no banco de dados
+    //console.log(sql);
+    let resultStatus = await prisma.$executeRawUnsafe(sql);
+
+    if (resultStatus) {
+        return true
+    } else {
+        return false
+    }
+}
+
+//Atualizar um ResultadoDesejado existente 
+const mdlUpdateResultadoDesejado = async function (dadosResultadoDesejado) {
+
+    let sql = `update tbl_resultado_desejado
+    set valor = '${dadosResultadoDesejado.valor}',
+        id_criterio = ${dadosResultadoDesejado.id_criterio}
+    where id = ${dadosResultadoDesejado.id};
+    `
+    //Executa o scriptSQL no banco de dados
+    // console.log(sql);
+    let resultStatus = await prisma.$executeRawUnsafe(sql);
+
+    if (resultStatus) {
+        return true
+    } else {
+        return false
+    }
+}
+
+//Excluir uma ResultadoDesejado existente
+const mdlDeleteResultadoDesejado = async function (id) {
+
+    let sql = `delete from tbl_resultado_desejado where id = ${id}`
+
+    let resultStatus = await prisma.$queryRawUnsafe(sql)
+
+    if (resultStatus) {
+        return true
+    } else {
+        return false
+    }
+
+}
+
+//Retorna o ultimo id inserido no BD
+const mdlSelectLastId = async function () {
+
+    let sql = 'select * from tbl_resultado_desejado order by id desc limit 1'
+
+    let rsResultadoDesejado = await prisma.$queryRawUnsafe(sql);
+
+    if (rsResultadoDesejado.length > 0) {
+        return rsResultadoDesejado;
+    } else {
+        return false;
+    }
+}
+
 module.exports = {
     mdlSelectAllResultadoDesejado,
     mdlSelectResultadoDesejadoPeloIdCriterio,
     mdlSelectResultadoDesejadoByID,
+    mdlSelectResultadoDesejadoByValor,
+    mdlInsertResultadoDesejado,
+    mdlUpdateResultadoDesejado,
+    mdlDeleteResultadoDesejado,
+    mdlSelectLastId,
 }

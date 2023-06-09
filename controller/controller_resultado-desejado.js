@@ -58,7 +58,7 @@ const ctlGetResultadoDesejadoByIdCriterio = async function (idCriterio) {
             } else {
                 return message.ERROR_REGISTER_NOT_FOUND
             }
-        }else{
+        } else {
             return message.ERROR_INVALID_ID_CRITERIO
         }
     }
@@ -70,7 +70,7 @@ const ctlGetResultadoDesejadoByID = async function (id) {
     let idNumero = id
 
     //Validação do ID
-    if (idNumero == '' || id == undefined || isNaN(idNumero)) {
+    if (idNumero == '' || idNumero == undefined || isNaN(idNumero)) {
         return message.ERROR_INVALID_ID
     } else {
         let dadosResultadoDesejadoJSON = {}
@@ -89,8 +89,136 @@ const ctlGetResultadoDesejadoByID = async function (id) {
     }
 }
 
+//Retorna um registro de Resultado Desejado filtrado pelo ID
+const ctlGetResultadoDesejadoByValor = async function (valor) {
+
+    let valorNumero = valor
+
+    //Validação do ID
+    if (valorNumero == '' || valorNumero == undefined) {
+        return message.ERROR_INVALID_VALOR
+    } else {
+        let dadosResultadoDesejadoJSON = {}
+
+        let dadosResultadoDesejado = await resultadoDesejadoDAO.mdlSelectResultadoDesejadoByValor(valorNumero)
+
+        if (dadosResultadoDesejado) {
+            //Criando um JSON com o atributo Resultado Desejado, para encaminhar um array de Resultado Desejado
+            dadosResultadoDesejadoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosResultadoDesejadoJSON.message = message.SUCCESS_REQUEST.message;
+            dadosResultadoDesejadoJSON.resultado_desejado = dadosResultadoDesejado
+            return dadosResultadoDesejadoJSON
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND;
+        }
+    }
+}
+
+//Inserir uma nova ResultadoDesejado
+const ctlInserirResultadoDesejado = async function (dadosResultadoDesejado) {
+
+    let resultDadosResultadoDesejado;
+
+    if (dadosResultadoDesejado.valor == '' || dadosResultadoDesejado.valor == undefined ||
+        dadosResultadoDesejado.id_criterio == '' || dadosResultadoDesejado.id_criterio == undefined || isNaN(dadosResultadoDesejado.id_criterio)
+    ) {
+        return message.ERROR_REQUIRE_FIELDS
+    } else {
+        let verificacaoCriteiro = await criterioDAO.mdlSelectCriterioByID(dadosResultadoDesejado.id_criterio)
+
+        if (verificacaoCriteiro == false) {
+            return message.ERROR_INVALID_ID_CRITERIO
+        } else {
+            //Envia os dados para a model inserir no Banco de Dados
+            resultDadosResultadoDesejado = await resultadoDesejadoDAO.mdlInsertResultadoDesejado(dadosResultadoDesejado);
+
+            //Valida de o banco de dados inseriu corretamente os dados
+            if (resultDadosResultadoDesejado) {
+
+                //Chama a função que vai encontrar o ID gerado após o insert
+                let novoResultadoDesejado = await resultadoDesejadoDAO.mdlSelectLastId();
+
+                let dadosResultadoDesejadosJSON = {};
+                dadosResultadoDesejadosJSON.status = message.SUCCESS_CREATED_ITEM.status;
+                dadosResultadoDesejadosJSON.message = message.SUCCESS_CREATED_ITEM.message;
+                dadosResultadoDesejadosJSON.resultado_desejado = novoResultadoDesejado;
+                return dadosResultadoDesejadosJSON
+            } else {
+                return message.ERROR_INTERNAL_SERVER
+            }
+        }
+    }
+}
+
+//Atualizar uma ResultadoDesejado
+const ctlAtualizarResultadoDesejado = async function (dadosResultadoDesejado, idResultadoDesejado) {
+
+    if (dadosResultadoDesejado.valor == '' || dadosResultadoDesejado.valor == undefined ||
+        dadosResultadoDesejado.id_criterio == '' || dadosResultadoDesejado.id_criterio == undefined || isNaN(dadosResultadoDesejado.id_criterio)
+    ) {
+        return message.ERROR_REQUIRE_FIELDS
+    } else if (idResultadoDesejado == '' || idResultadoDesejado == undefined || isNaN(idResultadoDesejado)) {
+        return message.ERROR_INVALID_ID
+    } else {
+        let verificacaoCriteiro = await criterioDAO.mdlSelectCriterioByID(dadosResultadoDesejado.id_criterio)
+
+        if (verificacaoCriteiro == false) {
+            return message.ERROR_INVALID_ID_CRITERIO
+        } else {
+            //Adiciona o ID da ResultadoDesejado no JSON dos dados
+            dadosResultadoDesejado.id = idResultadoDesejado
+
+            let statusID = await resultadoDesejadoDAO.mdlSelectResultadoDesejadoByID(idResultadoDesejado);
+
+            if (statusID) {
+                let resultDadosResultadoDesejado = await resultadoDesejadoDAO.mdlUpdateResultadoDesejado(dadosResultadoDesejado);
+
+                if (resultDadosResultadoDesejado) {
+
+                    let dadosResultadoDesejadoJSON = {};
+                    dadosResultadoDesejadoJSON.status = message.SUCCESS_UPDATED_ITEM.status;
+                    dadosResultadoDesejadoJSON.message = message.SUCCESS_UPDATED_ITEM.message;
+                    dadosResultadoDesejadoJSON.resultado_desejado = dadosResultadoDesejado;
+
+                    return dadosResultadoDesejadoJSON
+                } else {
+                    return message.ERROR_INTERNAL_SERVER
+                }
+            } else {
+                return message.ERROR_REGISTER_NOT_FOUND;
+            }
+        }
+    }
+}
+
+//Excluir um resultado desejado existente filtrando pelo id
+const ctlDeletarResultadoDesejado = async function (id) {
+
+    if (id == '' || id == undefined || id == null || isNaN(id)) {
+        return message.ERROR_INVALID_ID
+    } else {
+        let buscarResultadoDesejado = await resultadoDesejadoDAO.mdlSelectResultadoDesejadoByID(id);
+
+        if (buscarResultadoDesejado == false) {
+            return message.ERROR_REGISTER_NOT_FOUND
+        } else {
+            let ResultadoDesejado = await resultadoDesejadoDAO.mdlDeleteResultadoDesejado(id)
+
+            if (ResultadoDesejado) {
+                return message.SUCCESS_DELETED_ITEM
+            } else {
+                message.ERROR_INTERNAL_SERVER
+            }
+        }
+    }
+}
+
 module.exports = {
     ctlGetResultadoDesejado,
     ctlGetResultadoDesejadoByIdCriterio,
     ctlGetResultadoDesejadoByID,
+    ctlGetResultadoDesejadoByValor,
+    ctlInserirResultadoDesejado,
+    ctlAtualizarResultadoDesejado,
+    ctlDeletarResultadoDesejado
 }
