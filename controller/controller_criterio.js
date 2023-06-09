@@ -115,7 +115,7 @@ const ctlGetCriterioByIdTarefa = async (idTarefa) => {
             } else {
                 return message.ERROR_REGISTER_NOT_FOUND
             }
-        }else{
+        } else {
             return message.ERROR_INVALID_ID_TAREFA
         }
     }
@@ -124,35 +124,82 @@ const ctlGetCriterioByIdTarefa = async (idTarefa) => {
 const ctlInserirCriterio = async (dadosCriterio) => {
     if (
         dadosCriterio.descricao == '' || dadosCriterio.descricao == null || dadosCriterio.descricao == undefined || dadosCriterio.descricao.length > 350 ||
-        dadosCriterio.nota_valida == null || dadosCriterio.nota_valida == undefined ||
-        dadosCriterio.resultado_desejado.length > 15 ||
+        dadosCriterio.observacao != true && dadosCriterio.observacao != false ||
         dadosCriterio.tipo_critico != false && dadosCriterio.tipo_critico != true ||
-        dadosCriterio.id_tarefa == null || dadosCriterio.id_tarefa == undefined || dadosCriterio.id_tarefa == ''
+        dadosCriterio.id_tarefa == null || dadosCriterio.id_tarefa == undefined || isNaN(dadosCriterio.id_tarefa)
     ) {
-        console.log(dadosCriterio.descricao + '-' + dadosCriterio.nota_valida + '-' + dadosCriterio.resultado_desejado + '-' + dadosCriterio.tipo_critico + '-' + dadosCriterio.id_tarefa);
         return message.ERROR_REQUIRE_FIELDS
     } else {
-        let resultDadosCriterio = await criterioDAO.mdlInsertCriterio(dadosCriterio)
+        let verificacaoIdTarefa = await controllerTarefa.ctlGetTarefaByID(dadosCriterio.id_tarefa)
 
-        if (resultDadosCriterio) {
-            let novoCriterio = await criterioDAO.mdlSelectLastByID()
+        if (verificacaoIdTarefa.status == 200) {
+            let resultDadosCriterio = await criterioDAO.mdlInsertCriterio(dadosCriterio)
 
-            let dadosCriterioJSON = {
-                status: message.SUCCESS_CREATED_ITEM.status,
-                message: message.SUCCESS_CREATED_ITEM.message,
-                criterio: novoCriterio
+            if (resultDadosCriterio) {
+                let novoCriterio = await criterioDAO.mdlSelectLastByID()
+
+                let dadosCriterioJSON = {
+                    status: message.SUCCESS_CREATED_ITEM.status,
+                    message: message.SUCCESS_CREATED_ITEM.message,
+                    criterio: novoCriterio
+                }
+                return dadosCriterioJSON
+            } else {
+                return message.ERROR_INTERNAL_SERVER
             }
-            return dadosCriterioJSON
         } else {
-            return message.ERROR_INTERNAL_SERVER
+            return message.ERROR_INVALID_ID_TAREFA
         }
     }
+}
 
+const ctlAtualizarCriterio = async (dadosCriterio, idCriterio) => {
+    if (
+        dadosCriterio.descricao == '' || dadosCriterio.descricao == null || dadosCriterio.descricao == undefined || dadosCriterio.descricao.length > 350 ||
+        dadosCriterio.observacao != true && dadosCriterio.observacao != false ||
+        dadosCriterio.tipo_critico != false && dadosCriterio.tipo_critico != true ||
+        dadosCriterio.id_tarefa == null || dadosCriterio.id_tarefa == undefined || isNaN(dadosCriterio.id_tarefa)
+    ) {
+        return message.ERROR_REQUIRE_FIELDS
+    } else if (idCriterio == null || idCriterio == undefined || idCriterio == '') {
+        return message.ERROR_INVALID_ID
+    } else {
+        let criterioAntigo = await criterioDAO.mdlSelectCriterioByID(idCriterio)
+
+        if (criterioAntigo) {
+            let verificacaoTarefa = await controllerTarefa.ctlGetTarefaByID(dadosCriterio.id_tarefa)
+
+            if (verificacaoTarefa.status != 200) {
+                return message.ERROR_INVALID_ID_TIPO_TAREFA
+            } else {
+                dadosCriterio.id = idCriterio
+
+                let resultDadosCriterio = await criterioDAO.mdlUpdateCriterio(dadosCriterio)
+
+                if (resultDadosCriterio) {
+                    let criterioNovo = await criterioDAO.mdlSelectCriterioByID(dadosCriterio.id)
+
+                    let dadosCriterioJSON = {
+                        status: message.SUCCESS_UPDATED_ITEM.status,
+                        message: message.SUCCESS_UPDATED_ITEM.message,
+                        criterio_antigo: criterioAntigo,
+                        criterio_novo: criterioNovo
+                    }
+                    return dadosCriterioJSON
+                }else{
+                    return message.ERROR_INTERNAL_SERVER
+                }
+            }
+        } else {
+            return message.ERROR_INVALID_ID_CRITERIO
+        }
+    }
 }
 
 module.exports = {
     ctlGetCriterios,
     ctlGetCriterioByID,
     ctlGetCriterioByIdTarefa,
-    ctlInserirCriterio
+    ctlInserirCriterio,
+    ctlAtualizarCriterio
 }

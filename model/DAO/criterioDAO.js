@@ -21,6 +21,7 @@ const mdlSelectAllCriterio = async () => {
     select 
 	    criterio.id as id_criterio, 
         criterio.descricao as descricao_criterio, 
+        criterio.observacao as observacao_nota_criterio,
         criterio.tipo_critico, 
         criterio.id_tarefa,
         tarefa.nome as nome_tarefa,
@@ -46,6 +47,7 @@ const mdlSelectCriterioByID = async (idCriterio) => {
     select 
 	    criterio.id as id_criterio, 
         criterio.descricao as descricao_criterio, 
+        criterio.observacao as observacao_nota_criterio,
         criterio.tipo_critico, 
         criterio.id_tarefa,
         tarefa.nome as nome_tarefa,
@@ -72,6 +74,7 @@ const mdlSelectCriterioByIdTarefa = async (idTarefa) => {
     select 
 	    criterio.id as id_criterio, 
         criterio.descricao as descricao_criterio, 
+        criterio.observacao as observacao_nota_criterio,
         criterio.tipo_critico, 
         criterio.id_tarefa,
         tarefa.nome as nome_tarefa,
@@ -93,40 +96,58 @@ const mdlSelectCriterioByIdTarefa = async (idTarefa) => {
     }
 }
 
-const mdlInsertCriterio = async (dadosCriterio) =>{
+const mdlSelectLastByID = async () => {
+    let sql = `select * from tbl_criterio order by id desc limit 1;
+    `
+
+    let rsCriterio = await prisma.$queryRawUnsafe(sql)
+
+    if (rsCriterio.length > 0) {
+        return rsCriterio
+    } else {
+        return false
+    }
+}
+
+const mdlInsertCriterio = async (dadosCriterio) => {
     let sql = `
     insert into tbl_criterio(
         descricao, 
-        nota_valida,
-        resultado_desejado, 
+        observacao, 
         tipo_critico, 
         id_tarefa
     ) values (
         '${dadosCriterio.descricao}',
-        ${dadosCriterio.nota_valida},
-        '${dadosCriterio.resultado_desejado}',
+        ${dadosCriterio.observacao},
         ${dadosCriterio.tipo_critico},
         ${dadosCriterio.id_tarefa}
     );
     `
     //Executa o scriptSQL no BD
-    let resultStatus = await prisma.$executeRawUnsafe(sql)        
+    let resultStatus = await prisma.$executeRawUnsafe(sql)
 
-    if(resultStatus){
+    if (resultStatus) {
         return true
-    }else{
+    } else {
         return false
     }
 }
 
-const mdlSelectLastByID = async () => {
-    let sql = `select * from tbl_criterio order by id desc limit 1;
+const mdlUpdateCriterio = async (dadosCriterio) => {
+    let sql = `
+    update tbl_criterio 
+	set descricao = '${dadosCriterio.descricao}',
+		observacao = ${dadosCriterio.observacao},
+		tipo_critico = ${dadosCriterio.tipo_critico},
+        id_tarefa = ${dadosCriterio.id_tarefa}
+	where id = ${dadosCriterio.id};
     `
-    
-    let rsCriterio = await prisma.$queryRawUnsafe(sql)
 
-    if (rsCriterio.length > 0) {
-        return rsCriterio
+    //Executa o scriptSQL no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql)
+
+    if (resultStatus) {
+        return true
     } else {
         return false
     }
@@ -138,5 +159,6 @@ module.exports = {
     mdlSelectCriterioByID,
     mdlSelectCriterioByIdTarefa,
     mdlSelectLastByID,
-    mdlInsertCriterio
+    mdlInsertCriterio,
+    mdlUpdateCriterio
 }
