@@ -1022,7 +1022,24 @@ app.post('/v1/projeto-usinagem/criterio', cors(), bodyParserJson, async function
 
 //EndPoint: Atualiza um criterio, filtrando pelo ID
 app.put('/v1/projeto-usinagem/criterio/:id', cors(), bodyParserJson, async function (request, response) {
+    let idCriterio = request.params.id
+    
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosCriterio = await controllerCriterio.ctlAtualizarCriterio(dadosBody, idCriterio)
+
+        response.status(resultDadosCriterio.status)
+        response.json(resultDadosCriterio)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Exclui um criterio, filtrando pelo ID
@@ -1596,13 +1613,39 @@ app.delete('/v1/projeto-usinagem/status-matricula/:id', cors(), async function (
 * Versão: 1.0
 ******************************************************************************************************************/
 
+var controllerResultadoDesejado = require('./controller/controller_resultado-desejado.js')
+
 //EndPoint: Retorna todos os dados de resultado desejado
 app.get('/v1/projeto-usinagem/resultado-desejado', cors(), async function (request, response) {
+
+    let idCriterioResultadoDesejado = request.query.idCriterio
+
+    if (idCriterioResultadoDesejado) {
+        //Recebe os dados da controller do aluno
+        let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByIdCriterio(idCriterioResultadoDesejado)
+
+        response.status(dadosResultadoDesejado.status)
+        response.json(dadosResultadoDesejado)
+    } else {
+        //Recebe os dados da controller do aluno
+        let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejado()
+
+        response.status(dadosResultadoDesejado.status)
+        response.json(dadosResultadoDesejado)
+    }
 
 })
 
 //EndPoint: Retorna o resultado desejado filtrando pelo ID
 app.get('/v1/projeto-usinagem/resultado-desejado/:id', cors(), async function (request, response) {
+
+    let id = request.params.id;
+
+    //Recebe os dados da controller do resultado desejado
+    let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByID(id);
+
+    response.status(dadosResultadoDesejado.status)
+    response.json(dadosResultadoDesejado)
 
 })
 
