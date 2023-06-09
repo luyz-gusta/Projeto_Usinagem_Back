@@ -15,6 +15,7 @@ var message = require('./modulo/config.js')
 
 //Import do arquivo DAO para acessar dados do aluno no BD
 var criterioDAO = require('../model/DAO/criterioDAO.js')
+var controllerTarefa = require('../controller/controller_tarefa.js')
 
 //Retorna a lista de todos os professores
 const ctlGetCriterios = async () => {
@@ -24,21 +25,21 @@ const ctlGetCriterios = async () => {
 
     if (dadosCriterio) {
 
-        const dados = dadosCriterio.map(async criterio => {
-            let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(criterio.id)
+        // const dados = dadosCriterio.map(async criterio => {
+        //     let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(criterio.id)
 
-            criterio.margem_erro = dadosMargemErro
+        //     criterio.margem_erro = dadosMargemErro
 
-            return await criterio
-        });
+        //     return await criterio
+        // });
 
-        let arrayMargemErro = await Promise.all(dados)
+        // let arrayMargemErro = await Promise.all(dados)
 
         dadosCriterioJSON = {
             status: message.SUCCESS_REQUEST.status,
             message: message.SUCCESS_REQUEST.message,
             quantidade: dadosCriterio.length,
-            criterios: arrayMargemErro
+            criterios: dadosCriterio
         }
         return dadosCriterioJSON
     } else {
@@ -57,21 +58,21 @@ const ctlGetCriterioByID = async (idCriterio) => {
         let dadosCriterio = await criterioDAO.mdlSelectCriterioByID(idCriterio)
 
         if (dadosCriterio) {
-            const dados = dadosCriterio.map(async criterio => {
-                let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(criterio.id)
+            // const dados = dadosCriterio.map(async criterio => {
+            //     let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(criterio.id)
 
-                criterio.margem_erro = dadosMargemErro
+            //     criterio.margem_erro = dadosMargemErro
 
-                return await criterio
-            });
+            //     return await criterio
+            // });
 
-            let arrayMargemErro = await Promise.all(dados)
+            // let arrayMargemErro = await Promise.all(dados)
 
             dadosCriterioJSON = {
                 status: message.SUCCESS_REQUEST.status,
                 message: message.SUCCESS_REQUEST.message,
                 quantidade: dadosCriterio.length,
-                criterios: arrayMargemErro
+                criterios: dadosCriterio
             }
             return dadosCriterioJSON
         } else {
@@ -88,28 +89,34 @@ const ctlGetCriterioByIdTarefa = async (idTarefa) => {
     } else if (isNaN(idTarefa)) {
         return message.ERROR_INVALID_ID
     } else {
-        let dadosCriterio = await criterioDAO.mdlSelectCriterioByIdTarefa(idTarefa)
+        let verificacaoIdTarefa = await controllerTarefa.ctlGetTarefaByID(idTarefa)
 
-        if (dadosCriterio) {
-            const dados = dadosCriterio.map(async criterio => {
-                let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(criterio.id)
+        if (verificacaoIdTarefa.status == 200) {
+            let dadosCriterio = await criterioDAO.mdlSelectCriterioByIdTarefa(idTarefa)
 
-                criterio.margem_erro = dadosMargemErro
+            if (dadosCriterio) {
+                // const dados = dadosCriterio.map(async criterio => {
+                //     let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(criterio.id)
 
-                return await criterio
-            });
+                //     criterio.margem_erro = dadosMargemErro
 
-            let arrayMargemErro = await Promise.all(dados)
+                //     return await criterio
+                // });
 
-            dadosCriterioJSON = {
-                status: message.SUCCESS_REQUEST.status,
-                message: message.SUCCESS_REQUEST.message,
-                quantidade: dadosCriterio.length,
-                criterios: arrayMargemErro
+                // let arrayMargemErro = await Promise.all(dados)
+
+                dadosCriterioJSON = {
+                    status: message.SUCCESS_REQUEST.status,
+                    message: message.SUCCESS_REQUEST.message,
+                    quantidade: dadosCriterio.length,
+                    criterios: dadosCriterio
+                }
+                return dadosCriterioJSON
+            } else {
+                return message.ERROR_REGISTER_NOT_FOUND
             }
-            return dadosCriterioJSON
-        } else {
-            return message.ERROR_REGISTER_NOT_FOUND
+        }else{
+            return message.ERROR_INVALID_ID_TAREFA
         }
     }
 }
@@ -119,7 +126,7 @@ const ctlInserirCriterio = async (dadosCriterio) => {
         dadosCriterio.descricao == '' || dadosCriterio.descricao == null || dadosCriterio.descricao == undefined || dadosCriterio.descricao.length > 350 ||
         dadosCriterio.nota_valida == null || dadosCriterio.nota_valida == undefined ||
         dadosCriterio.resultado_desejado.length > 15 ||
-        dadosCriterio.tipo_critico == null || dadosCriterio.tipo_critico == undefined ||
+        dadosCriterio.tipo_critico != false && dadosCriterio.tipo_critico != true ||
         dadosCriterio.id_tarefa == null || dadosCriterio.id_tarefa == undefined || dadosCriterio.id_tarefa == ''
     ) {
         console.log(dadosCriterio.descricao + '-' + dadosCriterio.nota_valida + '-' + dadosCriterio.resultado_desejado + '-' + dadosCriterio.tipo_critico + '-' + dadosCriterio.id_tarefa);
@@ -136,7 +143,7 @@ const ctlInserirCriterio = async (dadosCriterio) => {
                 criterio: novoCriterio
             }
             return dadosCriterioJSON
-        }else{
+        } else {
             return message.ERROR_INTERNAL_SERVER
         }
     }

@@ -19,17 +19,16 @@ var prisma = new PrismaClient();
 const mdlSelectAllCriterio = async () => {
     let sql = `
     select 
-	    criterio.id,
-	    criterio.descricao as descricao_criterio,
-        criterio.nota_valida as nota_valida_criterio,
-        criterio.resultado_desejado as resultado_desejado_criterio,
-        criterio.tipo_critico as tipo_critico_criterio,
-        criterio.id_tarefa as id_tarefa_criterio,
+	    criterio.id as id_criterio, 
+        criterio.descricao as descricao_criterio, 
+        criterio.tipo_critico, 
+        criterio.id_tarefa,
         tarefa.nome as nome_tarefa,
-        tarefa.numero as numero_tarefa,
-        tarefa.foto_peca as foto_peca_tarefa
+        tarefa.nome as nome_tarefa, tarefa.tempo_previsto as tempo_previsto_tarefa, 
+        tarefa.numero as numero_tarefa, tarefa.foto_peca
     from tbl_criterio as criterio
-	    inner join tbl_tarefa as tarefa on criterio.id_tarefa = tarefa.id
+	    inner join tbl_tarefa as tarefa
+		    on tarefa.id = criterio.id_tarefa
     order by criterio.id asc;
     `
 
@@ -45,18 +44,18 @@ const mdlSelectAllCriterio = async () => {
 const mdlSelectCriterioByID = async (idCriterio) => {
     let sql = `
     select 
-	    criterio.id,
-	    criterio.descricao as descricao_criterio,
-        criterio.nota_valida as nota_valida_criterio,
-        criterio.resultado_desejado as resultado_desejado_criterio,
-        criterio.tipo_critico as tipo_critico_criterio,
-        criterio.id_tarefa as id_tarefa_criterio,
+	    criterio.id as id_criterio, 
+        criterio.descricao as descricao_criterio, 
+        criterio.tipo_critico, 
+        criterio.id_tarefa,
         tarefa.nome as nome_tarefa,
-        tarefa.numero as numero_tarefa,
-        tarefa.foto_peca as foto_peca_tarefa
+        tarefa.nome as nome_tarefa, tarefa.tempo_previsto as tempo_previsto_tarefa, 
+        tarefa.numero as numero_tarefa, tarefa.foto_peca
     from tbl_criterio as criterio
-	    inner join tbl_tarefa as tarefa on criterio.id_tarefa = tarefa.id
-    where criterio.id = ${idCriterio};
+	    inner join tbl_tarefa as tarefa
+		    on tarefa.id = criterio.id_tarefa
+    where criterio.id = ${idCriterio}
+    order by criterio.id asc;
     `
 
     let rsCriterio = await prisma.$queryRawUnsafe(sql)
@@ -71,18 +70,18 @@ const mdlSelectCriterioByID = async (idCriterio) => {
 const mdlSelectCriterioByIdTarefa = async (idTarefa) => {
     let sql = `
     select 
-	    criterio.id,
-	    criterio.descricao as descricao_criterio,
-        criterio.nota_valida as nota_valida_criterio,
-        criterio.resultado_desejado as resultado_desejado_criterio,
-        criterio.tipo_critico as tipo_critico_criterio,
-        criterio.id_tarefa as id_tarefa_criterio,
+	    criterio.id as id_criterio, 
+        criterio.descricao as descricao_criterio, 
+        criterio.tipo_critico, 
+        criterio.id_tarefa,
         tarefa.nome as nome_tarefa,
-        tarefa.numero as numero_tarefa,
-        tarefa.foto_peca as foto_peca_tarefa
+        tarefa.nome as nome_tarefa, tarefa.tempo_previsto as tempo_previsto_tarefa, 
+        tarefa.numero as numero_tarefa, tarefa.foto_peca
     from tbl_criterio as criterio
-	    inner join tbl_tarefa as tarefa on criterio.id_tarefa = tarefa.id
-    where criterio.id_tarefa = ${idTarefa};
+	    inner join tbl_tarefa as tarefa
+		    on tarefa.id = criterio.id_tarefa
+    where criterio.id_tarefa = ${idTarefa}
+    order by criterio.id asc;
     `
 
     let rsCriterio = await prisma.$queryRawUnsafe(sql)
