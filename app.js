@@ -1037,31 +1037,21 @@ app.delete('/v1/projeto-usinagem/criterio/:id', cors(), async function (request,
 * Versão: 1.0
 ******************************************************************************************************************/
 
+//Import do arquivo da controller que irá solicitar a model os dados do BD
+var controllerMargemErro = require('./controller/controller_margem-erro.js')
+
 //EndPoint: Retorna todos os dados de Margem_Erro
 app.get('/v1/projeto-usinagem/margem-erro', cors(), async function (request, response) {
-    let idCriterio = request.query.idCriterio
+    //Recebe os dados da controller do status de usuario    
+    let dadosMargemErro = await controllerMargemErro.ctlGetMargemErro()
 
-    if (idCriterio) {
-        let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(idCriterio)
-
-        response.status(dadosMargemErro.status)
-        response.json(dadosMargemErro)
-    } else {
-        let dadosMargemErro = await controllerMargemErro.ctlGetMargemErro()
-
-        response.status(dadosMargemErro.status)
-        response.json(dadosMargemErro)
-    }
+    response.status(dadosMargemErro.status);
+    response.json(dadosMargemErro);
 })
 
 //EndPoint: Retorna o margem-erro filtrando pelo ID
 app.get('/v1/projeto-usinagem/margem-erro/:id', cors(), async function (request, response) {
-    let id = request.params.id;
-
-    let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroID(id)
-
-    response.status(dadosMargemErro.status)
-    response.json(dadosMargemErro)
+    
 })
 
 //EndPoint: Insere um dado novo 
@@ -1069,12 +1059,12 @@ app.post('/v1/projeto-usinagem/margem-erro', cors(), bodyParserJson, async funct
 
 })
 
-//EndPoint: Atualiza um resultado-desejado existente, filtrando pelo ID
+//EndPoint: Atualiza um margem-erro existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/margem-erro/:id', cors(), bodyParserJson, async function (request, response) {
 
 })
 
-//EndPoint: Exclui um resultado-desejado, filtrando pelo ID
+//EndPoint: Exclui um  margem-erro, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/margem-erro/:id', cors(), async function (request, response) {
 
 })
