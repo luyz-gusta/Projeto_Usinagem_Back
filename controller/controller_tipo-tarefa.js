@@ -23,7 +23,7 @@ const ctlGetTipoTarefa = async function () {
         dadosTipoTarefaJSON.status = message.SUCCESS_REQUEST.status;
         dadosTipoTarefaJSON.message = message.SUCCESS_REQUEST.message;
         dadosTipoTarefaJSON.quantidade = dadosTipoTarefa.length;
-        dadosTipoTarefaJSON.tipoTarefas = dadosTipoTarefa
+        dadosTipoTarefaJSON.tipo_tarefas = dadosTipoTarefa
         return dadosTipoTarefaJSON
     } else {
         return message.ERROR_REGISTER_NOT_FOUND;
@@ -47,7 +47,7 @@ const ctlGetTipoTarefaByID = async function (id) {
             //Criando um JSON com o atributo TipoTarefa, para encaminhar um array de TipoTarefas
             dadosTipoTarefaJSON.status = message.SUCCESS_REQUEST.status;
             dadosTipoTarefaJSON.message = message.SUCCESS_REQUEST.message;
-            dadosTipoTarefaJSON.tipoTarefa = dadosTipoTarefa
+            dadosTipoTarefaJSON.tipo_tarefa = dadosTipoTarefa
             return dadosTipoTarefaJSON
         } else {
             return message.ERROR_REGISTER_NOT_FOUND;
@@ -67,7 +67,7 @@ const ctlGetBuscarTipoTarefaNome = async function (nome) {
     if (dadosTipoTarefa) {
         dadosTipoTarefaJSON.status = message.SUCCESS_REQUEST.status;
         dadosTipoTarefaJSON.message = message.SUCCESS_REQUEST.message;
-        dadosTipoTarefaJSON.tipoTarefa = dadosTipoTarefa
+        dadosTipoTarefaJSON.tipo_tarefa = dadosTipoTarefa
         return dadosTipoTarefaJSON
     } else {
         return message.ERROR_INVALID_NOME;
@@ -79,7 +79,7 @@ const ctlInserirTipoTarefa = async function (dadosTipoTarefa) {
 
     let resultDadosTipoTarefa;
 
-    if (dadosTipoTarefa.nome == '' || dadosTipoTarefa.nome == undefined || dadosTipoTarefa.nome.length > 45
+    if (dadosTipoTarefa.nome == '' || dadosTipoTarefa.nome == undefined || dadosTipoTarefa.nome.length > 45 || !isNaN(dadosTipoTarefa.nome)
     ) {
         return message.ERROR_REQUIRE_FIELDS
     } else {
@@ -96,7 +96,7 @@ const ctlInserirTipoTarefa = async function (dadosTipoTarefa) {
             let dadosTipoTarefaJSON = {};
             dadosTipoTarefaJSON.status = message.SUCCESS_CREATED_ITEM.status;
             dadosTipoTarefaJSON.message = message.SUCCESS_CREATED_ITEM.message;
-            dadosTipoTarefaJSON.tipoTarefa = novaTipoTarefa;
+            dadosTipoTarefaJSON.tipo_tarefa = novaTipoTarefa;
             return dadosTipoTarefaJSON
         } else {
             return message.ERROR_INTERNAL_SERVER
@@ -130,7 +130,7 @@ const ctlAtualizarTipoTarefa = async function (dadosTipoTarefa, idTipoTarefa) {
                     let dadosTipoTarefaJSON = {};
                     dadosTipoTarefaJSON.status = message.SUCCESS_UPDATED_ITEM.status;
                     dadosTipoTarefaJSON.message = message.SUCCESS_UPDATED_ITEM.message;
-                    dadosTipoTarefaJSON.tipoTarefa = dadosTipoTarefa;
+                    dadosTipoTarefaJSON.tipo_tarefa = dadosTipoTarefa;
 
                     return dadosTipoTarefaJSON
                 } else {

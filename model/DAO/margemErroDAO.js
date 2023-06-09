@@ -36,13 +36,15 @@ const mdlInsertMargemErro = async function (dadosMargemErro) {
 
 //Atualizar um MargemErro existente 
 const mdlUpdateMargemErro = async function (dadosMargemErro) {
-    let sql = `update tbl_turma
+    let sql = `update tbl_margem_erro
                         set minimo = '${dadosMargemErro.minimo}',
                             maximo = '${dadosMargemErro.maximo}',
-                            id_resultado = '${dadosMargemErro.id_resultado_desejado}'
+                            id_resultado_desejado = ${dadosMargemErro.id_resultado_desejado}
                     where id = ${dadosMargemErro.id};`
 
+
     //Executa o scriptSQL no banco de dados
+    console.log(sql);
     let resultStatus = await prisma.$executeRawUnsafe(sql);
 
     if (resultStatus) {

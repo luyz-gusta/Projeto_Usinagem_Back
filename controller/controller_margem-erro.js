@@ -96,7 +96,7 @@ const ctlAtualizarMargemErro = async (dadosMargemErro, idMargemErro) => {
         dadosMargemErro.id_resultado_desejado == '' || dadosMargemErro.id_resultado_desejado == null || dadosMargemErro.id_resultado_desejado == undefined || isNaN(dadosMargemErro.id_resultado_desejado)
     ) {
         return message.ERROR_REQUIRE_FIELDS
-    } else if (idTurma == null || idTurma == '' || idTurma == undefined || isNaN(idTurma)){
+    } else if (idMargemErro == null || idMargemErro == '' || idMargemErro == undefined || isNaN(idMargemErro)){
         //console.log(idTurma);
         return message.ERROR_INVALID_ID
     } else {
