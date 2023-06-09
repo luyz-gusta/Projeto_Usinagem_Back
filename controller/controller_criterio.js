@@ -16,6 +16,7 @@ var message = require('./modulo/config.js')
 //Import do arquivo DAO para acessar dados do aluno no BD
 var criterioDAO = require('../model/DAO/criterioDAO.js')
 var controllerTarefa = require('../controller/controller_tarefa.js')
+var controllerResultadoDesejado = require('../controller/controller_resultado-desejado.js')
 
 //Retorna a lista de todos os professores
 const ctlGetCriterios = async () => {
@@ -25,21 +26,20 @@ const ctlGetCriterios = async () => {
 
     if (dadosCriterio) {
 
-        // const dados = dadosCriterio.map(async criterio => {
-        //     let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(criterio.id)
+        const dados = dadosCriterio.map(async criterio => {
+            let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByIdCriterio(criterio.id_criterio)
+            criterio.resultados = dadosResultadoDesejado.resultado_desejado
 
-        //     criterio.margem_erro = dadosMargemErro
+            return await criterio
+        });
 
-        //     return await criterio
-        // });
-
-        // let arrayMargemErro = await Promise.all(dados)
+        let arrayMargemErro = await Promise.all(dados)
 
         dadosCriterioJSON = {
             status: message.SUCCESS_REQUEST.status,
             message: message.SUCCESS_REQUEST.message,
             quantidade: dadosCriterio.length,
-            criterios: dadosCriterio
+            criterios: arrayMargemErro
         }
         return dadosCriterioJSON
     } else {
@@ -58,21 +58,21 @@ const ctlGetCriterioByID = async (idCriterio) => {
         let dadosCriterio = await criterioDAO.mdlSelectCriterioByID(idCriterio)
 
         if (dadosCriterio) {
-            // const dados = dadosCriterio.map(async criterio => {
-            //     let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(criterio.id)
-
-            //     criterio.margem_erro = dadosMargemErro
-
-            //     return await criterio
-            // });
-
-            // let arrayMargemErro = await Promise.all(dados)
+            const dados = dadosCriterio.map(async criterio => {
+                let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByIdCriterio(criterio.id_criterio)
+                console.log(dadosResultadoDesejado + criterio.id_criterio);
+                criterio.resultados = dadosResultadoDesejado.resultado_desejado
+    
+                return await criterio
+            });
+    
+            let arrayMargemErro = await Promise.all(dados)
 
             dadosCriterioJSON = {
                 status: message.SUCCESS_REQUEST.status,
                 message: message.SUCCESS_REQUEST.message,
                 quantidade: dadosCriterio.length,
-                criterios: dadosCriterio
+                criterios: arrayMargemErro
             }
             return dadosCriterioJSON
         } else {
@@ -95,21 +95,21 @@ const ctlGetCriterioByIdTarefa = async (idTarefa) => {
             let dadosCriterio = await criterioDAO.mdlSelectCriterioByIdTarefa(idTarefa)
 
             if (dadosCriterio) {
-                // const dados = dadosCriterio.map(async criterio => {
-                //     let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIdCriterio(criterio.id)
-
-                //     criterio.margem_erro = dadosMargemErro
-
-                //     return await criterio
-                // });
-
-                // let arrayMargemErro = await Promise.all(dados)
+                const dados = dadosCriterio.map(async criterio => {
+                    let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByIdCriterio(criterio.id_criterio)
+                    console.log(dadosResultadoDesejado + criterio.id_criterio);
+                    criterio.resultados = dadosResultadoDesejado.resultado_desejado
+        
+                    return await criterio
+                });
+        
+                let arrayMargemErro = await Promise.all(dados)
 
                 dadosCriterioJSON = {
                     status: message.SUCCESS_REQUEST.status,
                     message: message.SUCCESS_REQUEST.message,
                     quantidade: dadosCriterio.length,
-                    criterios: dadosCriterio
+                    criterios: arrayMargemErro
                 }
                 return dadosCriterioJSON
             } else {

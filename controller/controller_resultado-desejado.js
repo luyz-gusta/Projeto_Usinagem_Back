@@ -44,9 +44,9 @@ const ctlGetResultadoDesejadoByIdCriterio = async function (idCriterio) {
     } else if (isNaN(idCriterio)) {
         return message.ERROR_INVALID_ID
     } else {
-        let verificacaoIdCriterio = await controllerCriterio.ctlGetCriterioByID(idCriterio)
+        let verificacaoIdCriterio = await criterioDAO.mdlSelectCriterioByID(idCriterio)
 
-        if (verificacaoIdCriterio.status == 200) {
+        if (verificacaoIdCriterio) {
             let dadosResultadoDesejado = await resultadoDesejadoDAO.mdlSelectResultadoDesejadoPeloIdCriterio(idCriterio)
 
             if (dadosResultadoDesejado) {
