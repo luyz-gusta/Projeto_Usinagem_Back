@@ -1632,6 +1632,14 @@ app.get('/v1/projeto-usinagem/resultado-desejado', cors(), async function (reque
 //EndPoint: Retorna o resultado desejado filtrando pelo ID
 app.get('/v1/projeto-usinagem/resultado-desejado/:id', cors(), async function (request, response) {
 
+    let id = request.params.id;
+
+    //Recebe os dados da controller do resultado desejado
+    let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByID(id);
+
+    response.status(dadosResultadoDesejado.status)
+    response.json(dadosResultadoDesejado)
+
 })
 
 //EndPoint: Retorna o resultado desejado filtrando pelo valor do resultado desejado

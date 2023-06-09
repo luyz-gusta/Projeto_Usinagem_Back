@@ -64,7 +64,33 @@ const ctlGetResultadoDesejadoByIdCriterio = async function (idCriterio) {
     }
 }
 
+//Retorna um registro de Resultado Desejado filtrado pelo ID
+const ctlGetResultadoDesejadoByID = async function (id) {
+
+    let idNumero = id
+
+    //Validação do ID
+    if (idNumero == '' || id == undefined || isNaN(idNumero)) {
+        return message.ERROR_INVALID_ID
+    } else {
+        let dadosResultadoDesejadoJSON = {}
+
+        let dadosResultadoDesejado = await resultadoDesejadoDAO.mdlSelectResultadoDesejadoByID(idNumero)
+
+        if (dadosResultadoDesejado) {
+            //Criando um JSON com o atributo Resultado Desejado, para encaminhar um array de Resultado Desejado
+            dadosResultadoDesejadoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosResultadoDesejadoJSON.message = message.SUCCESS_REQUEST.message;
+            dadosResultadoDesejadoJSON.resultado_desejado = dadosResultadoDesejado
+            return dadosResultadoDesejadoJSON
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND;
+        }
+    }
+}
+
 module.exports = {
     ctlGetResultadoDesejado,
     ctlGetResultadoDesejadoByIdCriterio,
+    ctlGetResultadoDesejadoByID,
 }
