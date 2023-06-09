@@ -45,7 +45,7 @@ const mdlSelectResultadoDesejadoPeloIdCriterio = async function (id_criterio) {
     //$queryRawUnsafe(sql) - permite interpretar uma variavel como sendo um sriptSQL
     //queryRaw('select * from tbl_resultado_desejado') - permite interpretar o scriptSQL direto no metodo
     let rsResultadoDesejado = await prisma.$queryRawUnsafe(sql)
-    
+
     //Valida de o Banco de Dados retornou algum registro
     if (rsResultadoDesejado.length > 0) {
         return rsResultadoDesejado
@@ -54,7 +54,24 @@ const mdlSelectResultadoDesejadoPeloIdCriterio = async function (id_criterio) {
     }
 }
 
+const mdlSelectResultadoDesejadoByID = async (idResultadoDesejado) => {
+    let sql = `
+    select *
+    from tbl_resultado_desejado
+    where id = ${idResultadoDesejado};
+    `
+
+    let rsResultadoDesejado = await prisma.$queryRawUnsafe(sql)
+
+    if (rsResultadoDesejado.length > 0) {
+        return rsResultadoDesejado
+    } else {
+        return false
+    }
+}
+
 module.exports = {
     mdlSelectAllResultadoDesejado,
     mdlSelectResultadoDesejadoPeloIdCriterio,
+    mdlSelectResultadoDesejadoByID,
 }
