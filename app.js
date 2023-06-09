@@ -29,16 +29,17 @@ const bodyParser = require('body-parser');
 const app = express()
 
 app.use((request, response, next) => {
-    //Define quem poderá acessar a API (* - Todos)
-    response.header('Access-Control-Allow-Origin', '*');
-    //Define quais metodos serão utilizados na API
-    response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    //Define quem poderá acessar a api(* - Todos)
+    response.header('Acess-Control-Allow-Origin', '*')
+
+    //Define quais metodos serão utilizados na api
+    response.header('Acess-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
 
     //Atribui as permissões ao cors
-    app.use(cors());
+    app.use(cors())
 
-    next();
-});
+    next()
+})
 
 //CRUD (Create, Read, Update e Delete)
 
