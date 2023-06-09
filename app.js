@@ -1042,7 +1042,12 @@ app.put('/v1/projeto-usinagem/criterio/:id', cors(), bodyParserJson, async funct
 
 //EndPoint: Exclui um criterio, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/criterio/:id', cors(), async function (request, response) {
+    let idCriterio = request.params.id;
 
+    let resultDadosCriterio = await controllerCriterio.ctlExcluirCriterio(idCriterio)
+
+    response.status(resultDadosCriterio.status)
+    response.json(resultDadosCriterio)
 })
 
 /*****************************************************************************************************************

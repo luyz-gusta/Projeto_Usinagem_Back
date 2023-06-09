@@ -153,6 +153,18 @@ const mdlUpdateCriterio = async (dadosCriterio) => {
     }
 }
 
+const mdlDeleteCriterio = async (id) => {
+    let sql = `delete from tbl_criterio where id = ${id}` 
+
+    let resultStatus = await prisma.$queryRawUnsafe(sql)
+    
+    if(resultStatus){
+        return true
+    }else{
+        return false
+    }
+}
+
 
 module.exports = {
     mdlSelectAllCriterio,
@@ -160,5 +172,6 @@ module.exports = {
     mdlSelectCriterioByIdTarefa,
     mdlSelectLastByID,
     mdlInsertCriterio,
-    mdlUpdateCriterio
+    mdlUpdateCriterio,
+    mdlDeleteCriterio
 }

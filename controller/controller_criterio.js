@@ -196,10 +196,32 @@ const ctlAtualizarCriterio = async (dadosCriterio, idCriterio) => {
     }
 }
 
+const ctlExcluirCriterio = async (idCriterio) => {
+    if (idCriterio == null || idCriterio == undefined || idCriterio == '') {
+        return message.ERROR_REQUIRE_FIELDS
+    } else {
+        let buscarCriterio = await criterioDAO.mdlSelectCriterioByID(idCriterio)
+
+        if(buscarCriterio){
+            let deleteCriterio = await criterioDAO.mdlDeleteCriterio(idCriterio)
+
+            if(deleteCriterio){
+                return message.SUCCESS_DELETED_ITEM
+            } else {
+                message.ERROR_INTERNAL_SERVER
+            }
+
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND
+        }
+    }
+}
+
 module.exports = {
     ctlGetCriterios,
     ctlGetCriterioByID,
     ctlGetCriterioByIdTarefa,
     ctlInserirCriterio,
-    ctlAtualizarCriterio
+    ctlAtualizarCriterio,
+    ctlExcluirCriterio
 }
