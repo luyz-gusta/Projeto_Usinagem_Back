@@ -907,6 +907,19 @@ app.get('/v1/projeto-usinagem/registro-tempo/:id', cors(), async function (reque
 
 })
 
+//EndPoint: Retorna os alunos filtrando pelo ID da turma
+app.get('/v1/projeto-usinagem/registro-tempo/tarefa/:id', cors(), async function (request, response) {
+
+    let idTarefa = request.params.id;
+
+    //Recebe os dados da controller do aluno
+    let dadosRegistroTempo = await controllerRegistro.ctlGetRegistroTempoByIdTarefa(idTarefa)
+
+    response.status(dadosRegistroTempo.status)
+    response.json(dadosRegistroTempo)
+
+})
+
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/registro-tempo', cors(), bodyParserJson, async function (request, response) {
 

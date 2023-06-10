@@ -113,32 +113,55 @@ const ctlDeletarCursoMateria = async function (idCursoMateria) {
 
 
 const ctlGetCursoMateria = async function () {
+    let dadosCursoMateriaJSON = {};
 
-    let dadosCursoMateriaJSON = {}
-
-    let dadosCursoMateria = await cursoMateriaDAO.mdlSelectAllCursoMateria()
+    let dadosCursoMateria = await cursoMateriaDAO.mdlSelectAllCursoMateria();
 
     if (dadosCursoMateria) {
-        const dados = dadosCursoMateria.map(async curso_materia => {
-            let dadosCurso = await controllerCurso.ctlGetCursosID(curso_materia.id_curso)
-            let dadosMateria = await controllerMateria.ctlGetBuscarMateriaIdCurso(curso_materia.id_materia)
-            let curso = dadosCurso.cursos
-            curso[0].materias = dadosMateria.materias
-            console.log(dadosMateria.materias);
-            return await curso
-        });
+        let cursos = {};
 
-        let arrayMaterias = await Promise.all(dados)
+        await Promise.all(dadosCursoMateria.map(async (curso_materia) => {
+            let dadosCurso = await controllerCurso.ctlGetCursosID(curso_materia.id_curso);
+            let dadosMateria = await controllerMateria.ctlGetBuscarMateriaIdCurso(curso_materia.id_curso);
+
+            //console.log("Dados do curso:", dadosCurso);
+            //console.log("Dados da matéria:", dadosMateria);
+
+            if (dadosCurso.cursos && dadosCurso.cursos.length > 0) {
+                let curso = dadosCurso.cursos[0];
+                let materias = dadosMateria && dadosMateria.materias; // Verificação se dadosMateria existe
+
+                if (!cursos[curso.id]) {
+                    cursos[curso.id] = {
+                        id: curso.id,
+                        nome_curso: curso.nome,
+                        materias: []
+                    };
+                }
+
+                if (materias && materias.length > 0) { // Verificação se materias existe e não está vazio
+                    materias.forEach((materia) => {
+                        let materiaExistente = cursos[curso.id].materias.find(m => m.nome_materia === materia.nome_materia);
+                        if (!materiaExistente) {
+                            cursos[curso.id].materias.push(materia);
+                        }
+                    });
+                }
+            }
+        }));
+
+        let arrayCursos = Object.values(cursos);
 
         dadosCursoMateriaJSON = {
             status: message.SUCCESS_REQUEST.status,
             message: message.SUCCESS_REQUEST.message,
-            quantidade: dadosCursoMateria.length,
-            materias: arrayMaterias
-        }
-        return dadosCursoMateriaJSON
+            quantidade: arrayCursos.length,
+            cursos: arrayCursos
+        };
+
+        return dadosCursoMateriaJSON;
     } else {
-        return message.ERROR_REGISTER_NOT_FOUND
+        return message.ERROR_REGISTER_NOT_FOUND;
     }
 }
 
