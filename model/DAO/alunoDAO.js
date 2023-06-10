@@ -176,6 +176,31 @@ const selectByNameAluno = async function (nome) {
     }
 }
 
+// Retorna os alunos filtrando pelo ID de Turma
+const mdlSelectAlunoByIdTurma = async function (idTurma) {
+
+    let sql = `SELECT tbl_aluno.*,
+                    tbl_matricula.numero as numero_matricula,
+                    tbl_status_matricula.nome as status_matricula
+                FROM tbl_aluno
+                    INNER JOIN tbl_matricula 
+                        ON tbl_matricula.id_aluno = tbl_aluno.id
+                    INNER JOIN tbl_status_matricula 
+                        ON tbl_status_matricula.id = tbl_matricula.id_status_matricula
+                    INNER JOIN tbl_turma_matricula 
+                        ON tbl_turma_matricula.id_matricula = tbl_matricula.id
+                    WHERE tbl_turma_matricula.id_turma = ${idTurma};`;
+
+    let rsAluno = await prisma.$queryRawUnsafe(sql)
+
+    if (rsAluno.length > 0) {
+        return rsAluno
+    } else {
+        return false;
+    }
+
+}
+
 //Retorna o ultimo id inserido no BD
 const selectLastId = async function () {
 
@@ -197,5 +222,6 @@ module.exports = {
     insertAluno,
     updateAluno,
     deleteAluno,
+    mdlSelectAlunoByIdTurma,
     selectLastId
 }

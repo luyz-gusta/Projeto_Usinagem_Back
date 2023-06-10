@@ -176,6 +176,29 @@ const getBuscarAlunoNome = async function (nome) {
     }
 }
 
+const ctlBuscarAlunosPelaTurma = async (idTurma) => {
+    let dadosAlunosJSON = {};
+
+    if (idTurma == null || idTurma == undefined || idTurma == '') {
+        return message.ERROR_REQUIRE_FIELDS
+    }else{
+
+        let dadosAluno = await alunoDAO.mdlSelectAlunoByIdTurma(idTurma);
+
+        if(dadosAluno){
+            dadosAlunosJSON = {
+                status : message.SUCCESS_REQUEST.status,
+                message: message.SUCCESS_REQUEST.message,
+                alunos : dadosAluno
+            }
+            return dadosAlunosJSON
+        }else{
+            return message.ERROR_INVALID_ID_TURMA
+        }
+
+    }
+}
+
 module.exports = {
     getAlunos,
     getBuscarAlunoID,
@@ -183,4 +206,5 @@ module.exports = {
     inserirAluno,
     atualizarAlunoPeloID,
     deletarAlunoPeloID,
+    ctlBuscarAlunosPelaTurma
 }

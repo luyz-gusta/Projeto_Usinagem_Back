@@ -122,6 +122,19 @@ app.get('/v1/projeto-usinagem/aluno/nome/:nome', cors(), async function (request
     }
 })
 
+//EndPoint: Retorna os alunos filtrando pelo ID da turma
+app.get('/v1/projeto-usinagem/aluno/turma/:id', cors(), async function (request, response) {
+
+    let idTurma = request.params.id;
+
+    //Recebe os dados da controller do aluno
+    let dadosAluno = await controllerAluno.ctlBuscarAlunosPelaTurma(idTurma)
+
+    response.status(dadosAluno.status)
+    response.json(dadosAluno)
+
+})
+
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/aluno', cors(), bodyParserJson, async function (request, response) {
 
