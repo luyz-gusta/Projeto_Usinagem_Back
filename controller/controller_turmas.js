@@ -38,7 +38,7 @@ const ctlGetTurmasID = async (id) => {
     let dadosTurmasJSON = {};
 
     if (id == null || id == undefined || id == '') {
-        return message.ERROR_REQUIRE_FIELDS
+        return message.ERROR_INVALID_ID
     }else{
 
         let dadosTurmas = await turmasDAO.mdlSelectByIdTurma(id)
@@ -106,7 +106,7 @@ const ctlGetTurmasIDCurso = async (idCurso) => {
     }
 }
 
-const ctlGetInserirTurma = async (dadosTurmas) => {
+const ctlInserirTurma = async (dadosTurmas) => {
     
     if(
         dadosTurmas.nome == '' || dadosTurmas.nome == null || dadosTurmas.nome == undefined || dadosTurmas.nome.length > 45 ||
@@ -117,9 +117,7 @@ const ctlGetInserirTurma = async (dadosTurmas) => {
         dadosTurmas.id_curso == '' || dadosTurmas.id_curso == null || dadosTurmas.id_curso == undefined || isNaN(dadosTurmas.id_curso)
 
     ){
-        console.log(dadosTurmas);
-        return message.ERROR_REQUIRE_FIELDS
-        
+        return message.ERROR_REQUIRE_FIELDS  
     } else{
         let verificarIdCurso = await cursoDAO.mdlSelectCursoByID(dadosTurmas.id_curso)
 
@@ -216,7 +214,7 @@ module.exports = {
     ctlGetTurmasID,
     ctlGetTurmasNome,
     ctlGetTurmasIDCurso,
-    ctlGetInserirTurma,
+    ctlInserirTurma,
     ctlAtualizarTurma,
     ctlDeletarTurma
 }

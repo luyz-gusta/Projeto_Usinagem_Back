@@ -581,7 +581,7 @@ app.post('/v1/projeto-usinagem/turma', cors(), bodyParserJson, async function (r
         //Recebe os dados encaminhados na requisição
         let dadosBody = request.body;
 
-        let resultDadosTurmas = await controllerTurmas.ctlGetInserirTurma(dadosBody)
+        let resultDadosTurmas = await controllerTurmas.ctlInserirTurma(dadosBody)
 
         response.status(resultDadosTurmas.status)
         response.json(resultDadosTurmas)
@@ -1364,40 +1364,85 @@ app.delete('/v1/projeto-usinagem/tipo-tarefa/:id', cors(), async function (reque
 * Versão: 1.0
 ******************************************************************************************************************/
 
+//Import do arquivo da controller que irá solicitar a model os dados do BD
+var controllerAvaliacaoAluno = require('./controller/controller_avaliacao-aluno.js')
+
 //EndPoint: Retorna todos os dados de AVALIAÇÃO_ALUNO
 app.get('/v1/projeto-usinagem/avaliacao-aluno', cors(), async function (request, response) {
+    //Recebe os dados da controller de avaliacao aluno
+    let dadosAvaliacaoAluno = await controllerAvaliacaoAluno.ctlGetAvaliacoesAlunos()
 
+    response.status(dadosAvaliacaoAluno.status);
+    response.json(dadosAvaliacaoAluno);
 })
 
 //EndPoint: Retorna o avaliação_professor filtrando pelo ID
 app.get('/v1/projeto-usinagem/avaliacao-aluno/:id', cors(), async function (request, response) {
+    let id = request.params.id;
 
+    //Recebe os dados da controller da avaliacao aluno
+    let dadosAvaliacaoAluno = await controllerAvaliacaoAluno.ctlGetAvaliacaoAlunoID(id)
+
+    response.status(dadosAvaliacaoAluno.status)
+    response.json(dadosAvaliacaoAluno)
 })
 
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/avaliacao-aluno', cors(), bodyParserJson, async function (request, response) {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosAvaliacaoAluno = await controllerAvaliacaoAluno.ctlInserirAvaliacaoAluno(dadosBody)
+
+        response.status(resultDadosAvaliacaoAluno.status)
+        response.json(resultDadosAvaliacaoAluno)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Atualiza um avaliacao-aluno existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/avaliacao-aluno/:id', cors(), bodyParserJson, async function (request, response) {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        // Recebe o ID da avaliacao aluno pelo parametro
+        let idAvaliacaoAluno = request.params.id
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosAvaliacaoAluno = await controllerAvaliacaoAluno.ctlAtualizarAvaliacaoAluno(dadosBody, idAvaliacaoAluno)
+
+        response.status(resultDadosAvaliacaoAluno.status)
+        response.json(resultDadosAvaliacaoAluno)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
-//EndPoint: Atualiza um avaliacao-aluno existente, filtrando pela SIGLA
-app.put('/v1/projeto-usinagem/avaliacao-aluno/sigla/:sigla', cors(), bodyParserJson, async function (request, response) {
-
-})
 
 //EndPoint: Exclui um avaliacao-aluno, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/avaliacao-aluno/:id', cors(), async function (request, response) {
+    // Recebe o ID da avaliacao aluno pelo parametro
+    let idAvaliacaoAluno = request.params.id
 
+    // Encaminha os dados para a controller
+    let resultDadosAvaliacaoAluno = await controllerAvaliacaoAluno.ctlDeletarAvaliacaoAluno(idAvaliacaoAluno)
+
+    response.status(resultDadosAvaliacaoAluno.status)
+    response.json(resultDadosAvaliacaoAluno)
 })
 
-//EndPoint: Exclui um avaliacao-aluno, filtrando pelo SIGLA
-app.delete('/v1/projeto-usinagem/avaliacao-aluno/sigla/:sigla', cors(), async function (request, response) {
-
-})
 
 /*****************************************************************************************************************
 * Objetivo: API de controle de AVALIAÇÃO_PROFESSOR 
