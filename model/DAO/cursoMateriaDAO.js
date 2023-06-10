@@ -1,7 +1,7 @@
 /************************************************************************************************
- * Objetivo: Responsável pea manipulação de dados de MATERIAS no Banco de Dados
- * Autor: Luiz Gustavo e Muryllo Vieira
- * Data: 22/05/2023
+ * Objetivo: Responsável pea manipulação de dados de CURSO_MATERIAS no Banco de Dados
+ * Autor: Luiz Gustavo e Muryllo Vieira e Millena
+ * Data: 09/06/2023
  * Versão: 1.0
 ************************************************************************************************/
 
@@ -20,11 +20,22 @@ var prisma = new PrismaClient();
 const mdlSelectAllCursoMateria = async function () {
 
     //Script para buscar todos os itens no BD
-    let sql = `select * from tbl_curso_materia`;
+    let sql = `select  tbl_curso_materia.id,
+                tbl_curso_materia.id_curso,
+                tbl_curso.nome as nome_curso,
+                tbl_curso_materia.id_materia,
+                tbl_materia.nome as nome_materia
+            from tbl_curso
+            inner join tbl_curso_materia
+                on tbl_curso.id = tbl_curso_materia.id_curso
+            inner join tbl_materia
+                on tbl_materia.id = tbl_curso_materia.id_materia;`;
 
     //$queryRawUnsafe(sql) - permite interpretar uma variavel como sendo um sriptSQL
     //queryRaw('select * from tbl_curso_materia') - permite interpretar o scriptSQL direto no metodo
     let rsCursoMateria = await prisma.$queryRawUnsafe(sql)
+
+    console.log(rsCursoMateria);
 
     //Valida de o Banco de Dados retornou algum registro
     if (rsCursoMateria.length > 0) {
@@ -34,12 +45,77 @@ const mdlSelectAllCursoMateria = async function () {
     }
 }
 
+const mdlSelectCursoMateriaByID = async function (id) {
+    let sql = `select * from tbl_curso_materia where id = ${id}`;
+
+    let rsTurmaMateria = await prisma.$queryRawUnsafe(sql);
+
+    if (rsTurmaMateria.length > 0) {
+        return rsTurmaMateria;
+    }
+    else {
+        return false;
+    }
+}
+
+const mdlInsertCursoMateria = async function (dadosCursoMateria) {
+    let sql = `insert into tbl_curso_materia (
+        id_curso,
+        id_materia
+    ) values (
+        ${dadosCursoMateria.id_curso},
+        ${dadosCursoMateria.id_materia}
+    )`
+    //Executa o scrip sql no banco de dados        
+    let resultStatus = await prisma.$executeRawUnsafe(sql);
+
+    if (resultStatus) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+
+const mdlUpdateCursoMateria = async function (dadosCursoMateria) {
+    let sql = `update tbl_curso_materia set
+                    id_curso = ${dadosCursoMateria.id_curso},
+                    id_materia = ${dadosCursoMateria.id_materia}
+                where id = ${dadosCursoMateria.id}    
+            `
+
+    //Executa o scriptSQL no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql);
+    if (resultStatus) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+const mdlDeleteCursoMateria = async function (id) {
+    let idCursoMateria = id;
+
+    let sql = `delete from tbl_curso_materia where id = ${idCursoMateria}`
+
+    let resultStatus = await prisma.$executeRawUnsafe(sql)
+
+    if (resultStatus) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 //Retorna o ultimo id inserido no BD
 const mdlSelectLastId = async function () {
 
     let sql = 'select * from tbl_curso_materia order by id desc limit 1'
 
-    let rsCursoMateria= await prisma.$queryRawUnsafe(sql);
+    let rsCursoMateria = await prisma.$queryRawUnsafe(sql);
 
     if (rsCursoMateria.length > 0) {
         return rsCursoMateria;
@@ -50,5 +126,10 @@ const mdlSelectLastId = async function () {
 }
 
 module.exports = {
-    
+    mdlInsertCursoMateria,
+    mdlSelectLastId,
+    mdlUpdateCursoMateria,
+    mdlSelectCursoMateriaByID,
+    mdlSelectAllCursoMateria,
+    mdlDeleteCursoMateria
 }
