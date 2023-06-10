@@ -15,8 +15,6 @@ var cursoDAO = require('../model/DAO/cursoDAO.js')
 const ctlGetTurmas = async () => {
     let dadosTurmasJSON = {}
 
-    console.log('controller-turma');
-
     let dadosTurmas = await turmasDAO.mdlSelectAllTurma()
 
     if(dadosTurmas){
