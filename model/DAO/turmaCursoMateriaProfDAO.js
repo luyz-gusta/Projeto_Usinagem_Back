@@ -16,37 +16,179 @@ var { PrismaClient } = require('@prisma/client');
 //Instancia da classe PrismaClient
 var prisma = new PrismaClient();
 
-const mdlSelectAllProfessores = async () => {
-    let sql = `select 
-    professor.id, 
-    professor.nome, 
-    professor.nif,
-    professor.telefone, 
-    professor.email as email_pessoal, 
-    usuario.email as email_usuario, 
-    usuario.senha, status.nivel 
-    from tbl_professor as professor 
-    inner join tbl_usuario as usuario on 
-    usuario.id = professor.id_usuario 
-    inner join tbl_status_usuario as status on 
-    usuario.id_status_usuario = status.id;`
+const mdlSelectAllTurmaCursoMateriaProf = async () => {
+    let sql = `select tbl_turma_curso_materia_professor.id,
+	turma.id as id_turma, turma.nome as nome_turma, 
+    turma.semestre as semestre_turma, 
+    turma.data_inicio as data_inicio_turma, 
+    turma.descricao as descricao_turma, 
+    date_format(turma.data_conclusao, '%m/%Y') as conclusao_turma, 
+	curso.nome as nome_curso, 
+    curso.sigla as sigla_curso, 
+    curso.descricao as descricao_curso,
+     curso.carga_horaria as carga_horaria_curso,
+    materia.id as id_materia, 
+    materia.nome as nome_materia, 
+    materia.sigla as sigla_materia, 
+    materia.carga_horaria as carga_horaria_materia,
+    materia.descricao as descricao_materia,
+    professor.nome as nome_professor, 
+    professor.telefone as telefone_professor
+        from tbl_turma_curso_materia_professor
+	inner join tbl_turma as turma
+		on turma.id = tbl_turma_curso_materia_professor.id_turma
+	inner join tbl_professor as professor 
+		on professor.id = tbl_turma_curso_materia_professor.id_professor
+	inner join tbl_curso_materia 
+		on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+	inner join tbl_curso as curso 
+		on tbl_curso_materia.id_curso = curso.id
+	inner join tbl_materia as materia
+		on tbl_curso_materia.id_materia = materia.id;`
 
-    let rsProfessor = await prisma.$queryRawUnsafe(sql)
+    let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
 
-    if(rsProfessor.length > 0){
-        return rsProfessor
+    if (rsTurmaCursoMateriaProf.length > 0) {
+        return rsTurmaCursoMateriaProf
+    } else {
+        return false
+    }
+}
+
+const mdlSelectTurmaCursoMateriaProfByIdProfessor = async (idProfessor) => {
+    let sql = `select tbl_turma_curso_materia_professor.id,
+        curso.id as id_curso, curso.nome as nome_curso, curso.sigla as sigla_curso, curso.descricao as descricao_curso, curso.carga_horaria as carga_horaria_curso,
+        professor.id as id_professor, professor.nome as nome_professor, professor.telefone as telefone_professor
+    from tbl_turma_curso_materia_professor
+	    inner join tbl_turma as turma
+		    on turma.id = tbl_turma_curso_materia_professor.id_turma
+	    inner join tbl_professor as professor 
+		    on professor.id = tbl_turma_curso_materia_professor.id_professor
+	    inner join tbl_curso_materia 
+		    on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+	    inner join tbl_curso as curso 
+		    on tbl_curso_materia.id_curso = curso.id
+	    inner join tbl_materia as materia
+		    on tbl_curso_materia.id_materia = materia.id
+	where professor.id = ${idProfessor};`
+
+    let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
+
+    if (rsTurmaCursoMateriaProf.length > 0) {
+        return rsTurmaCursoMateriaProf
+    } else {
+        return false
+    }
+}
+
+const mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdCurso = async (idProfessor, idCurso) => {
+    let sql = `select tbl_turma_curso_materia_professor.id,
+	    turma.id as id_turma, turma.nome as nome_turma, turma.semestre as semestre_turma, turma.data_inicio as data_inicio_turma, turma.descricao as descricao_turma,
+        date_format(turma.data_conclusao, '%m/%Y') as conclusao_turma
+    from tbl_turma_curso_materia_professor
+	    inner join tbl_turma as turma
+		    on turma.id = tbl_turma_curso_materia_professor.id_turma
+	    inner join tbl_professor as professor 
+		    on professor.id = tbl_turma_curso_materia_professor.id_professor
+	    inner join tbl_curso_materia 
+		    on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+	    inner join tbl_curso as curso 
+		    on tbl_curso_materia.id_curso = curso.id
+	    inner join tbl_materia as materia
+		    on tbl_curso_materia.id_materia = materia.id
+	where professor.id = ${idProfessor} and turma.id_curso = ${idCurso};`
+
+    let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
+
+    if (rsTurmaCursoMateriaProf.length > 0) {
+        return rsTurmaCursoMateriaProf
+    } else {
+        return false
+    }
+}
+
+const mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdTurma = async (idProfessor, idTurma) => {
+    let sql = `select tbl_turma_curso_materia_professor.id,
+	    materia.id as id_materia, materia.nome as nome_materia, materia.sigla as sigla_materia, 
+        materia.carga_horaria as carga_horaria_materia, materia.descricao as descricao_materia
+    from tbl_turma_curso_materia_professor
+	    inner join tbl_turma as turma
+		    on turma.id = tbl_turma_curso_materia_professor.id_turma
+	    inner join tbl_professor as professor 
+		    on professor.id = tbl_turma_curso_materia_professor.id_professor
+	    inner join tbl_curso_materia 
+		    on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+	    inner join tbl_curso as curso 
+		    on tbl_curso_materia.id_curso = curso.id
+	    inner join tbl_materia as materia
+		    on tbl_curso_materia.id_materia = materia.id
+    where professor.id = ${idProfessor} and turma.id = ${idTurma} and turma.id_curso = tbl_curso_materia.id_curso = turma.id_curso;`
+
+    let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
+
+    if (rsTurmaCursoMateriaProf.length > 0) {
+        return rsTurmaCursoMateriaProf
+    } else {
+        return false
+    }
+}
+
+const mdlInsertTurmaCursoMateriaProf = async (dados) => {
+    let sql = `insert into tbl_turma_curso_materia_professor(
+        id_turma, 
+        id_curso_materia, 
+        id_professor
+        ) values (
+            ${dados.id_turma}, 
+            ${dados.id_curso_materia}, 
+            ${dados.id_professor}
+        );
+    `
+    
+    //Executa o scriptSQL no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql)        
+
+    if(resultStatus){
+        return true
     }else{
         return false
     }
 }
 
+const mdlSelectLastByID = async () => {
+    let sql = `select tbl_turma_curso_materia_professor.id,
+        turma.id as id_turma, turma.nome as nome_turma,
+        curso.id as id_curso, curso.nome as nome_curso,
+        materia.id as id_materia, materia.nome as nome_materia,
+        professor.id as id_professor, professor.nome as nome_professor
+    from tbl_turma_curso_materia_professor
+        inner join tbl_turma as turma
+            on turma.id = tbl_turma_curso_materia_professor.id_turma
+        inner join tbl_professor as professor 
+            on professor.id = tbl_turma_curso_materia_professor.id_professor
+        inner join tbl_curso_materia 
+            on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+        inner join tbl_curso as curso 
+            on tbl_curso_materia.id_curso = curso.id
+        inner join tbl_materia as materia
+            on tbl_curso_materia.id_materia = materia.id
+    order by tbl_turma_curso_materia_professor.id desc limit 1;
+`
+
+    let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
+
+    if (rsTurmaCursoMateriaProf.length > 0) {
+        return rsTurmaCursoMateriaProf
+    } else {
+        return false
+    }
+}
+
 module.exports = {
-    mdlSelectAllProfessores,
-    mdlSelectProfessorByID,
-    mdlSelectProfessorByName,
-    mdlSelectProfessorByNif,
+    mdlSelectAllTurmaCursoMateriaProf,
+    mdlSelectTurmaCursoMateriaProfByIdProfessor,
+    mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdCurso,
+    mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdTurma,
     mdlSelectLastByID,
-    mdlInsertProfessor,
-    mdlUpdateProfessor,
-    mdlDeleteProfessor
+    mdlInsertTurmaCursoMateriaProf
 }

@@ -2019,4 +2019,89 @@ app.delete('/v1/projeto-usinagem/curso-materia/:id', cors(), async function (req
 
 });
 
+/*****************************************************************************************************************
+* Objetivo: API de controle de TURMA CURSO_MATERIA PROFESSOR
+* Data: 05/06/2023
+* Autor: Luiz, Muryllo e Millena
+* Versão: 1.0
+******************************************************************************************************************/
+
+var controllerTurmaCursoMateriaProf = require('./controller/controller_turma-curso-materia-prof.js')
+
+//EndPoint: Retorna todos os dados de turma-curso-materia-prof
+app.get('/v1/projeto-usinagem/turma-curso-materia-prof', cors(), async function (request, response) {
+
+    let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProf()
+
+    response.status(dados.status)
+    response.json(dados)
+})
+
+//EndPoint: Retorna o turma-curso-materia-prof filtrando pelo ID
+app.get('/v1/projeto-usinagem/turma-curso-materia-prof:id', cors(), async function (request, response) {
+
+})
+
+//EndPoint: Retorna o turma-curso-materia-prof filtrando pelo valor do turma-matricula
+app.get('/v1/projeto-usinagem/turma-curso-materia-prof/cursos-professor/:idProfessor', cors(), async function (request, response) {
+    let idProfessor = request.params.idProfessor
+    
+    let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessor(idProfessor)
+
+    response.status(dados.status)
+    response.json(dados)
+})
+
+app.get('/v1/projeto-usinagem/turma-curso-materia-prof/turmas-professor/:idProfessor', cors(), async function (request, response) {
+    let idProfessor = request.params.idProfessor
+    let idCurso = request.query.idCurso
+    
+    let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso(idProfessor, idCurso)
+
+    response.status(dados.status)
+    response.json(dados)
+})
+
+app.get('/v1/projeto-usinagem/turma-curso-materia-prof/materias-professor/:idProfessor', cors(), async function (request, response) {
+    let idProfessor = request.params.idProfessor
+    let idTurma = request.query.idTurma
+    
+    let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdTurma(idProfessor, idTurma)
+
+    response.status(dados.status)
+    response.json(dados)
+})
+
+//EndPoint: Insere um dado novo 
+app.post('/v1/projeto-usinagem/turma-curso-materia-prof', cors(), bodyParserJson, async function (request, response) {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDados = await controllerTurmaCursoMateriaProf.ctlInserirTurmaCursoMateriaProf(dadosBody)
+
+        response.status(resultDados.status)
+        response.json(resultDados)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+})
+
+//EndPoint: Atualiza um turma-curso-materia-prof existente, filtrando pelo ID
+app.put('/v1/projeto-usinagem/turma-curso-materia-prof/:id', cors(), bodyParserJson, async function (request, response) {
+
+})
+
+
+//EndPoint: Exclui um turma-curso-materia-prof, filtrando pelo ID
+app.delete('/v1/projeto-usinagem/turma-curso-materia-prof/:id', cors(), async function (request, response) {
+
+})
+
+
 app.listen(8080, () => console.log('Servidor aguardando requisições na porta 8080.'))

@@ -179,17 +179,19 @@ const selectByNameAluno = async function (nome) {
 // Retorna os alunos filtrando pelo ID de Turma
 const mdlSelectAlunoByIdTurma = async function (idTurma) {
 
-    let sql = `SELECT tbl_aluno.*,
-                    tbl_matricula.numero as numero_matricula,
-                    tbl_status_matricula.nome as status_matricula
-                FROM tbl_aluno
-                    INNER JOIN tbl_matricula 
-                        ON tbl_matricula.id_aluno = tbl_aluno.id
-                    INNER JOIN tbl_status_matricula 
-                        ON tbl_status_matricula.id = tbl_matricula.id_status_matricula
-                    INNER JOIN tbl_turma_matricula 
-                        ON tbl_turma_matricula.id_matricula = tbl_matricula.id
-                    WHERE tbl_turma_matricula.id_turma = ${idTurma};`;
+    let sql = `select aluno.id as id_aluno, aluno.nome as nome_aluno, aluno.email, aluno.data_nascimento as data_nascimento_aluno,
+        matricula.id as id_matricula, matricula.numero as numero_matricula, 
+        status_matricula.nome as status_matricula
+    from tbl_turma_matricula
+        inner join tbl_turma as turma
+            on turma.id = tbl_turma_matricula.id_turma
+        inner join tbl_matricula as matricula 
+            on matricula.id = tbl_turma_matricula.id_matricula
+        inner join tbl_status_matricula as status_matricula
+            on matricula.id_status_matricula = status_matricula.id
+        inner join tbl_aluno as aluno 
+            on matricula.id_aluno = aluno.id
+    where tbl_turma_matricula.id_turma = ${idTurma};`;
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 
@@ -198,7 +200,6 @@ const mdlSelectAlunoByIdTurma = async function (idTurma) {
     } else {
         return false;
     }
-
 }
 
 //Retorna o ultimo id inserido no BD
