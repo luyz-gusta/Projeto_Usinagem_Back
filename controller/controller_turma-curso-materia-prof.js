@@ -19,6 +19,91 @@ var controllerProfessor = require('./controller_professor.js')
 var controllerTurma = require('./controller_turmas.js')
 var controllerCursoMateria = require('./controller_curso-materia.js')
 
+/***************Funções***************/
+const pegarTurmas = async (idProfessor) => {
+    const dadosTurmas = await turmaCursoMateriaProfDAO.mdlGetTurmasByIdProfessor(idProfessor)
+
+    const arrayDados = ['Inicializador']
+
+    if(dadosTurmas){
+        dadosTurmas.map(async turma => {
+            let status = false
+            for (let i = 0; i < arrayDados.length; i++) {
+                if (arrayDados[i].id_turma == turma.id_turma) {
+                    status = true
+                }
+            }
+
+            if (status == false) {
+                arrayDados.push(turma)
+            }
+        })
+
+        arrayDados.shift()
+        console.log(arrayDados);
+
+        return arrayDados
+    }else{
+        return false
+    }
+}
+
+const pegarMaterias = async (idProfessor) => {
+    const dadosMateria = await turmaCursoMateriaProfDAO.mdlGetMateriasByIdProfessor(idProfessor)
+
+    const arrayDados = ['Inicializador']
+
+    if(dadosMateria){
+        dadosMateria.map(async materia => {
+            let status = false
+            for (let i = 0; i < arrayDados.length; i++) {
+                if (arrayDados[i].id_materia == materia.id_materia) {
+                    status = true
+                }
+            }
+
+            if (status == false) {
+                arrayDados.push(materia)
+            }
+        })
+
+        arrayDados.shift()
+        console.log(arrayDados);
+
+        return arrayDados
+    }else{
+        return false
+    }
+}
+
+const pegarTarefas = async (idProfessor) => {
+    const dadosTarefa = await turmaCursoMateriaProfDAO.mdlGetTarefasByIdProfessor(idProfessor)
+
+    const arrayDados = ['Inicializador']
+
+    if(dadosTarefa){
+        dadosTarefa.map(async tarefa => {
+            let status = false
+            for (let i = 0; i < arrayDados.length; i++) {
+                if (arrayDados[i].id_tarefa == tarefa.id_tarefa) {
+                    status = true
+                }
+            }
+
+            if (status == false) {
+                arrayDados.push(tarefa)
+            }
+        })
+
+        arrayDados.shift()
+        console.log(arrayDados);
+
+        return arrayDados
+    }else{
+        return false
+    }
+}
+
 //Retorna todos os cursos
 const ctlGetTurmaCursoMateriaProf = async () => {
     let dadosJSON = {}
@@ -36,6 +121,41 @@ const ctlGetTurmaCursoMateriaProf = async () => {
         return dadosJSON
     } else {
         return message.ERROR_REGISTER_NOT_FOUND
+    }
+}
+
+const ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor) => {
+    let dadosJSON = {}
+
+    if (idProfessor == null || idProfessor == undefined || idProfessor == '') {
+        return message.ERROR_REQUIRE_FIELDS
+    } else if (isNaN(idProfessor)) {
+        return message.ERROR_INVALID_ID
+    } else {
+        let verificacaoProfessor = await controllerProfessor.ctlGetBuscarProfessorID(idProfessor)
+
+        if (verificacaoProfessor.status == 200) {
+
+            //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
+            let dados = await controllerProfessor.ctlGetBuscarProfessorID(idProfessor)
+
+            if (dados) {
+                dados.professores[0].tarefas = await pegarTarefas(idProfessor)
+                dados.professores[0].turmas = await pegarTurmas(idProfessor)
+                dados.professores[0].materias = await pegarMaterias(idProfessor)
+
+                dadosJSON = {
+                    status: message.SUCCESS_REQUEST.status,
+                    message: message.SUCCESS_REQUEST.message,
+                    dados: dados.professores
+                }
+                return dadosJSON
+            } else {
+                return message.ERROR_REGISTER_NOT_FOUND
+            }
+        } else {
+            return message.ERROR_INVALID_ID_PROFESSOR
+        }
     }
 }
 
@@ -57,19 +177,36 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor) => {
 
             if (dados) {
 
-                const arrayDados = ['Inicializador']
+                const arrayDados = [{curso: ''}]
 
                 dados.map(async dado => {
                     let status = false
 
+                    console.log(dado);
                     for (let i = 0; i < arrayDados.length; i++) {
-                        if (arrayDados[i].id_curso == dado.id_curso) {
+                        if (arrayDados[i].curso.id_curso == dado.id_curso) {
                             status = true
+                            console.log('teste');
                         }
                     }
 
                     if (status == false) {
-                        arrayDados.push(dado)
+                        let dadoJSON = {
+                            id: dado.id,
+                            curso:{
+                                id_curso: dado.id_curso,
+                                nome: dado.nome_curso,
+                                sigla: dado.sigla_curso,
+                                descricao: dado.descricao_curso,
+                                carga_horaria: dado.carga_horaria_curso
+                            },
+                            professor: {
+                                id_professor: dado.id_professor,
+                                nome: dado.nome_professor,
+                                telefone: dado.telefone_professor
+                            }
+                        }
+                        arrayDados.push(dadoJSON)
                     }
                 })
 
@@ -247,5 +384,6 @@ module.exports = {
     ctlGetTurmaCursoMateriaProfPeloIdProfessor,
     ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso,
     ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdTurma,
+    ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor,
     ctlInserirTurmaCursoMateriaProf
 }

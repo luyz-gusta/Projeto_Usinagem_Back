@@ -144,13 +144,13 @@ const mdlInsertTurmaCursoMateriaProf = async (dados) => {
             ${dados.id_professor}
         );
     `
-    
-    //Executa o scriptSQL no BD
-    let resultStatus = await prisma.$executeRawUnsafe(sql)        
 
-    if(resultStatus){
+    //Executa o scriptSQL no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql)
+
+    if (resultStatus) {
         return true
-    }else{
+    } else {
         return false
     }
 }
@@ -184,11 +184,99 @@ const mdlSelectLastByID = async () => {
     }
 }
 
+/************************** FUNÇÕES COMPLEMTARES **************************/ 
+
+const mdlGetTurmasByIdProfessor = async (idProfessor) => {
+    let sql = `select 
+	    turma.id as id_turma, turma.nome as nome_turma, 
+        turma.semestre as semestre_turma, 
+        turma.data_inicio as data_inicio_turma, 
+        turma.descricao as descricao_turma,
+        date_format(turma.data_conclusao, '%m/%Y') as conclusao_turma
+    from tbl_turma_curso_materia_professor
+	    inner join tbl_turma as turma
+		    on turma.id = tbl_turma_curso_materia_professor.id_turma
+	    inner join tbl_professor as professor 
+		    on professor.id = tbl_turma_curso_materia_professor.id_professor
+	    inner join tbl_curso_materia 
+		    on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+	    inner join tbl_curso as curso 
+		    on tbl_curso_materia.id_curso = curso.id
+	    inner join tbl_materia as materia
+		    on tbl_curso_materia.id_materia = materia.id
+	where professor.id = ${idProfessor};
+`
+
+    let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
+
+    if (rsTurmaCursoMateriaProf.length > 0) {
+        return rsTurmaCursoMateriaProf
+    } else {
+        return false
+    }
+}
+
+const mdlGetMateriasByIdProfessor = async (idProfessor) => {
+    let sql = `select
+	    materia.id as id_materia, materia.nome as nome_materia, materia.sigla as sigla_materia, 
+        materia.carga_horaria as carga_horaria_materia, materia.descricao as descricao_materia
+    from tbl_turma_curso_materia_professor
+	    inner join tbl_turma as turma
+		    on turma.id = tbl_turma_curso_materia_professor.id_turma
+	    inner join tbl_professor as professor 
+		    on professor.id = tbl_turma_curso_materia_professor.id_professor
+	    inner join tbl_curso_materia 
+    		on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+	    inner join tbl_curso as curso 
+		    on tbl_curso_materia.id_curso = curso.id
+	    inner join tbl_materia as materia
+		    on tbl_curso_materia.id_materia = materia.id
+    where professor.id = ${idProfessor};
+`
+
+    let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
+
+    if (rsTurmaCursoMateriaProf.length > 0) {
+        return rsTurmaCursoMateriaProf
+    } else {
+        return false
+    }
+}
+
+const mdlGetTarefasByIdProfessor = async (idProfessor) => {
+    let sql = `select 
+	    tarefa.id as id_tarefa,
+        tarefa.nome as nome_tarefa,
+        tarefa.foto_peca
+    from tbl_tarefa_turma_curso_materia_professor
+	    inner join tbl_tarefa as tarefa 
+		    on tarefa.id = tbl_tarefa_turma_curso_materia_professor.id_tarefa
+	    inner join tbl_turma_curso_materia_professor
+		    on tbl_turma_curso_materia_professor.id = tbl_tarefa_turma_curso_materia_professor.id_turma_curso_materia_professor
+	    inner join tbl_professor as professor
+		    on tbl_turma_curso_materia_professor.id_professor = professor.id
+    where tbl_turma_curso_materia_professor.id_professor = 1;
+    `
+
+    let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
+
+    if (rsTurmaCursoMateriaProf.length > 0) {
+        return rsTurmaCursoMateriaProf
+    } else {
+        return false
+    }
+}
+
 module.exports = {
     mdlSelectAllTurmaCursoMateriaProf,
     mdlSelectTurmaCursoMateriaProfByIdProfessor,
     mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdCurso,
     mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdTurma,
     mdlSelectLastByID,
-    mdlInsertTurmaCursoMateriaProf
+    mdlInsertTurmaCursoMateriaProf,
+
+    mdlGetTurmasByIdProfessor,
+    mdlGetMateriasByIdProfessor,
+    mdlGetTarefasByIdProfessor
 }
+

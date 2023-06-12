@@ -2030,11 +2030,19 @@ var controllerTurmaCursoMateriaProf = require('./controller/controller_turma-cur
 
 //EndPoint: Retorna todos os dados de turma-curso-materia-prof
 app.get('/v1/projeto-usinagem/turma-curso-materia-prof', cors(), async function (request, response) {
+    let idProfessor = request.query.idProfessor
 
-    let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProf()
+    if (idProfessor) {
+        let dados = await controllerTurmaCursoMateriaProf.ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor(idProfessor)
 
-    response.status(dados.status)
-    response.json(dados)
+        response.status(dados.status)
+        response.json(dados)
+    } else {
+        let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProf()
+
+        response.status(dados.status)
+        response.json(dados)
+    }
 })
 
 //EndPoint: Retorna o turma-curso-materia-prof filtrando pelo ID
@@ -2045,7 +2053,7 @@ app.get('/v1/projeto-usinagem/turma-curso-materia-prof:id', cors(), async functi
 //EndPoint: Retorna o turma-curso-materia-prof filtrando pelo valor do turma-matricula
 app.get('/v1/projeto-usinagem/turma-curso-materia-prof/cursos-professor/:idProfessor', cors(), async function (request, response) {
     let idProfessor = request.params.idProfessor
-    
+
     let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessor(idProfessor)
 
     response.status(dados.status)
@@ -2055,7 +2063,7 @@ app.get('/v1/projeto-usinagem/turma-curso-materia-prof/cursos-professor/:idProfe
 app.get('/v1/projeto-usinagem/turma-curso-materia-prof/turmas-professor/:idProfessor', cors(), async function (request, response) {
     let idProfessor = request.params.idProfessor
     let idCurso = request.query.idCurso
-    
+
     let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso(idProfessor, idCurso)
 
     response.status(dados.status)
@@ -2065,7 +2073,7 @@ app.get('/v1/projeto-usinagem/turma-curso-materia-prof/turmas-professor/:idProfe
 app.get('/v1/projeto-usinagem/turma-curso-materia-prof/materias-professor/:idProfessor', cors(), async function (request, response) {
     let idProfessor = request.params.idProfessor
     let idTurma = request.query.idTurma
-    
+
     let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdTurma(idProfessor, idTurma)
 
     response.status(dados.status)
