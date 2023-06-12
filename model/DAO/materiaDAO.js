@@ -160,7 +160,9 @@ const mdlSelectLastId = async function () {
 
 const mdlSelectByIdCurso = async (idCurso) => {
     let sql = `
-    select materia.nome as nome_materia, 
+    select
+        materia.id as id_materia, 
+        materia.nome as nome_materia, 
         materia.carga_horaria as carga_horaria_materia,
         materia.sigla as sigla_materia,
         materia.descricao as descricao_materia

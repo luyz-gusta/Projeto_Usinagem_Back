@@ -179,7 +179,10 @@ const selectByNameAluno = async function (nome) {
 // Retorna os alunos filtrando pelo ID de Turma
 const mdlSelectAlunoByIdTurma = async function (idTurma) {
 
-    let sql = `select aluno.id as id_aluno, aluno.nome as nome_aluno, aluno.email, aluno.data_nascimento as data_nascimento_aluno,
+    let sql = `select aluno.id as id_aluno, 
+        aluno.nome as nome_aluno, 
+        aluno.email,
+        date_format(aluno.data_nascimento, '%d/%m/%Y') as data_nascimento_aluno,
         matricula.id as id_matricula, matricula.numero as numero_matricula, 
         status_matricula.nome as status_matricula
     from tbl_turma_matricula

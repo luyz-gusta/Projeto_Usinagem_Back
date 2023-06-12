@@ -20,22 +20,26 @@ var prisma = new PrismaClient();
 const mdlSelectAllCursoMateria = async function () {
 
     //Script para buscar todos os itens no BD
-    let sql = `select  tbl_curso_materia.id,
+    let sql = `SELECT
+                tbl_curso_materia.id,
                 tbl_curso_materia.id_curso,
-                tbl_curso.nome as nome_curso,
+                tbl_curso.nome AS nome_curso,
+                tbl_curso.carga_horaria AS carga_horaria_curso,
+                tbl_curso.sigla AS sigla_curso,
                 tbl_curso_materia.id_materia,
-                tbl_materia.nome as nome_materia
-            from tbl_curso
-            inner join tbl_curso_materia
-                on tbl_curso.id = tbl_curso_materia.id_curso
-            inner join tbl_materia
-                on tbl_materia.id = tbl_curso_materia.id_materia;`;
+                tbl_materia.id AS id_materia,
+                tbl_materia.nome AS nome_materia,
+                tbl_materia.carga_horaria AS carga_horaria_materia,
+                tbl_materia.sigla AS sigla_materia,
+                tbl_materia.descricao AS descricao_materia
+            FROM
+                tbl_curso
+                INNER JOIN tbl_curso_materia ON tbl_curso.id = tbl_curso_materia.id_curso
+                INNER JOIN tbl_materia ON tbl_materia.id = tbl_curso_materia.id_materia;`;
 
     //$queryRawUnsafe(sql) - permite interpretar uma variavel como sendo um sriptSQL
     //queryRaw('select * from tbl_curso_materia') - permite interpretar o scriptSQL direto no metodo
     let rsCursoMateria = await prisma.$queryRawUnsafe(sql)
-
-    console.log(rsCursoMateria);
 
     //Valida de o Banco de Dados retornou algum registro
     if (rsCursoMateria.length > 0) {
