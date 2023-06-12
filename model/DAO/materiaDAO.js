@@ -19,14 +19,16 @@ var prisma = new PrismaClient();
 //Inserir dados de materia no Banco de dados
 const mdlInsertMateria = async function (dadosMateria) {
 
-    let sql = `call sp_inserir_materia_curso(
+    let sql = `CALL sp_insert_materia_curso(
+                @materia_id,
                 '${dadosMateria.nome}', 
-                '${dadosMateria.carga_horaria}', 
+                ${dadosMateria.carga_horaria}, 
                 '${dadosMateria.sigla}', 
                 '${dadosMateria.descricao}',
                 '${dadosMateria.id_curso}');
         `
-
+    
+    //console.log(sql);
     //Executa o scriptSQL no banco de dados
     let resultStatus = await prisma.$queryRawUnsafe(sql);
 
