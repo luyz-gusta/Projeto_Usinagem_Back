@@ -26,7 +26,7 @@ const mdlSelectAllTurmaCursoMateriaProf = async () => {
 	curso.nome as nome_curso, 
     curso.sigla as sigla_curso, 
     curso.descricao as descricao_curso,
-     curso.carga_horaria as carga_horaria_curso,
+    curso.carga_horaria as carga_horaria_curso,
     materia.id as id_materia, 
     materia.nome as nome_materia, 
     materia.sigla as sigla_materia, 

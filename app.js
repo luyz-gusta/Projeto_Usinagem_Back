@@ -1946,8 +1946,6 @@ app.get('/v1/projeto-usinagem/curso-materia', cors(), async function (request, r
     //Recebe os dados da controller
     let dados = await controllerCursoMateria.ctlGetCursoMateria()
 
-    console.log(dados);
-
     response.status(dados.status)
     response.json(dados)
 
@@ -1983,7 +1981,7 @@ app.post('/v1/projeto-usinagem/curso-materia', cors(), bodyParserJson, async fun
         response.json(message.ERROR_INVALID_CONTENT_TYPE)
     }
 
-});;
+});
 
 
 //EndPoint: Put - Atualiza id de curso e materia

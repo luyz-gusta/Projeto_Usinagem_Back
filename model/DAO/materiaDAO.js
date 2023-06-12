@@ -18,21 +18,17 @@ var prisma = new PrismaClient();
 
 //Inserir dados de materia no Banco de dados
 const mdlInsertMateria = async function (dadosMateria) {
-    let sql = `insert into tbl_materia(
-                                    nome, 
-                                    carga_horaria,
-                                    sigla, 
-                                    descricao, 
-                                    id_curso
-                                ) values (
-                                    '${dadosMateria.nome}', 
-                                    '${dadosMateria.carga_horaria}', 
-                                    '${dadosMateria.sigla}', 
-                                    '${dadosMateria.descricao}',
-                                    '${dadosMateria.id_curso}');`
+
+    let sql = `call sp_inserir_materia_curso(
+                '${dadosMateria.nome}', 
+                '${dadosMateria.carga_horaria}', 
+                '${dadosMateria.sigla}', 
+                '${dadosMateria.descricao}',
+                '${dadosMateria.id_curso}');
+        `
 
     //Executa o scriptSQL no banco de dados
-    let resultStatus = await prisma.$executeRawUnsafe(sql);
+    let resultStatus = await prisma.$queryRawUnsafe(sql);
 
     if (resultStatus) {
         return true
@@ -160,7 +156,9 @@ const mdlSelectLastId = async function () {
 
 const mdlSelectByIdCurso = async (idCurso) => {
     let sql = `
-    select materia.nome as nome_materia, 
+    select
+        materia.id as id_materia, 
+        materia.nome as nome_materia, 
         materia.carga_horaria as carga_horaria_materia,
         materia.sigla as sigla_materia,
         materia.descricao as descricao_materia
