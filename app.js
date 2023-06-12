@@ -2043,9 +2043,22 @@ app.get('/v1/projeto-usinagem/turma-curso-materia-prof', cors(), async function 
     }
 })
 
-//EndPoint: Retorna o turma-curso-materia-prof filtrando pelo ID
-app.get('/v1/projeto-usinagem/turma-curso-materia-prof:id', cors(), async function (request, response) {
+app.get('/v1/projeto-usinagem/turma-curso-materia-prof/adm-curso/:id', cors(), async function (request, response) {
+    let idCurso = request.params.id
 
+    let dados = await controllerTurmaCursoMateriaProf.ctlGetInformacoesTurmaCursoMateriaProfPeloIdCurso(idCurso)
+
+    response.status(dados.status)
+    response.json(dados)
+})
+
+app.get('/v1/projeto-usinagem/turma-curso-materia-prof/adm-materia/:id', cors(), async function (request, response) {
+    let idMateria = request.params.id
+
+    let dados = await controllerTurmaCursoMateriaProf.ctlGetInformacoesTurmaCursoMateriaProfPeloIdMateria(idMateria)
+
+    response.status(dados.status)
+    response.json(dados)
 })
 
 //EndPoint: Retorna o turma-curso-materia-prof filtrando pelo valor do turma-matricula

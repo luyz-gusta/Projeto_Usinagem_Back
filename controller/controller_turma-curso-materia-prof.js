@@ -18,6 +18,8 @@ var turmaCursoMateriaProfDAO = require('../model/DAO/turmaCursoMateriaProfDAO.js
 var controllerProfessor = require('./controller_professor.js')
 var controllerTurma = require('./controller_turmas.js')
 var controllerCursoMateria = require('./controller_curso-materia.js')
+var controllerCurso = require('./controller_curso.js')
+var controllerMateria = require('./controller_materia.js')
 
 /***************Funções***************/
 const pegarTurmas = async (idProfessor) => {
@@ -25,7 +27,7 @@ const pegarTurmas = async (idProfessor) => {
 
     const arrayDados = ['Inicializador']
 
-    if(dadosTurmas){
+    if (dadosTurmas) {
         dadosTurmas.map(async turma => {
             let status = false
             for (let i = 0; i < arrayDados.length; i++) {
@@ -43,7 +45,7 @@ const pegarTurmas = async (idProfessor) => {
         console.log(arrayDados);
 
         return arrayDados
-    }else{
+    } else {
         return false
     }
 }
@@ -53,7 +55,7 @@ const pegarMaterias = async (idProfessor) => {
 
     const arrayDados = ['Inicializador']
 
-    if(dadosMateria){
+    if (dadosMateria) {
         dadosMateria.map(async materia => {
             let status = false
             for (let i = 0; i < arrayDados.length; i++) {
@@ -71,7 +73,7 @@ const pegarMaterias = async (idProfessor) => {
         console.log(arrayDados);
 
         return arrayDados
-    }else{
+    } else {
         return false
     }
 }
@@ -81,7 +83,7 @@ const pegarTarefas = async (idProfessor) => {
 
     const arrayDados = ['Inicializador']
 
-    if(dadosTarefa){
+    if (dadosTarefa) {
         dadosTarefa.map(async tarefa => {
             let status = false
             for (let i = 0; i < arrayDados.length; i++) {
@@ -99,10 +101,122 @@ const pegarTarefas = async (idProfessor) => {
         console.log(arrayDados);
 
         return arrayDados
-    }else{
+    } else {
         return false
     }
 }
+
+const pegarProfessoresByCurso = async (idCurso) => {
+    const dadosProfessor = await turmaCursoMateriaProfDAO.mdlGetProfessoresByIdCurso(idCurso)
+
+    const arrayDados = ['Inicializador']
+
+    if (dadosProfessor) {
+        dadosProfessor.map(async professor => {
+            let status = false
+            for (let i = 0; i < arrayDados.length; i++) {
+                if (arrayDados[i].id_professor == professor.id_professor) {
+                    status = true
+                }
+            }
+
+            if (status == false) {
+                arrayDados.push(professor)
+            }
+        })
+
+        arrayDados.shift()
+
+        return arrayDados
+    } else {
+        return false
+    }
+}
+
+const pegarMateriasByCurso = async (idCurso) => {
+    const dadosMateria = await turmaCursoMateriaProfDAO.mdlGetMateriasByIdCurso(idCurso)
+
+    const arrayDados = ['Inicializador']
+
+    if (dadosMateria) {
+        dadosMateria.map(async materia => {
+            let status = false
+            for (let i = 0; i < arrayDados.length; i++) {
+                if (arrayDados[i].id_materia == materia.id_materia) {
+                    status = true
+                }
+            }
+
+            if (status == false) {
+                arrayDados.push(materia)
+            }
+        })
+
+        arrayDados.shift()
+
+        return arrayDados
+    } else {
+        return false
+    }
+}
+
+const pegarTurmasByCurso = async (idCurso) => {
+    const dadosTurmo = await turmaCursoMateriaProfDAO.mdlGetTurmasByIdCurso(idCurso)
+
+    const arrayDados = ['Inicializador']
+
+    if (dadosTurmo) {
+        dadosTurmo.map(async turma => {
+            let status = false
+            for (let i = 0; i < arrayDados.length; i++) {
+                if (arrayDados[i].id_turma == turma.id_turma) {
+                    status = true
+                }
+            }
+
+            if (status == false) {
+                arrayDados.push(turma)
+            }
+        })
+
+        arrayDados.shift()
+
+        return arrayDados
+    } else {
+        return false
+    }
+}
+
+const pegarTarefasByMateria = async (idMateria) => {
+    const dadosTarefa = await turmaCursoMateriaProfDAO.mdlGetTarefasByIdMateria(idMateria)
+
+    const arrayDados = ['Inicializador']
+
+    if (dadosTarefa) {
+        dadosTarefa.map(async tarefa => {
+            let status = false
+            for (let i = 0; i < arrayDados.length; i++) {
+                if (arrayDados[i].id_tarefa == tarefa.id_tarefa) {
+                    status = true
+                }
+            }
+
+            if (status == false) {
+                arrayDados.push(tarefa)
+            }
+        })
+
+        arrayDados.shift()
+        console.log(arrayDados);
+
+        return arrayDados
+    } else {
+        return false
+    }
+}
+
+
+
 
 //Retorna todos os cursos
 const ctlGetTurmaCursoMateriaProf = async () => {
@@ -159,6 +273,59 @@ const ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor
     }
 }
 
+const ctlGetInformacoesTurmaCursoMateriaProfPeloIdCurso = async (idCurso) => {
+    let dadosJSON = {}
+
+    if (idCurso == null || idCurso == undefined || idCurso == '') {
+        return message.ERROR_REQUIRE_FIELDS
+    } else if (isNaN(idCurso)) {
+        return message.ERROR_INVALID_ID
+    } else {
+        let curso = await controllerCurso.ctlGetCursosID(idCurso)
+
+        if (curso.status == 200) {
+            curso.cursos[0].professores = await pegarProfessoresByCurso(idCurso)
+            curso.cursos[0].materias = await pegarMateriasByCurso(idCurso)
+            curso.cursos[0].turmas = await pegarTurmasByCurso(idCurso)
+
+            dadosJSON = {
+                status: message.SUCCESS_REQUEST.status,
+                message: message.SUCCESS_REQUEST.message,
+                dados: curso.cursos
+            }
+            return dadosJSON
+
+        } else {
+            return message.ERROR_INVALID_ID_PROFESSOR
+        }
+    }
+}
+
+const ctlGetInformacoesTurmaCursoMateriaProfPeloIdMateria = async (idMateria) => {
+    let dadosJSON = {}
+
+    if (idMateria == null || idMateria == undefined || idMateria == '') {
+        return message.ERROR_REQUIRE_FIELDS
+    } else if (isNaN(idMateria)) {
+        return message.ERROR_INVALID_ID
+    } else {
+        let materia = await controllerMateria.ctlGetMateriaByID(idMateria)
+
+        if (materia.status == 200) {
+            materia.materia[0].tarefas = pegarTarefasByMateria(idMateria)
+
+            dadosJSON = {
+                status: message.SUCCESS_REQUEST.status,
+                message: message.SUCCESS_REQUEST.message,
+                dados: materia.materia
+            }
+            return dadosJSON
+        } else {
+            return message.ERROR_INVALID_ID_PROFESSOR
+        }
+    }
+}
+
 //Retorna os dados filtrando pelo id do Professor
 const ctlGetTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor) => {
     let dadosJSON = {}
@@ -177,7 +344,7 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor) => {
 
             if (dados) {
 
-                const arrayDados = [{curso: ''}]
+                const arrayDados = [{ curso: '' }]
 
                 dados.map(async dado => {
                     let status = false
@@ -193,7 +360,7 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor) => {
                     if (status == false) {
                         let dadoJSON = {
                             id: dado.id,
-                            curso:{
+                            curso: {
                                 id_curso: dado.id_curso,
                                 nome: dado.nome_curso,
                                 sigla: dado.sigla_curso,
@@ -346,14 +513,14 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
         dados.id_curso_materia == null || dados.id_curso_materia == '' || dados.id_curso_materia == undefined ||
         dados.id_professor == null || dados.id_professor == '' || dados.id_professor == undefined
     ) {
-        
+
         return message.ERROR_REQUIRE_FIELDS
     } else {
         let verificacaoProfessor = await controllerProfessor.ctlGetBuscarProfessorID(dados.id_professor)
         let verificacaoTurma = await controllerTurma.ctlGetTurmasID(dados.id_turma)
         let verificacaoCursoMateria = await controllerCursoMateria.ctlGetCursoMateriaByID(dados.id_curso_materia)
 
-        console.log(dados.id_turma,  dados.id_professor,  dados.id_curso_materia);
+        console.log(dados.id_turma, dados.id_professor, dados.id_curso_materia);
         if (verificacaoProfessor.status != 200) {
             return message.ERROR_INVALID_ID_PROFESSOR
         } else if (verificacaoTurma.status != 200) {
@@ -372,7 +539,7 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
                     dados: novoDado
                 }
                 return dadosJSON
-            }else{
+            } else {
                 return message.ERROR_INTERNAL_SERVER
             }
         }
@@ -384,6 +551,10 @@ module.exports = {
     ctlGetTurmaCursoMateriaProfPeloIdProfessor,
     ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso,
     ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdTurma,
+    ctlInserirTurmaCursoMateriaProf,
+
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor,
-    ctlInserirTurmaCursoMateriaProf
+    ctlGetInformacoesTurmaCursoMateriaProfPeloIdCurso,
+
+    ctlGetInformacoesTurmaCursoMateriaProfPeloIdMateria
 }
