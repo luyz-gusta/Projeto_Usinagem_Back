@@ -15,6 +15,7 @@ var message = require('./modulo/config.js')
 
 //Import do arquivo DAO para acessar dados do aluno no BD
 var professorDAO = require('../model/DAO/professorDAO.js')
+var usuarioDAO = require('../model/DAO/usuarioDAO.js')
 
 //Retorna a lista de todos os professores
 const ctlGetProfessores = async function () {
