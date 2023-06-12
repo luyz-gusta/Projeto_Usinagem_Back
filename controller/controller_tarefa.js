@@ -113,6 +113,7 @@ const ctlInserirTarefa = async function (dadosTarefa) {
         dadosTarefa.tempo_previsto == '' || dadosTarefa.tempo_previsto == undefined ||
         dadosTarefa.numero == '' || dadosTarefa.numero == undefined ||
         dadosTarefa.foto_peca == '' || dadosTarefa.foto_peca == undefined || dadosTarefa.foto_peca.length > 500 ||
+        dadosTarefa.descricao == '' || dadosTarefa.descricao == undefined || dadosTarefa.descricao.length > 300 ||
         dadosTarefa.id_tipo_tarefa == '' || dadosTarefa.id_tipo_tarefa == undefined || isNaN(dadosTarefa.id_tipo_tarefa)
     ) {
         return message.ERROR_REQUIRE_FIELDS
@@ -150,6 +151,7 @@ const ctlAtualizarTarefa = async function (dadosTarefa, idTarefa) {
         dadosTarefa.tempo_previsto == '' || dadosTarefa.tempo_previsto == undefined ||
         dadosTarefa.numero == '' || dadosTarefa.numero == undefined ||
         dadosTarefa.foto_peca == '' || dadosTarefa.foto_peca == undefined || dadosTarefa.foto_peca.length > 150 ||
+        dadosTarefa.descricao == '' || dadosTarefa.descricao == undefined || dadosTarefa.descricao.length > 300 ||
         dadosTarefa.id_tipo_tarefa == '' || dadosTarefa.id_tipo_tarefa == undefined
     ) {
         return message.ERROR_REQUIRE_FIELDS

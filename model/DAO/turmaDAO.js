@@ -21,10 +21,10 @@ const mdlInsertTurma = async function (dadosTurma) {
                                     semestre,
                                     id_curso
                                     )values(
-                                    "${dadosTurma.nome}",
-                                    "${dadosTurma.data_inicio}",
-                                    "${dadosTurma.data_conclusao}",
-                                    "${dadosTurma.descricao}",
+                                    '${dadosTurma.nome}',
+                                    '${dadosTurma.data_inicio}',
+                                    '${dadosTurma.data_conclusao}',
+                                    '${dadosTurma.descricao}',
                                     ${dadosTurma.semestre},
                                     ${dadosTurma.id_curso}
                                     );`
@@ -78,8 +78,6 @@ const mdlDeleteTurma = async function (id) {
 
 //Retorna a lista de todos os Turma
 const mdlSelectAllTurma = async function () {
-
-    console.log('dao-turma');
 
     let sql = `select * from tbl_turma`;
 

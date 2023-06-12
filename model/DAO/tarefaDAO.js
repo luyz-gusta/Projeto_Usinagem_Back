@@ -23,7 +23,8 @@ const mdlSelectAllTarefas = async function () {
     let sql = `
     select tarefa.id , tarefa.nome as nome_tarefa, 
         time_format(tarefa.tempo_previsto, '%H:%i') as tempo_previsto_tarefa, 
-        tarefa.numero as numero_tarefa, tarefa.foto_peca, 
+        tarefa.numero as numero_tarefa, tarefa.foto_peca,
+        tarefa.descricao as descricao_tarefa, 
         tarefa.id_tipo_tarefa,
         tipo_tarefa.nome as nome_tipo_tarefa
     from tbl_tarefa as tarefa
@@ -51,6 +52,7 @@ const mdlSelectByIdTarefa = async function (id) {
     select tarefa.id , tarefa.nome as nome_tarefa, 
         tarefa.tempo_previsto as tempo_previsto_tarefa, 
         tarefa.numero as numero_tarefa, tarefa.foto_peca, 
+        tarefa.descricao as descricao_tarefa,
         tarefa.id_tipo_tarefa,
         tipo_tarefa.nome as nome_tipo_tarefa
     from tbl_tarefa as tarefa
@@ -78,6 +80,7 @@ const mdlSelectByNameTarefa = async function (nome) {
     select tarefa.id , tarefa.nome as nome_tarefa, 
         time_format(tarefa.tempo_previsto, '%H:%i') as tempo_previsto_tarefa, 
         tarefa.numero as numero_tarefa, tarefa.foto_peca, 
+        tarefa.descricao as descricao_tarefa,
         tarefa.id_tipo_tarefa,
         tipo_tarefa.nome as nome_tipo_tarefa
     from tbl_tarefa as tarefa
@@ -102,6 +105,7 @@ const mdlSelectByTipoTarefa = async (idTipoTarefa) => {
     select tarefa.id , tarefa.nome as nome_tarefa, 
         time_format(tarefa.tempo_previsto, '%H:%i') as tempo_previsto_tarefa, 
         tarefa.numero as numero_tarefa, tarefa.foto_peca, 
+        tarefa.descricao as descricao_tarefa,
         tarefa.id_tipo_tarefa,
         tipo_tarefa.nome as nome_tipo_tarefa
     from tbl_tarefa as tarefa
@@ -130,13 +134,15 @@ const mdlInsertTarefa = async function (dadosTarefa) {
         tempo_previsto,
         numero,
         foto_peca,
-        id_tipo_tarefa
+        id_tipo_tarefa,
+        descricao
     ) values (
         '${dadosTarefa.nome}',
         time_format("${dadosTarefa.tempo_previsto}", '%H:%i'),
         ${dadosTarefa.numero},
         '${dadosTarefa.foto_peca}',
-        ${dadosTarefa.id_tipo_tarefa}
+        ${dadosTarefa.id_tipo_tarefa},
+        '${dadosTarefa.descricao}'
     );`
 
     //Executa o scriptSQL no banco de dados
@@ -156,7 +162,8 @@ const mdlUpdateTarefa = async function (dadosTarefa) {
         tempo_previsto = '${dadosTarefa.tempo_previsto}',
         numero = ${dadosTarefa.numero},
         foto_peca = '${dadosTarefa.foto_peca}',
-        id_tipo_tarefa = ${dadosTarefa.id_tipo_tarefa}
+        id_tipo_tarefa = ${dadosTarefa.id_tipo_tarefa},
+        descricao = '${dadosTarefa.descricao}'
     where id = ${dadosTarefa.id};
     `
     //Executa o scriptSQL no banco de dados

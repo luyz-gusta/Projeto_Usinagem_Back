@@ -70,6 +70,37 @@ const mdlSelectByIdRegistroTempo = async function (id) {
     }
 }
 
+const mdlSelectRegistroTempoByIdTarefa = async (idTarefa) => {
+    let sql = `
+            select
+            registro_tempo.id as id_registro_tempo, 
+            date_format(registro_tempo.data_inicio, '%d/%m') as data_inicio, 
+            time_format(registro_tempo.duracao_inicio, '%H:%i') as duracao_inicio, 
+            time_format(registro_tempo.duracao_termino, '%H:%i') as duracao_termino, 
+            time_format(registro_tempo.desconto, '%H:%i') as desconto, 
+            time_format(registro_tempo.liquido, '%H:%i') as liquido, 
+            time_format(registro_tempo.tempo_geral, '%H:%i') as tempo_geral, 
+            registro_tempo.id_tarefa, 
+            tarefa.nome as nome_tarefa, 
+            tarefa.tempo_previsto as tempo_previsto_tarefa, 
+            tarefa.numero as numero_tarefa, 
+            tarefa.foto_peca
+        from tbl_registro_tempo as registro_tempo
+            inner join tbl_tarefa as tarefa
+                on tarefa.id = registro_tempo.id_tarefa
+        where registro_tempo.id_tarefa = ${idTarefa}
+        order by registro_tempo.id asc;
+    `
+
+    let rsCriterio = await prisma.$queryRawUnsafe(sql)
+
+    if (rsCriterio.length > 0) {
+        return rsCriterio
+    } else {
+        return false
+    }
+}
+
 //Inserir dados de RegistroTempo no Banco de dados
 const mdlInsertRegistroTempo = async function (dadosRegistroTempo) {
 
@@ -164,6 +195,7 @@ module.exports = {
     mdlSelectByIdRegistroTempo,
     mdlInsertRegistroTempo,
     mdlUpdateRegistroTempo,
+    mdlSelectRegistroTempoByIdTarefa,
     mdlSelectLastId,
     mdlDeleteRegistroTempo
 }

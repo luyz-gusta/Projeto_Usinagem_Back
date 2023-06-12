@@ -12,6 +12,8 @@ var matriculaDAO = require('../model/DAO/matriculaDAO.js')
 
 var tarefaDAO = require('../model/DAO/tarefaDAO.js')
 
+var controllerTarefa = require('./controller_tarefa.js')
+
 var message = require('./modulo/config.js')
 
 //Retorna a lista de todas as RegistroTempos
@@ -55,6 +57,50 @@ const ctlGetRegistroTempoByID = async function (id) {
             return dadosRegistroTempoJSON
         } else {
             return message.ERROR_REGISTER_NOT_FOUND;
+        }
+    }
+}
+
+const ctlGetRegistroTempoByIdTarefa = async (idTarefa) => {
+    let dadosRegistroTempoJSON = {};
+
+    if (idTarefa == null || idTarefa == undefined || idTarefa == '') {
+        return message.ERROR_REQUIRE_FIELDS;
+    } else if (isNaN(idTarefa)) {
+        return message.ERROR_INVALID_ID;
+    } else {
+        let verificacaoIdTarefa = await controllerTarefa.ctlGetTarefaByID(idTarefa);
+
+        if (verificacaoIdTarefa.status == 200) {
+            let dadosRegistroTempo = await registroTempoDAO.mdlSelectRegistroTempoByIdTarefa(idTarefa);
+
+            if (dadosRegistroTempo) {
+                const dados = dadosRegistroTempo.map(async registroTempo => {
+                    let dadosTarefa = await controllerTarefa.ctlGetTarefaByID(registroTempo.id_tarefa);
+                    console.log(dadosTarefa + registroTempo.id_registro_tempo);
+                    registroTempo.nome_tarefa = dadosTarefa.nome;
+                    registroTempo.tempo_previsto_tarefa = dadosTarefa.tempo_previsto;
+                    registroTempo.numero_tarefa = dadosTarefa.numero;
+                    registroTempo.foto_peca = dadosTarefa.foto_peca;
+                    
+                    return await registroTempo;
+                });
+                
+                let arrayRegistroTempo = await Promise.all(dados);
+                
+                dadosRegistroTempoJSON = {
+                    status: message.SUCCESS_REQUEST.status,
+                    message: message.SUCCESS_REQUEST.message,
+                    quantidade: dadosRegistroTempo.length,
+                    registroTempo: arrayRegistroTempo
+                };
+                
+                return dadosRegistroTempoJSON;
+            } else {
+                return message.ERROR_REGISTER_NOT_FOUND;
+            }
+        } else {
+            return message.ERROR_INVALID_ID_TAREFA;
         }
     }
 }
@@ -175,6 +221,7 @@ const ctlDeletarRegistroTempoPeloID = async function (id) {
 module.exports = {
     ctlGetRegistroTempo,
     ctlGetRegistroTempoByID,
+    ctlGetRegistroTempoByIdTarefa,
     ctlInserirRegistroTempo,
     ctlAtualizarRegistroTempo,
     ctlDeletarRegistroTempoPeloID
