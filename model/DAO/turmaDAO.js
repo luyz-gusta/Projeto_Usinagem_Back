@@ -79,7 +79,14 @@ const mdlDeleteTurma = async function (id) {
 //Retorna a lista de todos os Turma
 const mdlSelectAllTurma = async function () {
 
-    let sql = `select * from tbl_turma`;
+    let sql = `select tbl_turma.id as id_turma,
+        tbl_turma.nome,
+        date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio ,
+        date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao,
+        tbl_turma.descricao,
+        tbl_turma.semestre,
+        tbl_turma.id_curso
+    from tbl_turma;`;
 
     let rsTurma = await prisma.$queryRawUnsafe(sql)
 
@@ -94,7 +101,14 @@ const mdlSelectAllTurma = async function () {
 const mdlSelectByIdTurma = async function (id) {
     let idTurma = id
 
-    let sql = `select * from tbl_turma where id = ${idTurma}`;
+    let sql = `select tbl_turma.id as id_turma,
+    tbl_turma.nome,
+    date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio ,
+    date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao,
+    tbl_turma.descricao,
+    tbl_turma.semestre,
+    tbl_turma.id_curso
+from tbl_turma where id = ${idTurma};`;
 
     //console.log(sql);
     let rsTurma = await prisma.$queryRawUnsafe(sql)
@@ -110,7 +124,14 @@ const mdlSelectByIdTurma = async function (id) {
 const mdlSelectByNameTurma = async function (nome) {
     let nameTurma = nome
 
-    let sql = `select * from tbl_turma where nome like '%${nameTurma}%'`;
+    let sql = `select tbl_turma.id as id_turma,
+    tbl_turma.nome,
+    date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio ,
+    date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao,
+    tbl_turma.descricao,
+    tbl_turma.semestre,
+    tbl_turma.id_curso
+from tbl_turma where nome like '%${nameTurma}%'`;
 
     let rsTurma = await prisma.$queryRawUnsafe(sql)
 
@@ -126,11 +147,14 @@ const mdlSelectByNameTurma = async function (nome) {
 const mdlSelectTurmaByIDCurso = async function (idCurso) {
     let idTurmaCurso = idCurso
 
-    let sql = ` select 
-                    tbl_turma.id, tbl_turma.nome as nome_turma,
-                    tbl_turma.data_inicio, tbl_turma.data_conclusao,
-                    tbl_turma.descricao, tbl_turma.semestre 
-                from tbl_turma where tbl_turma.id_curso = ${idTurmaCurso};`;
+    let sql = ` select tbl_turma.id as id_turma,
+    tbl_turma.nome,
+    date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio ,
+    date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao,
+    tbl_turma.descricao,
+    tbl_turma.semestre,
+    tbl_turma.id_curso
+from tbl_turma where tbl_turma.id_curso = ${idTurmaCurso};`;
 
     let rsTurma = await prisma.$queryRawUnsafe(sql)
 
