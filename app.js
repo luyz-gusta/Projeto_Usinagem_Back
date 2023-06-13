@@ -1568,13 +1568,20 @@ var controllerMatricula = require('./controller/controller_matricula.js')
 
 //EndPoint: Retorna todos os dados de Matricula
 app.get('/v1/projeto-usinagem/matricula', cors(), async function (request, response) {
+    let idUsuario = request.query.idUsuario
 
-    //Recebe os dados da controller do matricula
-    let dadosMatricula = await controllerMatricula.ctlGetMatriculas();
+    if (idUsuario) {
+        let dadosMatricula = await controllerMatricula.ctlGetBuscarMatriculaIdUsuario(idUsuario)
 
-    response.status(dadosMatricula.status);
-    response.json(dadosMatricula);
+        response.status(dadosMatricula.status);
+        response.json(dadosMatricula);
+    } else {
+        //Recebe os dados da controller do matricula
+        let dadosMatricula = await controllerMatricula.ctlGetMatriculas();
 
+        response.status(dadosMatricula.status);
+        response.json(dadosMatricula);
+    }
 })
 
 //EndPoint: Retorna a matricula filtrando pelo ID
@@ -2086,6 +2093,15 @@ app.get('/v1/projeto-usinagem/turma-curso-materia-prof/materias-professor/:idPro
     let idTurma = request.query.idTurma
 
     let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdTurma(idProfessor, idTurma)
+
+    response.status(dados.status)
+    response.json(dados)
+})
+
+app.get('/v1/projeto-usinagem/turma-curso-materia-prof/materias-matricula/:idMatricula', cors(), async function (request, response) {
+    let idMatricula = request.params.idMatricula
+
+    let dados = await controllerTurmaCursoMateriaProf.ctlGetMateriasIdMatricula(idMatricula)
 
     response.status(dados.status)
     response.json(dados)
