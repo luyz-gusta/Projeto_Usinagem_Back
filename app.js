@@ -2071,21 +2071,19 @@ app.get('/v1/projeto-usinagem/turma-curso-materia-prof/adm-materia/:id', cors(),
 //EndPoint: Retorna o turma-curso-materia-prof filtrando pelo valor do turma-matricula
 app.get('/v1/projeto-usinagem/turma-curso-materia-prof/cursos-professor/:idProfessor', cors(), async function (request, response) {
     let idProfessor = request.params.idProfessor
-
-    let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessor(idProfessor)
-
-    response.status(dados.status)
-    response.json(dados)
-})
-
-app.get('/v1/projeto-usinagem/turma-curso-materia-prof/turmas-professor/:idProfessor', cors(), async function (request, response) {
-    let idProfessor = request.params.idProfessor
     let idCurso = request.query.idCurso
 
-    let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso(idProfessor, idCurso)
+    if (idCurso) {
+        let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso(idProfessor, idCurso)
 
-    response.status(dados.status)
-    response.json(dados)
+        response.status(dados.status)
+        response.json(dados)
+    } else {
+        let dados = await controllerTurmaCursoMateriaProf.ctlGetTurmaCursoMateriaProfPeloIdProfessor(idProfessor)
+
+        response.status(dados.status)
+        response.json(dados)
+    }
 })
 
 app.get('/v1/projeto-usinagem/turma-curso-materia-prof/materias-professor/:idProfessor', cors(), async function (request, response) {
