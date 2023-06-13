@@ -85,6 +85,30 @@ const ctlGetBuscarMatriculaNumero = async function (numero) {
     }
 }
 
+//Retorna o Matricula filtrando pelo ID
+const ctlGetBuscarMatriculaIdUsuario = async function (idUsuario) {
+
+    //Validação do ID
+    if (idUsuario == '' || idUsuario == undefined || isNaN(idUsuario)) {
+        return message.ERROR_INVALID_ID
+    } else {
+        let dadosMatriculasJSON = {}
+
+        let dadosMatricula = await matriculaDAO.mdlSelectByIdUsuario(idUsuario)
+
+        if (dadosMatricula) {
+            //Criando um JSON com o atributo Matricula, para encaminhar um array de Matriculas
+            dadosMatriculasJSON.status = message.SUCCESS_REQUEST.status;
+            dadosMatriculasJSON.message = message.SUCCESS_REQUEST.message;
+            dadosMatriculasJSON.matricula = dadosMatricula;
+            return dadosMatriculasJSON
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND;
+        }
+    }
+}
+
+
 const ctlInserirMatricula = async (dadosMatricula) => {
     if (
         dadosMatricula.numero == '' || dadosMatricula.numero == null || dadosMatricula.numero == undefined ||
@@ -198,6 +222,7 @@ module.exports = {
     ctlGetMatriculas,
     ctlGetBuscarMatriculaID,
     ctlGetBuscarMatriculaNumero,
+    ctlGetBuscarMatriculaIdUsuario,
     ctlInserirMatricula,
     ctlAtualizarMatriculaPeloID,
     ctlDeletarMatriculaPeloID

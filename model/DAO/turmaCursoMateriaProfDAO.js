@@ -133,6 +133,37 @@ const mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdTurma = async (idProfessor
     }
 }
 
+const mdlSelectMateriasByIdMatricula = async (idMatricula) => {
+    let sql = `
+    select
+	    materia.id as id_materia, materia.nome as nome_materia, materia.sigla as sigla_materia, 
+        materia.carga_horaria as carga_horaria_materia, materia.descricao as descricao_materia
+    from tbl_turma_curso_materia_professor
+	    inner join tbl_turma as turma
+		    on turma.id = tbl_turma_curso_materia_professor.id_turma
+	    inner join tbl_professor as professor 
+		    on professor.id = tbl_turma_curso_materia_professor.id_professor
+	    inner join tbl_curso_materia 
+		    on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+	    inner join tbl_curso as curso 
+		    on tbl_curso_materia.id_curso = curso.id
+	    inner join tbl_materia as materia
+		    on tbl_curso_materia.id_materia = materia.id
+	    inner join tbl_turma_matricula as turma_matricula
+		    on turma_matricula.id_turma = tbl_turma_curso_materia_professor.id_turma
+	    inner join tbl_matricula as matricula
+		    on matricula.id = turma_matricula.id_matricula
+	where matricula.id = ${idMatricula};
+    `
+    let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
+
+    if (rsTurmaCursoMateriaProf.length > 0) {
+        return rsTurmaCursoMateriaProf
+    } else {
+        return false
+    }
+}
+
 const mdlInsertTurmaCursoMateriaProf = async (dados) => {
     let sql = `insert into tbl_turma_curso_materia_professor(
         id_turma, 
@@ -372,11 +403,13 @@ const mdlGetTarefasByIdMateria = async (idMateria) => {
 }
 
 
+
 module.exports = {
     mdlSelectAllTurmaCursoMateriaProf,
     mdlSelectTurmaCursoMateriaProfByIdProfessor,
     mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdCurso,
     mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdTurma,
+    mdlSelectMateriasByIdMatricula,
     mdlSelectLastByID,
     mdlInsertTurmaCursoMateriaProf,
 
@@ -389,5 +422,6 @@ module.exports = {
     mdlGetTurmasByIdCurso,
 
     mdlGetTarefasByIdMateria
+
 }
 

@@ -109,6 +109,42 @@ const mdlSelectByNumeroMatricula = async function (numero) {
     }
 }
 
+//Retorna a matricula filtrando pelo ID
+const mdlSelectByIdUsuario = async function (idUsuario) {
+
+    //Script para buscar uma matricula filtrando pelo numero
+    let sql = `select 
+        tbl_matricula.id as id_matricula, 
+        tbl_matricula.numero as numero_matricula,
+        tbl_status_matricula.nome as status_matricula,
+        tbl_aluno.id as id_aluno, 
+        tbl_aluno.nome as nome_aluno, 
+        tbl_aluno.cpf, tbl_aluno.email as email_pessoal,
+        tbl_usuario.id as id_usuario, 
+        tbl_usuario.email as email_institucional,
+        tbl_status_usuario.nivel as nome_status_usuario
+    from tbl_matricula
+        inner join tbl_aluno
+            on tbl_aluno.id = tbl_matricula.id_aluno
+        inner join tbl_usuario
+            on tbl_usuario.id = tbl_matricula.id_usuario
+        inner join tbl_status_usuario
+            on tbl_status_usuario.id = tbl_usuario.id_status_usuario
+        inner join tbl_status_matricula
+            on tbl_status_matricula.id = tbl_matricula.id_status_matricula
+    where tbl_usuario.id = ${idUsuario};`
+
+    //console.log(sql);
+    let rsMatricula = await prisma.$queryRawUnsafe(sql)
+
+    //Valida de o Banco de Dados retornou algum registro
+    if (rsMatricula.length > 0) {
+        return rsMatricula
+    } else {
+        return false;
+    }
+}
+
 //Inserir dados da matricula no Banco de dados
 const mdlInsertMatricula = async function (dadosMatricula) {
 
@@ -144,7 +180,6 @@ const mdlUpdateMatricula = async function (dadosMatricula) {
                         id_usuario = ${dadosMatricula.id_usuario}
                 where id = ${dadosMatricula.id}`;
 
-    console.log(sql);
     //Executa o scriptSQL no banco de dados
     let resultStatus = await prisma.$executeRawUnsafe(sql);
 
@@ -189,6 +224,7 @@ module.exports = {
     mdlSelectAllMatriculas,
     mdlSelectByIdMatricula,
     mdlSelectByNumeroMatricula,
+    mdlSelectByIdUsuario,
     mdlInsertMatricula,
     mdlUpdateMatricula,
     mdlDeleteMatricula,

@@ -216,8 +216,6 @@ const pegarTarefasByMateria = async (idMateria) => {
 }
 
 
-
-
 //Retorna todos os cursos
 const ctlGetTurmaCursoMateriaProf = async () => {
     let dadosJSON = {}
@@ -395,6 +393,47 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor) => {
     }
 }
 
+const ctlGetMateriasIdMatricula = async (idMatricula) => {
+    let dadosMateriasJSON = {}
+
+    if (idMatricula == '' || idMatricula == null || idMatricula == undefined || isNaN(idMatricula)) {
+        return message.ERROR_INVALID_PARAMS
+    } else {
+        let dadosMateria = await turmaCursoMateriaProfDAO.mdlSelectMateriasByIdMatricula(idMatricula)
+
+        if (dadosMateria) {
+            const arrayDados = ['Inicializador']
+
+            dadosMateria.map(async materia => {
+                let status = false
+
+                for (let i = 0; i < arrayDados.length; i++) {
+                    if (arrayDados[i].id_materia == materia.id_materia) {
+                        status = true
+                    }
+                }
+
+                if (status == false) {
+                    arrayDados.push(materia)
+                }
+            })
+
+            arrayDados.shift()
+
+            dadosMateriasJSON = {
+                status: message.SUCCESS_REQUEST.status,
+                message: message.SUCCESS_REQUEST.message,
+                quantidade: arrayDados.length,
+                dados: arrayDados
+            }
+            return dadosMateriasJSON
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND
+        }
+    }
+}
+
+
 //Retorna os dados filtrando pelo id do Professor
 const ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso = async (idProfessor, idCurso) => {
     let dadosJSON = {}
@@ -551,6 +590,7 @@ module.exports = {
     ctlGetTurmaCursoMateriaProfPeloIdProfessor,
     ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso,
     ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdTurma,
+    ctlGetMateriasIdMatricula,
     ctlInserirTurmaCursoMateriaProf,
 
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor,

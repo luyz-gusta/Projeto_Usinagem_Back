@@ -20,7 +20,7 @@ var prisma = new PrismaClient()
 
 const mdlSelectAllUsuarios = async () => {
     let sql = `select usuario.id, usuario.email, 
-    usuario.senha, status.nivel from 
+    usuario.senha,status.id as id_status,status.nivel from 
     tbl_usuario as usuario inner join tbl_status_usuario as status on usuario.id_status_usuario = status.id order by id asc;`
 
     let rsUsuario = await prisma.$queryRawUnsafe(sql)
@@ -33,7 +33,7 @@ const mdlSelectAllUsuarios = async () => {
 }
 
 const mdlSelectUsuarioByID = async (id) => {
-    let sql = `select usuario.id, usuario.email, usuario.senha, status.nivel 
+    let sql = `select usuario.id, usuario.email, usuario.senha, status.id as id_status, status.nivel 
     from tbl_usuario as usuario inner join tbl_status_usuario as status 
     on usuario.id_status_usuario = status.id where usuario.id = ${id};`
 
@@ -48,7 +48,7 @@ const mdlSelectUsuarioByID = async (id) => {
 
 const mdlSelectUsuarioByEmail = async (email) => {
     let sql = `select usuario.id, usuario.email, usuario.senha, 
-    status.nivel from tbl_usuario as usuario inner join tbl_status_usuario 
+    status.id as id_status, status.nivel from tbl_usuario as usuario inner join tbl_status_usuario 
     as status on usuario.id_status_usuario = status.id where usuario.email = '${email}';
     `
 
@@ -63,7 +63,7 @@ const mdlSelectUsuarioByEmail = async (email) => {
 
 const mdlSelectUsuarioByEmailAndSenha = async (email, senha) => {
     let sql = `select usuario.id, usuario.email, usuario.senha, 
-    status.nivel from tbl_usuario as usuario inner join tbl_status_usuario 
+    status.id as id_status status.nivel from tbl_usuario as usuario inner join tbl_status_usuario 
     as status on usuario.id_status_usuario = status.id where usuario.email = '${email}' and usuario.senha = '${senha}';
     `
 
@@ -78,7 +78,7 @@ const mdlSelectUsuarioByEmailAndSenha = async (email, senha) => {
 
 const mdlSelectUsuarioByNivel = async (nivel) => {
     let sql = `select usuario.id, usuario.email, usuario.senha, 
-    status.nivel from tbl_usuario as usuario inner join tbl_status_usuario 
+    status.id as id_status, status.nivel from tbl_usuario as usuario inner join tbl_status_usuario 
     as status on usuario.id_status_usuario = status.id where status.nivel = '${nivel}';
     `
 
@@ -95,7 +95,7 @@ const mdlSelectUsuarioByNivel = async (nivel) => {
 const mdlSelectLastByID = async () => {
     let sql = `select usuario.id, 
     usuario.email, usuario.senha,
-    status.nivel,
+    status.id as id_status,status.nivel,
     usuario.id_status_usuario
     from tbl_usuario as usuario 
     inner join tbl_status_usuario as status on 
