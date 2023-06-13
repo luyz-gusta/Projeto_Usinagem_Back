@@ -219,6 +219,29 @@ const selectLastId = async function () {
     }
 }
 
+//Inserir um aluno de acordo com a tela do front
+const mdlInsertDados = async function (dados) {
+
+    let sql = `CALL sp_inserir_dados(
+                    ${dados.numero_matricula}, 
+                    '${dados.nome_aluno}', 
+                    '${dados.data_nascimento}', 
+                    '${dados.email_aluno}',
+                    '${dados.email_usuario}',
+                    '${dados.senha}'
+                );`
+
+                console.log(sql);
+    let rsAluno = await prisma.$queryRawUnsafe(sql);
+
+    if (rsAluno) {
+        return rsAluno;
+    } else {
+        return false;
+    }
+}
+
+
 module.exports = {
     selectAllAlunos,
     selectByIdAluno,
@@ -227,5 +250,6 @@ module.exports = {
     updateAluno,
     deleteAluno,
     mdlSelectAlunoByIdTurma,
-    selectLastId
+    selectLastId,
+    mdlInsertDados
 }
