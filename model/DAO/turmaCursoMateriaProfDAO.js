@@ -278,6 +278,19 @@ const mdlUpdateTurmaCursoMateriaProf = async (dados) => {
     }
 }
 
+const mdlDeleteTurmaCursoMateriaProf = async (id) => {
+    let sql = `delete from tbl_turma_curso_materia_professor where id = ${id}` 
+
+    let resultStatus = await prisma.$queryRawUnsafe(sql)
+    
+    if(resultStatus){
+        return true
+    }else{
+        return false
+    }
+}
+
+
 
 /************************** FUNÇÕES COMPLEMTARES **************************/
 

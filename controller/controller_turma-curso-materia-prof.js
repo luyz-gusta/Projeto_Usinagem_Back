@@ -239,18 +239,22 @@ const ctlGetTurmaCursoMateriaProf = async () => {
 const ctlGetTurmaCursoMateriaProfID = async (id) => {
     let dadosJSON = {}
 
-    //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
-    let dados = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
-
-    if (dados) {
-        dadosJSON = {
-            status: message.SUCCESS_REQUEST.status,
-            message: message.SUCCESS_REQUEST.message,
-            dados: dados
-        }
-        return dadosJSON
+    if (id == null || id == undefined || id == '') {
+        return message.ERROR_REQUIRE_FIELDS
     } else {
-        return message.ERROR_REGISTER_NOT_FOUND
+        //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
+        let dados = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
+
+        if (dados) {
+            dadosJSON = {
+                status: message.SUCCESS_REQUEST.status,
+                message: message.SUCCESS_REQUEST.message,
+                dados: dados
+            }
+            return dadosJSON
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND
+        }
     }
 }
 
@@ -606,7 +610,7 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
                 } else {
                     return message.ERROR_INTERNAL_SERVER
                 }
-            }else{
+            } else {
                 return message.ERROR_INVALID_ID
             }
         }
@@ -659,6 +663,21 @@ const ctlAtualizarTurmaCursoMateriaProf = async (dados, id) => {
     }
 }
 
+const ctlDeletarTurmaCursoMateriaProf = async (id) => {
+    if (id == null || id == undefined || id == '') {
+        return message.ERROR_REQUIRE_FIELDS
+    } else {
+        //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
+        let dados = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
+
+        if (dados) {
+            return message.SUCCESS_DELETED_ITEM
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND
+        }
+    }
+}
+
 module.exports = {
     ctlGetTurmaCursoMateriaProf,
     ctlGetTurmaCursoMateriaProfPeloIdProfessor,
@@ -667,6 +686,7 @@ module.exports = {
     ctlGetMateriasIdMatricula,
     ctlInserirTurmaCursoMateriaProf,
     ctlAtualizarTurmaCursoMateriaProf,
+    ctlDeletarTurmaCursoMateriaProf,
 
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor,
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdCurso,

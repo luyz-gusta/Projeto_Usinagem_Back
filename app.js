@@ -2203,8 +2203,15 @@ app.put('/v1/projeto-usinagem/turma-curso-materia-prof/:id', cors(), bodyParserJ
 
 //EndPoint: Exclui um turma-curso-materia-prof, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/turma-curso-materia-prof/:id', cors(), async function (request, response) {
+    let idTurmaCursoMateriaProf = request.params.id
 
-})
+    let resultDados = await controllerTurmaCursoMateriaProf.ctlDeletarTurmaCursoMateriaProf(idTurmaCursoMateriaProf)
+
+    response.status(resultDados.status)
+    response.json(resultDados)
+
+
+}) 
 
 
 app.listen(8080, () => console.log('Servidor aguardando requisições na porta 8080.'))
