@@ -15,6 +15,7 @@ var message = require('./modulo/config.js')
 
 //Import do arquivo DAO para acessar dados do aluno no BD
 let usuarioDao = require('../model/DAO/usuarioDAO.js')
+let controllerProfessor = require('./controller_professor.js')
 
 //Retorna todos os usuarios
 const ctlGetUsuarios = async () => {
@@ -92,12 +93,19 @@ const ctlGetUsuarioEmailSenha = async (email, senha) => {
             let dadosUsuario = await usuarioDao.mdlSelectUsuarioByEmailAndSenha(email, senha)
 
             if (dadosUsuario) {
-                dadosUsuariosJSON = {
-                    status: message.SUCCESS_REQUEST.status,
-                    message: message.SUCCESS_REQUEST.message,
-                    usuarios: dadosUsuario
+                let pegarProfessor = await controllerProfessor.ctlGetBuscarProfessorIdUsuario(dadosUsuario[0].id)
+
+                if(pegarProfessor){
+                    dadosUsuariosJSON = {
+                        status: message.SUCCESS_REQUEST.status,
+                        message: message.SUCCESS_REQUEST.message,
+                        usuarios: dadosUsuario,
+                        professor: pegarProfessor.professores
+                    }
+                    return dadosUsuariosJSON
+                }else{
+                    return message.ERROR_INVALID_ID
                 }
-                return dadosUsuariosJSON
             } else {
                 return message.ERROR_REGISTER_NOT_FOUND
             }

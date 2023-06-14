@@ -42,7 +42,7 @@ const mdlSelectAllProfessores = async () => {
 
 const mdlSelectProfessorByID = async (id) => {
     let sql = `select 
-    professor.id, 
+    professor.id as id_professor, 
     professor.nome, 
     professor.nif,
     professor.telefone, 
