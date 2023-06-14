@@ -156,7 +156,7 @@ const ctlAtualizarMateria = async function (dadosMateria, idMateria) {
     } else if (idMateria == '' || idMateria == undefined || isNaN(idMateria)) {
         return message.ERROR_INVALID_ID
     } else {
-        let verificacaoCurso = await cursoDAO.mdlSelectCursoByID(dadosTurma.id_curso)
+        let verificacaoCurso = await cursoDAO.mdlSelectCursoByID(dadosMateria.id_curso)
 
         if (verificacaoCurso == false) {
             return message.ERROR_INVALID_ID_CURSO

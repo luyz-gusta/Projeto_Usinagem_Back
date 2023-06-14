@@ -8,6 +8,10 @@
 //Import do arquivo DAO para acessar dados do aluno no BD
 var alunoDAO = require('../model/DAO/alunoDAO.js')
 
+var materiaDAO = require('../model/DAO/materiaDAO.js')
+
+var matriculaDAO = require('../model/DAO/matriculaDAO.js')
+
 var message = require('./modulo/config.js')
 
 //Inserir um aluno de acordo com a tela do front
@@ -33,12 +37,18 @@ const ctlInserirDados = async function (dados) {
         if (resultDados) {
 
             //Chama a função que vai encontrar o ID gerado após o insert
-            let novoDados = await alunoDAO.selectLastId();
+            let novoDados = await matriculaDAO.selectLastId()
+
+            let novoDado = await alunoDAO.selectLastId()
 
             let dadosJSON = {};
             dadosJSON.status = message.SUCCESS_CREATED_ITEM.status;
             dadosJSON.message = message.SUCCESS_CREATED_ITEM.message;
-            dadosJSON.dados = novoDados;
+            dadosJSON.dados = {
+                aluno: novoDado,
+                matricula: novoDados
+            }
+            
             return dadosJSON
         } else {
             console.log(resultDados);
@@ -46,6 +56,47 @@ const ctlInserirDados = async function (dados) {
         }
     }
 }
+
+const ctlAtualizarDados = async function (id_matricula, dados) {
+
+    let resultDados;
+
+    if (dados.id_matricula == '' || dados.id_matricula == undefined ||
+        dados.numero_matricula == '' || dados.numero_matricula == undefined ||
+        dados.nome_aluno == '' || dados.nome_aluno == undefined || dados.nome_aluno.length > 50 ||
+        dados.data_nascimento == '' || dados.data_nascimento == undefined ||
+        dados.email_aluno == '' || dados.email_aluno == undefined || dados.email_aluno.length > 255 ||
+        dados.email_usuario == '' || dados.email_usuario == undefined || dados.email_usuario.length > 255 ||
+        dados.senha == '' || dados.senha == undefined || dados.senha.length > 150
+    ) {
+        console.log(dados);
+        return message.ERROR_REQUIRE_FIELDS;
+    } else {
+        // Verificar se a matrícula existe antes de atualizar os dados
+        const matriculaExistente = await matriculaDAO.mdlSelectByIdMatricula(dados.id_matricula)
+
+        if (matriculaExistente == false) {
+            return message.ERROR_INVALID_ID_MATRICULA;
+        }
+        dados.id_matricula = id_matricula
+        //Envia os dados para a model atualizar no Banco de Dados
+        resultDados = await alunoDAO.mdlUpdateDados(dados);
+
+        //Valida se o banco de dados atualizou corretamente os dados
+        if (resultDados) {
+            let dadosJSON = {};
+            dadosJSON.status = message.SUCCESS_UPDATED_ITEM.status;
+            dadosJSON.message = message.SUCCESS_UPDATED_ITEM.message;
+            dadosJSON.dados = dados;
+            return dadosJSON;
+
+        } else {
+            console.log(resultDados);
+            return message.ERROR_INTERNAL_SERVER;
+        }
+    }
+}
+
 
 
 //Inserir um novo aluno
@@ -245,5 +296,6 @@ module.exports = {
     atualizarAlunoPeloID,
     deletarAlunoPeloID,
     ctlBuscarAlunosPelaTurma,
-    ctlInserirDados
+    ctlInserirDados,
+    ctlAtualizarDados
 }

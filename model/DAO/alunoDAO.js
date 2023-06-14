@@ -111,11 +111,14 @@ const selectAllAlunos = async function () {
 
     //Script para buscar todos os itens no BD
     let sql = `select tbl_aluno.id,
-                tbl_aluno.nome as nome_aluno, 
+                tbl_aluno.nome as nome_aluno,
                 tbl_aluno.cpf as cpf,
-                date_format(tbl_aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
-                tbl_aluno.email as email_aluno
-    from tbl_aluno`;
+                DATE_FORMAT(tbl_aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
+                tbl_aluno.email as email_aluno,
+                tbl_matricula.id as id_matricula,
+                tbl_matricula.numero as numero_matricula
+            from tbl_aluno
+            join tbl_matricula on tbl_aluno.id = tbl_matricula.id_aluno;`;
 
     //$queryRawUnsafe(sql) - permite interpretar uma variavel como sendo um sriptSQL
     //queryRaw('select * from tbl_aluno') - permite interpretar o scriptSQL direto no metodo
@@ -231,9 +234,32 @@ const mdlInsertDados = async function (dados) {
                     '${dados.senha}'
                 );`
 
-                console.log(sql);
     let rsAluno = await prisma.$queryRawUnsafe(sql);
 
+    if (rsAluno) {
+        return rsAluno;
+    } else {
+        return false;
+    }
+}
+
+//Update um aluno de acordo com a tela do front
+const mdlUpdateDados = async function (dados) {
+
+    let sql = `CALL sp_atualizar_dados(
+                    ${dados.id_matricula},  
+                    ${dados.numero_matricula}, 
+                    '${dados.nome_aluno}', 
+                    '${dados.data_nascimento}', 
+                    '${dados.email_aluno}',
+                    '${dados.email_usuario}',
+                    '${dados.senha}'
+                );`
+
+    console.log(sql);
+    let rsAluno = await prisma.$queryRawUnsafe(sql);
+
+    console.log(rsAluno);
     if (rsAluno) {
         return rsAluno;
     } else {
@@ -251,5 +277,6 @@ module.exports = {
     deleteAluno,
     mdlSelectAlunoByIdTurma,
     selectLastId,
-    mdlInsertDados
+    mdlInsertDados,
+    mdlUpdateDados
 }
