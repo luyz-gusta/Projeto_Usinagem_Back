@@ -17,6 +17,97 @@ var message = require('./modulo/config.js')
 var professorDAO = require('../model/DAO/professorDAO.js')
 var usuarioDAO = require('../model/DAO/usuarioDAO.js')
 
+
+//Inserir um aluno de acordo com a tela do front
+const ctlInserirDados = async function (dados) {
+
+    let resultDados;
+
+    if (dados.nome_professor == '' || dados.nome_professor == undefined || dados.nome_professor.length > 50 ||
+        dados.nif_professor == '' || dados.nif_professor == undefined || dados.nif_professor.length > 15 ||
+        dados.telefone_professor == '' || dados.telefone_professor == undefined || dados.telefone_professor.length > 20 ||
+        dados.email_professor == '' || dados.email_professor == undefined || dados.email_professor.length > 255 ||
+        dados.email_usuario == '' || dados.email_usuario == undefined || dados.email_usuario.length > 255 ||
+        dados.senha == '' || dados.senha == undefined || dados.senha.length > 150
+    ) {
+        //console.log(dados);
+        return message.ERROR_REQUIRE_FIELDS
+    } else {
+
+        //Envia os dados para a model inserir no Banco de Dados
+        resultDados = await professorDAO.mdlInsertDados(dados)
+
+        //Valida de o banco de dados inseriu corretamente os dados
+        if (resultDados) {
+
+            //Chama a função que vai encontrar o ID gerado após o inser
+            let novoDado = await professorDAO.mdlSelectLastByID()
+
+            let dadosJSON = {};
+            dadosJSON.status = message.SUCCESS_CREATED_ITEM.status;
+            dadosJSON.message = message.SUCCESS_CREATED_ITEM.message;
+            dadosJSON.dados = novoDado
+            
+            return dadosJSON
+        } else {
+            //console.log(resultDados);
+            return message.ERROR_INTERNAL_SERVER
+        }
+    }
+}
+
+
+
+const ctlAtualizarDados = async function (id_professor, dados) {
+
+    let resultDados;
+
+    if (id_professor == '' || id_professor == undefined ||
+        dados.nome_professor == '' || dados.nome_professor == undefined || dados.nome_professor.length > 50 ||
+        dados.nif_professor == '' || dados.nif_professor == undefined || dados.nif_professor.length > 15 ||
+        dados.telefone_professor == '' || dados.telefone_professor == undefined || dados.telefone_professor.length > 20 ||
+        dados.email_professor == '' || dados.email_professor == undefined || dados.email_professor.length > 255 ||
+        dados.email_usuario == '' || dados.email_usuario == undefined || dados.email_usuario.length > 255 ||
+        dados.senha == '' || dados.senha == undefined || dados.senha.length > 150
+    ) {
+        return message.ERROR_REQUIRE_FIELDS;
+    } else {
+        // Verificar se o professor existe antes de atualizar os dados
+        const professorExistente = await professorDAO.mdlSelectProfessorByID(id_professor) 
+
+        if (professorExistente == false) {
+            return message.ERROR_INVALID_ID_PROFESSOR;
+        }
+
+        dados.id_professor = id_professor
+
+        //console.log(dados);
+        
+        let statusID = await professorDAO.mdlSelectProfessorByID(id_professor) 
+
+        if (statusID) {
+             resultDados = await professorDAO.mdlUpdateDados(dados)
+
+            if (resultDados) {
+
+                let dadosProfessorJSON = {};
+                dadosProfessorJSON.status = message.SUCCESS_UPDATED_ITEM.status;
+                dadosProfessorJSON.message = message.SUCCESS_UPDATED_ITEM.message;
+                dadosProfessorJSON.professor = dados;
+
+                return dadosProfessorJSON
+            } else {
+                return message.ERROR_INTERNAL_SERVER
+            }
+        } else {
+            return message.ERROR_NOT_FOUND;
+        }
+    }
+}
+
+
+
+
 //Retorna a lista de todos os professores
 const ctlGetProfessores = async function () {
     let dadosProfessorJSON = {}
@@ -216,5 +307,7 @@ module.exports = {
     ctlGetBuscarProfessorIdUsuario,
     ctlInserirProfessor,
     ctlAtualizarProfessor,
-    ctlDeletarProfessor
+    ctlDeletarProfessor,
+    ctlInserirDados,
+    ctlAtualizarDados
 }

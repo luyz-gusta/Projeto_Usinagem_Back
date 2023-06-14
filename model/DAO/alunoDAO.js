@@ -260,7 +260,7 @@ const mdlInsertDados = async function (dados) {
                     '${dados.senha}'
                 );`
 
-                //console.log(sql);
+    //console.log(sql);
     let rsAluno = await prisma.$queryRawUnsafe(sql);
 
     if (rsAluno) {
@@ -308,14 +308,14 @@ const mdlUpdateDadosStatus = async function (dados) {
         );`
 
 
-let rsAluno = await prisma.$queryRawUnsafe(sql);
+    let rsAluno = await prisma.$queryRawUnsafe(sql);
 
-console.log(rsAluno);
-if (rsAluno) {
-    return true;
-} else {
-    return false;
-}
+    console.log(rsAluno);
+    if (rsAluno) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
@@ -330,6 +330,6 @@ module.exports = {
     selectLastId,
     mdlInsertDados,
     mdlUpdateDados,
-    mdlUpdateDadosStatus, 
+    mdlUpdateDadosStatus,
     mdlSelectAlunoIdUsuario
 }

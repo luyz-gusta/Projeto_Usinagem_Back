@@ -342,6 +342,27 @@ app.get('/v1/projeto-usinagem/professor/nome/:nome', cors(), async function (req
 })
 
 //EndPoint: Insere um dado novo 
+app.post('/v1/projeto-usinagem/professor/dados', cors(), bodyParserJson, async function (request, response) {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosProfessor = await controllerProfessor.ctlInserirDados(dadosBody)
+
+        response.status(resultDadosProfessor.status)
+        response.json(resultDadosProfessor)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+
+//EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/professor', cors(), bodyParserJson, async function (request, response) {
     //Recebe o content-type da requisição
     let contentType = request.headers['content-type']
@@ -360,6 +381,34 @@ app.post('/v1/projeto-usinagem/professor', cors(), bodyParserJson, async functio
         response.json(message.ERROR_INVALID_CONTENT_TYPE)
     }
 })
+
+
+//EndPoint: Atualiza um professor existente de acordo com o front
+app.put('/v1/projeto-usinagem/professor/dados/:id', cors(), bodyParserJson, async function (request, response) {
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do professor pelo parametro
+        let idProfessor = request.params.id;
+
+        //Recebe os dados encaminhados no corpo da requisição
+        let dadosBody = request.body;
+
+        //Encaminha os dados para a controller
+        let resultDadosProfessor = await controllerProfessor.ctlAtualizarDados(idProfessor, dadosBody);
+
+        response.status(resultDadosProfessor.status);
+        response.json(resultDadosProfessor);
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+})
+
+
 
 //EndPoint: Atualiza um professor existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/professor/:id', cors(), bodyParserJson, async function (request, response) {

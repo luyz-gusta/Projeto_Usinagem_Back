@@ -16,6 +16,52 @@ var { PrismaClient } = require('@prisma/client');
 //Instancia da classe PrismaClient
 var prisma = new PrismaClient();
 
+//Inserir um professor de acordo com a tela do front
+const mdlInsertDados = async function (dados) {
+
+    let sql = `CALL sp_inserir_professor(
+                    '${dados.nome_professor}', 
+                    '${dados.nif_professor}', 
+                    '${dados.telefone_professor}', 
+                    '${dados.email_professor}',
+                    '${dados.email_usuario}',
+                    '${dados.senha}'
+                );`     
+
+    //console.log(sql);
+    let rsProfessor = await prisma.$queryRawUnsafe(sql);
+
+    if (rsProfessor) {
+        return rsProfessor;
+    } else {
+        return false;
+    }
+}
+
+//Atualizar um professor de acordo com a tela do front
+const mdlUpdateDados = async function (dados) {
+
+    let sql = `CALL sp_atualizar_professor(
+            @id_professor := ${dados.id_professor},                   
+            '${dados.nome_professor}', 
+            '${dados.nif_professor}', 
+            '${dados.telefone_professor}', 
+            '${dados.email_professor}',
+            '${dados.email_usuario}',
+            '${dados.senha}'         
+        );`
+
+
+    let rsAluno = await prisma.$queryRawUnsafe(sql);
+
+    console.log(rsAluno);
+    if (rsAluno) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 const mdlSelectAllProfessores = async () => {
     let sql = `select 
     professor.id, 
@@ -229,5 +275,7 @@ module.exports = {
     mdlSelectLastByID,
     mdlInsertProfessor,
     mdlUpdateProfessor,
-    mdlDeleteProfessor
+    mdlDeleteProfessor,
+    mdlInsertDados,
+    mdlUpdateDados
 }
