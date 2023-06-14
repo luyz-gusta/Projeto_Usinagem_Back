@@ -305,6 +305,5 @@ module.exports = {
     mdlSelectAlunoByIdTurma,
     selectLastId,
     mdlInsertDados,
-    mdlUpdateDados,
-    mdlSelectAlunoIdUsuario
+    mdlUpdateDados
 }
