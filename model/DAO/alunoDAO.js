@@ -153,6 +153,28 @@ const selectByIdAluno = async function (id) {
     }
 }
 
+//Retorna o aluno filtrando pelo ID
+const mdlSelectAlunoIdUsuario = async function (idUsuario) {
+    //Script para buscar um aluno filtrando pelo ID
+    let sql = `select 
+	    matricula.id as id_matricula,
+        matricula.numero as numero_matricula
+    from tbl_matricula as matricula
+	    inner join tbl_usuario as usuario
+		    on usuario.id = matricula.id_usuario
+    where usuario.id = 5;`;
+
+    //console.log(sql);
+    let rsAluno = await prisma.$queryRawUnsafe(sql)
+
+    //Valida de o Banco de Dados retornou algum registro
+    if (rsAluno.length > 0) {
+        return rsAluno
+    } else {
+        return false;
+    }
+}
+
 //Retorna o aluno filtrando pelo nome
 const selectByNameAluno = async function (nome) {
 
@@ -231,7 +253,7 @@ const mdlInsertDados = async function (dados) {
                     '${dados.senha}'
                 );`
 
-                console.log(sql);
+    console.log(sql);
     let rsAluno = await prisma.$queryRawUnsafe(sql);
 
     if (rsAluno) {
@@ -251,5 +273,6 @@ module.exports = {
     deleteAluno,
     mdlSelectAlunoByIdTurma,
     selectLastId,
-    mdlInsertDados
+    mdlInsertDados,
+    mdlSelectAlunoIdUsuario
 }

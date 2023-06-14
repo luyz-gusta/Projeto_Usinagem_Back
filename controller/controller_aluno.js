@@ -7,6 +7,7 @@
 
 //Import do arquivo DAO para acessar dados do aluno no BD
 var alunoDAO = require('../model/DAO/alunoDAO.js')
+var controllerUsuario = require('./controller_usuario.js')
 
 var message = require('./modulo/config.js')
 
@@ -187,8 +188,38 @@ const getBuscarAlunoID = async function (id) {
             return message.ERROR_REGISTER_NOT_FOUND;
         }
     }
-
 }
+
+//Retorna o aluno filtrando pelo ID
+const ctlGetBuscarAlunoIdUsuario = async function (idUsuario) {
+
+    //Validação do ID
+    if (idUsuario == '' || idUsuario == undefined || isNaN(idUsuario)) {
+        return message.ERROR_INVALID_ID
+    } else {
+        let dadosAlunosJSON = {}
+
+        let dadosUsuario = await controllerUsuario.ctlGetUsuarioID(idUsuario)
+
+        if(dadosUsuario){
+            let dadosAluno = await alunoDAO.mdlSelectAlunoIdUsuario(idUsuario)
+
+            if (dadosAluno) {
+                //Criando um JSON com o atributo aluno, para encaminhar um array de alunos
+                dadosAlunosJSON.status = message.SUCCESS_REQUEST.status;
+                dadosAlunosJSON.message = message.SUCCESS_REQUEST.message;
+                dadosAlunosJSON.aluno = dadosAluno
+                return dadosAlunosJSON
+            } else {
+                return message.ERROR_REGISTER_NOT_FOUND;
+            }
+        }else{
+            return message.ERROR_INVALID_ID
+        }
+    }
+}
+
+
 
 //Retorna o aluno filtrando pelo nome
 const getBuscarAlunoNome = async function (nome) {
@@ -245,5 +276,6 @@ module.exports = {
     atualizarAlunoPeloID,
     deletarAlunoPeloID,
     ctlBuscarAlunosPelaTurma,
-    ctlInserirDados
+    ctlInserirDados,
+    ctlGetBuscarAlunoIdUsuario
 }
