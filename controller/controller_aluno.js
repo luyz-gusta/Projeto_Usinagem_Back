@@ -10,6 +10,44 @@ var alunoDAO = require('../model/DAO/alunoDAO.js')
 
 var message = require('./modulo/config.js')
 
+//Inserir um aluno de acordo com a tela do front
+const ctlInserirDados = async function (dados) {
+
+    let resultDados;
+
+    if (dados.numero_matricula == '' || dados.numero_matricula == undefined ||
+        dados.nome_aluno == '' || dados.nome_aluno == undefined || dados.nome_aluno.length > 50 ||
+        dados.data_nascimento == '' || dados.data_nascimento == undefined ||
+        dados.email_aluno == '' || dados.email_aluno == undefined || dados.email_aluno.length > 255 ||
+        dados.email_usuario == '' || dados.email_usuario == undefined || dados.email_usuario.length > 255 ||
+        dados.senha == '' || dados.senha == undefined || dados.senha.length > 150
+    ) {
+        console.log(dados);
+        return message.ERROR_REQUIRE_FIELDS
+    } else {
+
+        //Envia os dados para a model inserir no Banco de Dados
+        resultDados = await alunoDAO.mdlInsertDados(dados)
+
+        //Valida de o banco de dados inseriu corretamente os dados
+        if (resultDados) {
+
+            //Chama a função que vai encontrar o ID gerado após o insert
+            let novoDados = await alunoDAO.selectLastId();
+
+            let dadosJSON = {};
+            dadosJSON.status = message.SUCCESS_CREATED_ITEM.status;
+            dadosJSON.message = message.SUCCESS_CREATED_ITEM.message;
+            dadosJSON.dados = novoDados;
+            return dadosJSON
+        } else {
+            console.log(resultDados);
+            return message.ERROR_INTERNAL_SERVER
+        }
+    }
+}
+
+
 //Inserir um novo aluno
 const inserirAluno = async function (dadosAluno) {
 
@@ -181,18 +219,18 @@ const ctlBuscarAlunosPelaTurma = async (idTurma) => {
 
     if (idTurma == null || idTurma == undefined || idTurma == '') {
         return message.ERROR_REQUIRE_FIELDS
-    }else{
+    } else {
 
         let dadosAluno = await alunoDAO.mdlSelectAlunoByIdTurma(idTurma);
 
-        if(dadosAluno){
+        if (dadosAluno) {
             dadosAlunosJSON = {
-                status : message.SUCCESS_REQUEST.status,
+                status: message.SUCCESS_REQUEST.status,
                 message: message.SUCCESS_REQUEST.message,
-                alunos : dadosAluno
+                alunos: dadosAluno
             }
             return dadosAlunosJSON
-        }else{
+        } else {
             return message.ERROR_INVALID_ID_TURMA
         }
 
@@ -206,5 +244,6 @@ module.exports = {
     inserirAluno,
     atualizarAlunoPeloID,
     deletarAlunoPeloID,
-    ctlBuscarAlunosPelaTurma
+    ctlBuscarAlunosPelaTurma,
+    ctlInserirDados
 }

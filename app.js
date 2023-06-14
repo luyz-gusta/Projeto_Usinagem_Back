@@ -156,6 +156,27 @@ app.post('/v1/projeto-usinagem/aluno', cors(), bodyParserJson, async function (r
     }
 })
 
+//EndPoint: Insere um dado novo de aluno de acordo com o front
+app.post('/v1/projeto-usinagem/aluno/dados', cors(), bodyParserJson, async function (request, response) {
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDadosAluno = await controllerAluno.ctlInserirDados(dadosBody)
+
+        response.status(resultDadosAluno.status)
+        response.json(resultDadosAluno)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+})
+
 //EndPoint: Atualiza um aluno existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/aluno/:id', cors(), bodyParserJson, async function (request, response) {
 
