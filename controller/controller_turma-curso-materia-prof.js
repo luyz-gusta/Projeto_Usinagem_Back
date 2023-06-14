@@ -472,6 +472,7 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso = async (idProfessor, i
         } else if (verificacaoCurso.status != 200) {
             return message.ERROR_INVALID_ID_TURMA_CURSO
         } else {
+
             //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
             let dados = await turmaCursoMateriaProfDAO.mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdCurso(idProfessor, idCurso)
 
@@ -500,6 +501,8 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso = async (idProfessor, i
                     quantidade: arrayDados.length,
                     dados: arrayDados
                 }
+                console.log(arrayDados);
+                
                 return dadosJSON
             } else {
                 return message.ERROR_REGISTER_NOT_FOUND
