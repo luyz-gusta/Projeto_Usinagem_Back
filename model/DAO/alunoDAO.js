@@ -294,6 +294,32 @@ const mdlUpdateDados = async function (dados) {
     }
 }
 
+//Update um aluno de acordo com a tela do front para trocar o status de matricula para desativado
+const mdlUpdateDadosStatus = async function (dados) {
+
+        let sql = `CALL sp_atualizar_dados_status_matricula(
+                @id_matricula := ${dados.id_matricula},                   
+                ${dados.numero_matricula},                
+                2,                   
+                '${dados.nome_aluno}',     
+                '${dados.data_nascimento}',        
+                '${dados.email_aluno}',  
+                '${dados.email_usuario}', 
+                '${dados.senha}'          
+            );`
+
+    
+    let rsAluno = await prisma.$queryRawUnsafe(sql);
+
+    console.log(rsAluno);
+    if (rsAluno) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 
 module.exports = {
     selectAllAlunos,
@@ -305,5 +331,6 @@ module.exports = {
     mdlSelectAlunoByIdTurma,
     selectLastId,
     mdlInsertDados,
-    mdlUpdateDados
+    mdlUpdateDados,
+    mdlUpdateDadosStatus
 }

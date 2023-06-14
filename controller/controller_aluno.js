@@ -65,8 +65,7 @@ const ctlAtualizarDados = async function (id_matricula, dados) {
         dados.email_usuario == '' || dados.email_usuario == undefined || dados.email_usuario.length > 255 ||
         dados.senha == '' || dados.senha == undefined || dados.senha.length > 150
     ) {
-        console.log(dados);
-        console.log(id_matricula);
+
         
         return message.ERROR_REQUIRE_FIELDS;
     } else {
@@ -104,6 +103,56 @@ const ctlAtualizarDados = async function (id_matricula, dados) {
     }
 }
 
+
+const ctlAtualizarDadosStatus = async function (id_matricula, dados) {
+
+    let resultDados;
+
+    if (id_matricula == '' || id_matricula == undefined ||
+        dados.numero_matricula == '' || dados.numero_matricula == undefined ||
+        dados.nome_aluno == '' || dados.nome_aluno == undefined || dados.nome_aluno.length > 50 ||
+        dados.data_nascimento == '' || dados.data_nascimento == undefined ||
+        dados.email_aluno == '' || dados.email_aluno == undefined || dados.email_aluno.length > 255 ||
+        dados.email_usuario == '' || dados.email_usuario == undefined || dados.email_usuario.length > 255 ||
+        dados.senha == '' || dados.senha == undefined || dados.senha.length > 150 
+    ) {
+
+        return message.ERROR_REQUIRE_FIELDS;
+    } else {
+        // Verificar se a matrícula existe antes de atualizar os dados
+        const matriculaExistente = await matriculaDAO.mdlSelectByIdMatricula(id_matricula)
+
+        if (matriculaExistente == false) {
+            return message.ERROR_INVALID_ID_MATRICULA;
+        }
+
+        dados.id_matricula = id_matricula
+        dados.status_matricula = 2
+
+        console.log(dados);
+        
+
+        let statusID = await matriculaDAO.mdlSelectByIdMatricula(id_matricula);
+
+        if (statusID) {
+             resultDados = await alunoDAO.mdlUpdateDadosStatus(dados);
+
+            if (resultDados) {
+
+                let dadosAlunosJSON = {};
+                dadosAlunosJSON.status = message.SUCCESS_UPDATED_ITEM.status;
+                dadosAlunosJSON.message = message.SUCCESS_UPDATED_ITEM.message;
+                dadosAlunosJSON.aluno = dados;
+
+                return dadosAlunosJSON
+            } else {
+                return message.ERROR_INTERNAL_SERVER
+            }
+        } else {
+            return message.ERROR_NOT_FOUND;
+        }
+    }
+}
 
 
 //Inserir um novo aluno
@@ -335,5 +384,6 @@ module.exports = {
     ctlBuscarAlunosPelaTurma,
     ctlInserirDados,
     ctlAtualizarDados,
-    ctlGetBuscarAlunoIdUsuario
+    ctlGetBuscarAlunoIdUsuario,
+    ctlAtualizarDadosStatus
 }
