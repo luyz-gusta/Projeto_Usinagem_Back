@@ -252,6 +252,30 @@ app.put('/v1/projeto-usinagem/aluno/:id', cors(), bodyParserJson, async function
     }
 })
 
+app.put('/v1/projeto-usinagem/aluno/dados/status/:id', cors(), bodyParserJson, async function (request, response) {
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do aluno pelo parametro
+        let idMatricula = request.params.id;
+
+        //Recebe os dados encaminhados no corpo da requisição
+        let dadosBody = request.body;
+
+        //Encaminha os dados para a controller
+        let resultDadosAluno = await controllerAluno.ctlAtualizarDadosStatus(idMatricula, dadosBody);
+
+        response.status(resultDadosAluno.status);
+        response.json(resultDadosAluno);
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+})
+
 //EndPoint: Exclui um aluno, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/aluno/:id', cors(), async function (request, response) {
 
