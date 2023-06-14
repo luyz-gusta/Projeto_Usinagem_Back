@@ -37,18 +37,13 @@ const ctlInserirDados = async function (dados) {
         //Valida de o banco de dados inseriu corretamente os dados
         if (resultDados) {
 
-            //Chama a função que vai encontrar o ID gerado após o insert
-            let novoDados = await matriculaDAO.selectLastId()
-
+            //Chama a função que vai encontrar o ID gerado após o inser
             let novoDado = await alunoDAO.selectLastId()
 
             let dadosJSON = {};
             dadosJSON.status = message.SUCCESS_CREATED_ITEM.status;
             dadosJSON.message = message.SUCCESS_CREATED_ITEM.message;
-            dadosJSON.dados = {
-                aluno: novoDado,
-                matricula: novoDados
-            }
+            dadosJSON.dados = novoDado
             
             return dadosJSON
         } else {
@@ -62,38 +57,44 @@ const ctlAtualizarDados = async function (id_matricula, dados) {
 
     let resultDados;
 
-    if (dados.id_matricula == '' || dados.id_matricula == undefined ||
-        dados.numero_matricula == '' || dados.numero_matricula == undefined ||
-        dados.nome_aluno == '' || dados.nome_aluno == undefined || dados.nome_aluno.length > 50 ||
-        dados.data_nascimento == '' || dados.data_nascimento == undefined ||
-        dados.email_aluno == '' || dados.email_aluno == undefined || dados.email_aluno.length > 255 ||
-        dados.email_usuario == '' || dados.email_usuario == undefined || dados.email_usuario.length > 255 ||
-        dados.senha == '' || dados.senha == undefined || dados.senha.length > 150
+    if (id_matricula == '' || id_matricula == undefined ||
+        dados.novo_numero_matricula == '' || dados.novo_numero_matricula == undefined ||
+        dados.novo_nome_aluno == '' || dados.novo_nome_aluno == undefined || dados.novo_nome_aluno.length > 50 ||
+        dados.nova_data_nascimento == '' || dados.nova_data_nascimento == undefined ||
+        dados.novo_email_aluno == '' || dados.novo_email_aluno == undefined || dados.novo_email_aluno.length > 255 ||
+        dados.novo_email_usuario == '' || dados.novo_email_usuario == undefined || dados.novo_email_usuario.length > 255 ||
+        dados.nova_senha == '' || dados.nova_senha == undefined || dados.nova_senha.length > 150
     ) {
         console.log(dados);
         return message.ERROR_REQUIRE_FIELDS;
     } else {
         // Verificar se a matrícula existe antes de atualizar os dados
-        const matriculaExistente = await matriculaDAO.mdlSelectByIdMatricula(dados.id_matricula)
+        const matriculaExistente = await matriculaDAO.mdlSelectByIdMatricula(id_matricula)
 
         if (matriculaExistente == false) {
             return message.ERROR_INVALID_ID_MATRICULA;
         }
+
         dados.id_matricula = id_matricula
-        //Envia os dados para a model atualizar no Banco de Dados
-        resultDados = await alunoDAO.mdlUpdateDados(dados);
 
-        //Valida se o banco de dados atualizou corretamente os dados
-        if (resultDados) {
-            let dadosJSON = {};
-            dadosJSON.status = message.SUCCESS_UPDATED_ITEM.status;
-            dadosJSON.message = message.SUCCESS_UPDATED_ITEM.message;
-            dadosJSON.dados = dados;
-            return dadosJSON;
+        let statusID = await matriculaDAO.mdlSelectByIdMatricula(id_matricula);
 
+        if (statusID) {
+            let resultDadosAluno = await alunoDAO.mdlUpdateDados(dados);
+
+            if (resultDadosAluno) {
+
+                let dadosAlunosJSON = {};
+                dadosAlunosJSON.status = message.SUCCESS_UPDATED_ITEM.status;
+                dadosAlunosJSON.message = message.SUCCESS_UPDATED_ITEM.message;
+                dadosAlunosJSON.aluno = dados;
+
+                return dadosAlunosJSON
+            } else {
+                return message.ERROR_INTERNAL_SERVER
+            }
         } else {
-            console.log(resultDados);
-            return message.ERROR_INTERNAL_SERVER;
+            return message.ERROR_NOT_FOUND;
         }
     }
 }

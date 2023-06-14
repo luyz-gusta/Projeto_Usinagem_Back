@@ -233,7 +233,11 @@ const mdlSelectAlunoByIdTurma = async function (idTurma) {
 //Retorna o ultimo id inserido no BD
 const selectLastId = async function () {
 
-    let sql = 'select * from tbl_aluno order by id desc limit 1'
+    let sql = `SELECT tbl_aluno.*, tbl_matricula.id AS id_matricula
+                FROM tbl_aluno
+                JOIN tbl_matricula ON tbl_aluno.id = tbl_matricula.id_aluno
+                ORDER BY tbl_aluno.id DESC
+                LIMIT 1; `
 
     let rsAluno = await prisma.$queryRawUnsafe(sql);
 
@@ -256,7 +260,7 @@ const mdlInsertDados = async function (dados) {
                     '${dados.senha}'
                 );`
 
-                console.log(sql);
+                //console.log(sql);
     let rsAluno = await prisma.$queryRawUnsafe(sql);
 
     if (rsAluno) {
@@ -270,21 +274,21 @@ const mdlInsertDados = async function (dados) {
 const mdlUpdateDados = async function (dados) {
 
     let sql = `CALL sp_atualizar_dados(
-                    ${dados.id_matricula},  
-                    ${dados.numero_matricula}, 
-                    '${dados.nome_aluno}', 
-                    '${dados.data_nascimento}', 
-                    '${dados.email_aluno}',
-                    '${dados.email_usuario}',
-                    '${dados.senha}'
-                );`
+                @id_matricula := ${dados.id_matricula},
+                @novo_numero_matricula := ${dados.novo_numero_matricula},
+                @novo_nome_aluno := '${dados.novo_nome_aluno}',
+                @nova_data_nascimento := '${dados.nova_data_nascimento}',
+                @novo_email_aluno := '${dados.novo_email_aluno}',
+                @novo_email_usuario := '${dados.novo_email_usuario}',
+                @nova_senha := '${dados.nova_senha}'
+            );`
 
     console.log(sql);
     let rsAluno = await prisma.$queryRawUnsafe(sql);
 
     console.log(rsAluno);
     if (rsAluno) {
-        return rsAluno;
+        return true;
     } else {
         return false;
     }
@@ -300,5 +304,6 @@ module.exports = {
     deleteAluno,
     mdlSelectAlunoByIdTurma,
     selectLastId,
-    mdlInsertDados
+    mdlInsertDados,
+    mdlUpdateDados
 }
