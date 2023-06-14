@@ -603,33 +603,45 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
 }
 
 const ctlAtualizarTurmaCursoMateriaProf = async (dados, id) => {
-    if(
+    if (
         dados.id_turma == '' || dados.id_turma == null || dados.id_turma == undefined ||
-        dados.id_curso_materia == '' || dados.id_curso_materia == null || dados.id_curso_materia == undefined || 
+        dados.id_curso_materia == '' || dados.id_curso_materia == null || dados.id_curso_materia == undefined ||
         dados.id_professor == '' || dados.id_professor == null || dados.id_professor == undefined
-    ){
+    ) {
         return message.ERROR_REQUIRE_FIELDS
-    }else{
+    } else {
         let verificacaoCursoMateria = await controllerCursoMateria.ctlGetCursoMateriaByID(dados.id_curso_materia)
         let verificacaoProfessor = await controllerProfessor.ctlGetBuscarProfessorID(dados.id_professor)
         let verificacaoTurma = await controllerTurma.ctlGetTurmasID(dados.id_turma)
 
-        if(!verificacaoCursoMateria ){
+        if (!verificacaoCursoMateria) {
             return message.ERROR_INVALID_ID_CURSO_MATERIA
-        }else if(!verificacaoProfessor){
+        } else if (!verificacaoProfessor) {
             return message.ERROR_INVALID_ID_PROFESSOR
-        }else if(!verificacaoTurma){
+        } else if (!verificacaoTurma) {
             return message.ERROR_INVALID_ID_TURMA
-        }else{
+        } else {
             let dadosAntigo = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
 
-            if(dadosAntigo){
+            if (dadosAntigo) {
                 dados.id = id
-                
+
                 let resulDados = await turmaCursoMateriaProfDAO.mdlUpdateTurmaCursoMateriaProf(dados)
 
+                if (resulDados) {
+                    let dadosNovo = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
 
-            }else{
+                    let dadosJSON = {
+                        status: message.SUCCESS_UPDATED_ITEM.status,
+                        message: message.SUCCESS_UPDATED_ITEM.message,
+                        dados_antigo: dadosAntigo,
+                        dados_novo: dadosNovo
+                    }
+                    return dadosJSON
+                } else {
+                    return message.ERROR_INTERNAL_SERVER
+                }
+            } else {
                 return message.ERROR_INVALID_ID
             }
         }
