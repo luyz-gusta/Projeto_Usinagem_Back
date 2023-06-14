@@ -98,6 +98,7 @@ const mdlSelectAllTurmaCursoMateriaProfByID = async (id) => {
 const mdlSelectTurmaCursoMateriaProfByIdProfessor = async (idProfessor) => {
     let sql = `select tbl_turma_curso_materia_professor.id,
         curso.id as id_curso, curso.nome as nome_curso, curso.sigla as sigla_curso, curso.descricao as descricao_curso, curso.carga_horaria as carga_horaria_curso,
+        curso.foto as foto_curso,
         professor.id as id_professor, professor.nome as nome_professor, professor.telefone as telefone_professor
     from tbl_turma_curso_materia_professor
 	    inner join tbl_turma as turma

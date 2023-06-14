@@ -381,7 +381,8 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor) => {
                                 nome: dado.nome_curso,
                                 sigla: dado.sigla_curso,
                                 descricao: dado.descricao_curso,
-                                carga_horaria: dado.carga_horaria_curso
+                                carga_horaria: dado.carga_horaria_curso,
+                                foto: dado.foto_curso
                             },
                             professor: {
                                 id_professor: dado.id_professor,
@@ -655,6 +656,7 @@ module.exports = {
     ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdTurma,
     ctlGetMateriasIdMatricula,
     ctlInserirTurmaCursoMateriaProf,
+    ctlAtualizarTurmaCursoMateriaProf,
 
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor,
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdCurso,
