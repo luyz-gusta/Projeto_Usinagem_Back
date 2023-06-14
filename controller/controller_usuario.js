@@ -116,13 +116,14 @@ const ctlGetUsuarioEmailSenha = async (email, senha) => {
                     let pegarAluno = await controllerAluno.ctlGetBuscarAlunoIdUsuario(dadosUsuario[0].id)
 
                     if(pegarAluno){
+                        console.log(pegarAluno);
                         dadosUsuariosJSON = {
                             status: message.SUCCESS_REQUEST.status,
                             message: message.SUCCESS_REQUEST.message,
                             usuarios: dadosUsuario,
                             aluno: {
-                                id_matricula: pegarAluno.aluno[0].id,
-                                numero: pegarProfessor.aluno[0].nome
+                                id_matricula: pegarAluno.aluno[0].id_matricula,
+                                numero: pegarAluno.aluno[0].numero_matricula
                             }
                         }
                         return dadosUsuariosJSON

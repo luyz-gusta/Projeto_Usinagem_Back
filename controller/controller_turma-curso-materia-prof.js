@@ -621,10 +621,17 @@ const ctlAtualizarTurmaCursoMateriaProf = async (dados, id) => {
         }else if(!verificacaoTurma){
             return message.ERROR_INVALID_ID_TURMA
         }else{
+            let dadosAntigo = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
 
-            
+            if(dadosAntigo){
+                dados.id = id
+                
+                let resulDados = await turmaCursoMateriaProfDAO.mdlUpdateTurmaCursoMateriaProf(dados)
 
 
+            }else{
+                return message.ERROR_INVALID_ID
+            }
         }
     }
 }

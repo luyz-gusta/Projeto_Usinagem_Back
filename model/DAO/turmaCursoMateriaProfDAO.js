@@ -471,6 +471,7 @@ module.exports = {
     mdlSelectMateriasByIdMatricula,
     mdlSelectLastByID,
     mdlInsertTurmaCursoMateriaProf,
+    mdlUpdateTurmaCursoMateriaProf,
 
     mdlGetTurmasByIdProfessor,
     mdlGetMateriasByIdProfessor,

@@ -7,7 +7,7 @@
 
 //Import do arquivo DAO para acessar dados do aluno no BD
 var alunoDAO = require('../model/DAO/alunoDAO.js')
-var controllerUsuario = require('./controller_usuario.js')
+var usuarioDao = require('../model/DAO/usuarioDAO.js')
 
 var message = require('./modulo/config.js')
 
@@ -199,7 +199,7 @@ const ctlGetBuscarAlunoIdUsuario = async function (idUsuario) {
     } else {
         let dadosAlunosJSON = {}
 
-        let dadosUsuario = await controllerUsuario.ctlGetUsuarioID(idUsuario)
+        let dadosUsuario = await usuarioDao.mdlSelectUsuarioByID(idUsuario)
 
         if(dadosUsuario){
             let dadosAluno = await alunoDAO.mdlSelectAlunoIdUsuario(idUsuario)
