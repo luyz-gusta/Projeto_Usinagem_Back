@@ -232,10 +232,19 @@ var controllerProfessor = require('./controller/controller_professor.js')
 
 //EndPoint: Retorna todos os dados de professores
 app.get('/v1/projeto-usinagem/professor', cors(), async function (request, response) {
-    let dadosProfessor = await controllerProfessor.ctlGetProfessores()
+    let idUsuario = request.query.idUsuario
 
-    response.status(dadosProfessor.status)
-    response.json(dadosProfessor)
+    if (idUsuario) {
+        let dadosProfessor = await controllerProfessor.ctlGetBuscarProfessorIdUsuario(idUsuario)
+
+        response.status(dadosProfessor.status)
+        response.json(dadosProfessor)
+    } else {
+        let dadosProfessor = await controllerProfessor.ctlGetProfessores()
+
+        response.status(dadosProfessor.status)
+        response.json(dadosProfessor)
+    }
 })
 
 //EndPoint: Retorna o professores filtrando pelo ID

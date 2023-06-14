@@ -115,6 +115,30 @@ const mdlSelectProfessorByNif = async (nif) => {
     }
 }
 
+const mdlSelectProfessorByIdUsuario = async (idUsuario) => {
+    let sql = `select 
+        professor.id, professor.nome, 
+        professor.nif, professor.telefone, 
+        professor.email as email_pessoal, 
+        usuario.email as email_usuario, 
+        usuario.senha, status.nivel 
+    from tbl_professor as professor 
+        inner join tbl_usuario as usuario 
+            on usuario.id = professor.id_usuario 
+        inner join tbl_status_usuario as status 
+            on usuario.id_status_usuario = status.id
+    where usuario.id = ${idUsuario};`
+
+    let rsProfessor = await prisma.$queryRawUnsafe(sql)
+
+    if(rsProfessor.length > 0){
+        return rsProfessor
+    }else{
+        return false
+    }
+}
+
+
 const mdlSelectLastByID = async () => {
     let sql = `select 
     professor.id, 
@@ -201,6 +225,7 @@ module.exports = {
     mdlSelectProfessorByID,
     mdlSelectProfessorByName,
     mdlSelectProfessorByNif,
+    mdlSelectProfessorByIdUsuario,
     mdlSelectLastByID,
     mdlInsertProfessor,
     mdlUpdateProfessor,
