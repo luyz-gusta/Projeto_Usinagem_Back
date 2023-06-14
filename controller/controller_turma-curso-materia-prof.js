@@ -236,6 +236,24 @@ const ctlGetTurmaCursoMateriaProf = async () => {
     }
 }
 
+const ctlGetTurmaCursoMateriaProfID = async (id) => {
+    let dadosJSON = {}
+
+    //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
+    let dados = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
+
+    if (dados) {
+        dadosJSON = {
+            status: message.SUCCESS_REQUEST.status,
+            message: message.SUCCESS_REQUEST.message,
+            dados: dados
+        }
+        return dadosJSON
+    } else {
+        return message.ERROR_REGISTER_NOT_FOUND
+    }
+}
+
 const ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor) => {
     let dadosJSON = {}
 
@@ -363,7 +381,8 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessor = async (idProfessor) => {
                                 nome: dado.nome_curso,
                                 sigla: dado.sigla_curso,
                                 descricao: dado.descricao_curso,
-                                carga_horaria: dado.carga_horaria_curso
+                                carga_horaria: dado.carga_horaria_curso,
+                                foto: dado.foto_curso
                             },
                             professor: {
                                 id_professor: dado.id_professor,
@@ -432,7 +451,6 @@ const ctlGetMateriasIdMatricula = async (idMatricula) => {
         }
     }
 }
-
 
 //Retorna os dados filtrando pelo id do Professor
 const ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso = async (idProfessor, idCurso) => {
@@ -585,6 +603,52 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
     }
 }
 
+const ctlAtualizarTurmaCursoMateriaProf = async (dados, id) => {
+    if (
+        dados.id_turma == '' || dados.id_turma == null || dados.id_turma == undefined ||
+        dados.id_curso_materia == '' || dados.id_curso_materia == null || dados.id_curso_materia == undefined ||
+        dados.id_professor == '' || dados.id_professor == null || dados.id_professor == undefined
+    ) {
+        return message.ERROR_REQUIRE_FIELDS
+    } else {
+        let verificacaoCursoMateria = await controllerCursoMateria.ctlGetCursoMateriaByID(dados.id_curso_materia)
+        let verificacaoProfessor = await controllerProfessor.ctlGetBuscarProfessorID(dados.id_professor)
+        let verificacaoTurma = await controllerTurma.ctlGetTurmasID(dados.id_turma)
+
+        if (!verificacaoCursoMateria) {
+            return message.ERROR_INVALID_ID_CURSO_MATERIA
+        } else if (!verificacaoProfessor) {
+            return message.ERROR_INVALID_ID_PROFESSOR
+        } else if (!verificacaoTurma) {
+            return message.ERROR_INVALID_ID_TURMA
+        } else {
+            let dadosAntigo = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
+
+            if (dadosAntigo) {
+                dados.id = id
+
+                let resulDados = await turmaCursoMateriaProfDAO.mdlUpdateTurmaCursoMateriaProf(dados)
+
+                if (resulDados) {
+                    let dadosNovo = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
+
+                    let dadosJSON = {
+                        status: message.SUCCESS_UPDATED_ITEM.status,
+                        message: message.SUCCESS_UPDATED_ITEM.message,
+                        dados_antigo: dadosAntigo,
+                        dados_novo: dadosNovo
+                    }
+                    return dadosJSON
+                } else {
+                    return message.ERROR_INTERNAL_SERVER
+                }
+            } else {
+                return message.ERROR_INVALID_ID
+            }
+        }
+    }
+}
+
 module.exports = {
     ctlGetTurmaCursoMateriaProf,
     ctlGetTurmaCursoMateriaProfPeloIdProfessor,
@@ -592,6 +656,7 @@ module.exports = {
     ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdTurma,
     ctlGetMateriasIdMatricula,
     ctlInserirTurmaCursoMateriaProf,
+    ctlAtualizarTurmaCursoMateriaProf,
 
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor,
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdCurso,

@@ -257,10 +257,19 @@ var controllerProfessor = require('./controller/controller_professor.js')
 
 //EndPoint: Retorna todos os dados de professores
 app.get('/v1/projeto-usinagem/professor', cors(), async function (request, response) {
-    let dadosProfessor = await controllerProfessor.ctlGetProfessores()
+    let idUsuario = request.query.idUsuario
 
-    response.status(dadosProfessor.status)
-    response.json(dadosProfessor)
+    if (idUsuario) {
+        let dadosProfessor = await controllerProfessor.ctlGetBuscarProfessorIdUsuario(idUsuario)
+
+        response.status(dadosProfessor.status)
+        response.json(dadosProfessor)
+    } else {
+        let dadosProfessor = await controllerProfessor.ctlGetProfessores()
+
+        response.status(dadosProfessor.status)
+        response.json(dadosProfessor)
+    }
 })
 
 //EndPoint: Retorna o professores filtrando pelo ID
@@ -2174,6 +2183,21 @@ app.post('/v1/projeto-usinagem/turma-curso-materia-prof', cors(), bodyParserJson
 //EndPoint: Atualiza um turma-curso-materia-prof existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/turma-curso-materia-prof/:id', cors(), bodyParserJson, async function (request, response) {
 
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        let idTurmaCursoMateriaProf = request.params.id
+
+        let dadosBody = request.body
+
+        let resultDados = await controllerTurmaCursoMateriaProf.ctlAtualizarTurmaCursoMateriaProf(dadosBody, idTurmaCursoMateriaProf)
+
+        response.status(resultDados.status)
+        response.json(resultDados)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
 })
 
 

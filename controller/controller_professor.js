@@ -60,6 +60,31 @@ const ctlGetBuscarProfessorID = async function (id) {
     }
 }
 
+//Retorna o professores filtrando pelo ID
+const ctlGetBuscarProfessorIdUsuario = async function (idUsuario) {
+    let dadosProfessorJSON = {}
+
+    if (idUsuario == null || idUsuario == undefined || idUsuario == '') {
+        return message.ERROR_REQUIRE_FIELDS
+    } else if (isNaN(idUsuario)) {
+        return message.ERROR_INVALID_ID
+    } else {
+        let dadosProfessor = await professorDAO.mdlSelectProfessorByIdUsuario(idUsuario)
+
+        if (dadosProfessor) {
+            dadosProfessorJSON = {
+                status: message.SUCCESS_REQUEST.status,
+                message: message.SUCCESS_REQUEST.message,
+                professores: dadosProfessor
+            }
+            return dadosProfessorJSON
+        } else {
+            return message.ERROR_INVALID_ID
+        }
+    }
+}
+
+
 //Retorna o professor filtrando pelo nome
 const ctlGetBuscarProfessorNome = async function (nome) {
     let dadosProfessorJSON = {}
@@ -188,6 +213,7 @@ module.exports = {
     ctlGetProfessores,
     ctlGetBuscarProfessorID,
     ctlGetBuscarProfessorNome,
+    ctlGetBuscarProfessorIdUsuario,
     ctlInserirProfessor,
     ctlAtualizarProfessor,
     ctlDeletarProfessor

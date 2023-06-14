@@ -15,6 +15,8 @@ var message = require('./modulo/config.js')
 
 //Import do arquivo DAO para acessar dados do aluno no BD
 let usuarioDao = require('../model/DAO/usuarioDAO.js')
+let controllerProfessor = require('./controller_professor.js')
+let controllerAluno = require('./controller_aluno.js')
 
 //Retorna todos os usuarios
 const ctlGetUsuarios = async () => {
@@ -92,12 +94,50 @@ const ctlGetUsuarioEmailSenha = async (email, senha) => {
             let dadosUsuario = await usuarioDao.mdlSelectUsuarioByEmailAndSenha(email, senha)
 
             if (dadosUsuario) {
-                dadosUsuariosJSON = {
-                    status: message.SUCCESS_REQUEST.status,
-                    message: message.SUCCESS_REQUEST.message,
-                    usuarios: dadosUsuario
+                if(dadosUsuario[0].nivel == 'Professor'){
+                    let pegarProfessor = await controllerProfessor.ctlGetBuscarProfessorIdUsuario(dadosUsuario[0].id)
+
+                    if(pegarProfessor){
+                        dadosUsuariosJSON = {
+                            status: message.SUCCESS_REQUEST.status,
+                            message: message.SUCCESS_REQUEST.message,
+                            usuarios: dadosUsuario,
+                            professor: {
+                                id_professor: pegarProfessor.professores[0].id,
+                                nome: pegarProfessor.professores[0].nome,
+                                nif: pegarProfessor.professores[0].nif
+                            }
+                        }
+                        return dadosUsuariosJSON
+                    }else{
+                        return message.ERROR_INVALID_ID
+                    }
+                }else if(dadosUsuario[0].nivel == 'Aluno'){
+                    let pegarAluno = await controllerAluno.ctlGetBuscarAlunoIdUsuario(dadosUsuario[0].id)
+
+                    if(pegarAluno){
+                        console.log(pegarAluno);
+                        dadosUsuariosJSON = {
+                            status: message.SUCCESS_REQUEST.status,
+                            message: message.SUCCESS_REQUEST.message,
+                            usuarios: dadosUsuario,
+                            aluno: {
+                                id_matricula: pegarAluno.aluno[0].id_matricula,
+                                numero: pegarAluno.aluno[0].numero_matricula
+                            }
+                        }
+                        return dadosUsuariosJSON
+                    }else{
+                        return message.ERROR_INVALID_ID
+                    }
+                }else{
+                    dadosUsuariosJSON = {
+                        status: message.SUCCESS_REQUEST.status,
+                        message: message.SUCCESS_REQUEST.message,
+                        usuarios: dadosUsuario
+                    }
+                    return dadosUsuariosJSON
                 }
-                return dadosUsuariosJSON
             } else {
                 return message.ERROR_REGISTER_NOT_FOUND
             }
