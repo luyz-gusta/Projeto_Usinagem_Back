@@ -23,6 +23,7 @@ const mdlSelectAllCursoMateria = async function () {
     let sql = `SELECT
                 tbl_curso_materia.id,
                 tbl_curso_materia.id_curso,
+                tbl_curso.id AS id_curso,
                 tbl_curso.nome AS nome_curso,
                 tbl_curso.carga_horaria AS carga_horaria_curso,
                 tbl_curso.sigla AS sigla_curso,

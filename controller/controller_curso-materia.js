@@ -127,12 +127,11 @@ const ctlGetCursoMateria = async function () {
         if (dadosCurso.cursos && dadosCurso.cursos.length > 0) {
           let curso = dadosCurso.cursos[0];
           let materias = dadosMateria && dadosMateria.materias;
-
-           console.log(dadosMateria);
   
           if (!cursos[curso.id]) {
             cursos[curso.id] = {
               id: curso.id,
+              id_curso: curso.id,
               nome_curso: curso.nome,
               carga_horaria_curso: curso.carga_horaria,
               sigla_curso: curso.sigla,

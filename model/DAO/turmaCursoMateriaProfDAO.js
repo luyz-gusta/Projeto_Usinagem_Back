@@ -23,6 +23,8 @@ const mdlSelectAllTurmaCursoMateriaProf = async () => {
     turma.data_inicio as data_inicio_turma, 
     turma.descricao as descricao_turma, 
     date_format(turma.data_conclusao, '%m/%Y') as conclusao_turma, 
+    tbl_curso_materia as id_curso_materia,
+    curso.id as id_curso,
 	curso.nome as nome_curso, 
     curso.sigla as sigla_curso, 
     curso.descricao as descricao_curso,
@@ -62,6 +64,8 @@ const mdlSelectAllTurmaCursoMateriaProfByID = async (id) => {
     turma.data_inicio as data_inicio_turma, 
     turma.descricao as descricao_turma, 
     date_format(turma.data_conclusao, '%m/%Y') as conclusao_turma, 
+    tbl_curso_materia.id as id_curso_materia,
+    curso.id as id_curso,
 	curso.nome as nome_curso, 
     curso.sigla as sigla_curso, 
     curso.descricao as descricao_curso,
@@ -124,6 +128,7 @@ const mdlSelectTurmaCursoMateriaProfByIdProfessor = async (idProfessor) => {
 
 const mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdCurso = async (idProfessor, idCurso) => {
     let sql = `select tbl_turma_curso_materia_professor.id,
+        curso.id as id_curso,
 	    turma.id as id_turma, turma.nome as nome_turma, turma.semestre as semestre_turma, turma.data_inicio as data_inicio_turma, turma.descricao as descricao_turma,
         date_format(turma.data_conclusao, '%m/%Y') as conclusao_turma
     from tbl_turma_curso_materia_professor
@@ -137,7 +142,7 @@ const mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdCurso = async (idProfessor
 		    on tbl_curso_materia.id_curso = curso.id
 	    inner join tbl_materia as materia
 		    on tbl_curso_materia.id_materia = materia.id
-	where professor.id = ${idProfessor} and turma.id_curso = ${idCurso};`
+	where professor.id = ${idProfessor} and tbl_curso_materia.id_curso = ${idCurso};`
 
     let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
 
@@ -272,6 +277,19 @@ const mdlUpdateTurmaCursoMateriaProf = async (dados) => {
         return false
     }
 }
+
+const mdlDeleteTurmaCursoMateriaProf = async (id) => {
+    let sql = `delete from tbl_turma_curso_materia_professor where id = ${id}` 
+
+    let resultStatus = await prisma.$queryRawUnsafe(sql)
+    
+    if(resultStatus){
+        return true
+    }else{
+        return false
+    }
+}
+
 
 
 /************************** FUNÇÕES COMPLEMTARES **************************/

@@ -239,18 +239,22 @@ const ctlGetTurmaCursoMateriaProf = async () => {
 const ctlGetTurmaCursoMateriaProfID = async (id) => {
     let dadosJSON = {}
 
-    //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
-    let dados = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
-
-    if (dados) {
-        dadosJSON = {
-            status: message.SUCCESS_REQUEST.status,
-            message: message.SUCCESS_REQUEST.message,
-            dados: dados
-        }
-        return dadosJSON
+    if (id == null || id == undefined || id == '') {
+        return message.ERROR_REQUIRE_FIELDS
     } else {
-        return message.ERROR_REGISTER_NOT_FOUND
+        //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
+        let dados = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
+
+        if (dados) {
+            dadosJSON = {
+                status: message.SUCCESS_REQUEST.status,
+                message: message.SUCCESS_REQUEST.message,
+                dados: dados
+            }
+            return dadosJSON
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND
+        }
     }
 }
 
@@ -472,6 +476,7 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso = async (idProfessor, i
         } else if (verificacaoCurso.status != 200) {
             return message.ERROR_INVALID_ID_TURMA_CURSO
         } else {
+
             //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
             let dados = await turmaCursoMateriaProfDAO.mdlSelectTurmaCursoMateriaProfByIdProfessorAndIdCurso(idProfessor, idCurso)
 
@@ -500,6 +505,8 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso = async (idProfessor, i
                     quantidade: arrayDados.length,
                     dados: arrayDados
                 }
+                console.log(arrayDados);
+
                 return dadosJSON
             } else {
                 return message.ERROR_REGISTER_NOT_FOUND
@@ -577,6 +584,9 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
         let verificacaoTurma = await controllerTurma.ctlGetTurmasID(dados.id_turma)
         let verificacaoCursoMateria = await controllerCursoMateria.ctlGetCursoMateriaByID(dados.id_curso_materia)
 
+        console.log(verificacaoTurma);
+        console.log(verificacaoCursoMateria);
+
         console.log(dados.id_turma, dados.id_professor, dados.id_curso_materia);
         if (verificacaoProfessor.status != 200) {
             return message.ERROR_INVALID_ID_PROFESSOR
@@ -585,19 +595,23 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
         } else if (verificacaoCursoMateria.status != 200) {
             return message.ERROR_INVALID_ID_CURSO_MATERIA
         } else {
-            let resultDados = await turmaCursoMateriaProfDAO.mdlInsertTurmaCursoMateriaProf(dados)
+            if (verificacaoTurma.turma[0].idCurso == verificacaoCursoMateria.curso_materia[0].id_curso) {
+                let resultDados = await turmaCursoMateriaProfDAO.mdlInsertTurmaCursoMateriaProf(dados)
 
-            if (resultDados) {
-                let novoDado = await turmaCursoMateriaProfDAO.mdlSelectLastByID()
+                if (resultDados) {
+                    let novoDado = await turmaCursoMateriaProfDAO.mdlSelectLastByID()
 
-                let dadosJSON = {
-                    status: message.SUCCESS_CREATED_ITEM.status,
-                    message: message.SUCCESS_CREATED_ITEM.message,
-                    dados: novoDado
+                    let dadosJSON = {
+                        status: message.SUCCESS_CREATED_ITEM.status,
+                        message: message.SUCCESS_CREATED_ITEM.message,
+                        dados: novoDado
+                    }
+                    return dadosJSON
+                } else {
+                    return message.ERROR_INTERNAL_SERVER
                 }
-                return dadosJSON
             } else {
-                return message.ERROR_INTERNAL_SERVER
+                return message.ERROR_INVALID_ID
             }
         }
     }
@@ -649,6 +663,21 @@ const ctlAtualizarTurmaCursoMateriaProf = async (dados, id) => {
     }
 }
 
+const ctlDeletarTurmaCursoMateriaProf = async (id) => {
+    if (id == null || id == undefined || id == '') {
+        return message.ERROR_REQUIRE_FIELDS
+    } else {
+        //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
+        let dados = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
+
+        if (dados) {
+            return message.SUCCESS_DELETED_ITEM
+        } else {
+            return message.ERROR_REGISTER_NOT_FOUND
+        }
+    }
+}
+
 module.exports = {
     ctlGetTurmaCursoMateriaProf,
     ctlGetTurmaCursoMateriaProfPeloIdProfessor,
@@ -657,6 +686,7 @@ module.exports = {
     ctlGetMateriasIdMatricula,
     ctlInserirTurmaCursoMateriaProf,
     ctlAtualizarTurmaCursoMateriaProf,
+    ctlDeletarTurmaCursoMateriaProf,
 
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdProfessor,
     ctlGetInformacoesTurmaCursoMateriaProfPeloIdCurso,
