@@ -58,14 +58,16 @@ const ctlAtualizarDados = async function (id_matricula, dados) {
     let resultDados;
 
     if (id_matricula == '' || id_matricula == undefined ||
-        dados.novo_numero_matricula == '' || dados.novo_numero_matricula == undefined ||
-        dados.novo_nome_aluno == '' || dados.novo_nome_aluno == undefined || dados.novo_nome_aluno.length > 50 ||
-        dados.nova_data_nascimento == '' || dados.nova_data_nascimento == undefined ||
-        dados.novo_email_aluno == '' || dados.novo_email_aluno == undefined || dados.novo_email_aluno.length > 255 ||
-        dados.novo_email_usuario == '' || dados.novo_email_usuario == undefined || dados.novo_email_usuario.length > 255 ||
-        dados.nova_senha == '' || dados.nova_senha == undefined || dados.nova_senha.length > 150
+        dados.numero_matricula == '' || dados.numero_matricula == undefined ||
+        dados.nome_aluno == '' || dados.nome_aluno == undefined || dados.nome_aluno.length > 50 ||
+        dados.data_nascimento == '' || dados.data_nascimento == undefined ||
+        dados.email_aluno == '' || dados.email_aluno == undefined || dados.email_aluno.length > 255 ||
+        dados.email_usuario == '' || dados.email_usuario == undefined || dados.email_usuario.length > 255 ||
+        dados.senha == '' || dados.senha == undefined || dados.senha.length > 150
     ) {
         console.log(dados);
+        console.log(id_matricula);
+        
         return message.ERROR_REQUIRE_FIELDS;
     } else {
         // Verificar se a matrícula existe antes de atualizar os dados
@@ -77,12 +79,15 @@ const ctlAtualizarDados = async function (id_matricula, dados) {
 
         dados.id_matricula = id_matricula
 
+        console.log(dados);
+        
+
         let statusID = await matriculaDAO.mdlSelectByIdMatricula(id_matricula);
 
         if (statusID) {
-            let resultDadosAluno = await alunoDAO.mdlUpdateDados(dados);
+             resultDados = await alunoDAO.mdlUpdateDados(dados);
 
-            if (resultDadosAluno) {
+            if (resultDados) {
 
                 let dadosAlunosJSON = {};
                 dadosAlunosJSON.status = message.SUCCESS_UPDATED_ITEM.status;
