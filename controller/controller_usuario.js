@@ -100,7 +100,13 @@ const ctlGetUsuarioEmailSenha = async (email, senha) => {
                         status: message.SUCCESS_REQUEST.status,
                         message: message.SUCCESS_REQUEST.message,
                         usuarios: dadosUsuario,
-                        professor: pegarProfessor.professores
+                        professor: {
+                            id_professor: pegarProfessor.professores[0].id,
+                            nome: pegarProfessor.professores[0].nome,
+                            nif: pegarProfessor.professores[0].nif,
+                            telefone: pegarProfessor.professores[0].telefone,
+                            email_pessoal: pegarProfessor.professores[0].email_pessoal
+                        }
                     }
                     return dadosUsuariosJSON
                 }else{
