@@ -63,7 +63,7 @@ const mdlSelectUsuarioByEmail = async (email) => {
 
 const mdlSelectUsuarioByEmailAndSenha = async (email, senha) => {
     let sql = `select usuario.id, usuario.email, usuario.senha, 
-    status.id as id_status status.nivel from tbl_usuario as usuario inner join tbl_status_usuario 
+    status.id as id_status, status.nivel from tbl_usuario as usuario inner join tbl_status_usuario 
     as status on usuario.id_status_usuario = status.id where usuario.email = '${email}' and usuario.senha = '${senha}';
     `
 
