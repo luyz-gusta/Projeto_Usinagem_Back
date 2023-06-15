@@ -639,9 +639,6 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
         let verificacaoTurma = await controllerTurma.ctlGetTurmasID(dados.id_turma)
         let verificacaoCursoMateria = await controllerCursoMateria.ctlGetCursoMateriaByID(dados.id_curso_materia)
 
-        console.log(verificacaoTurma);
-        console.log(verificacaoCursoMateria);
-
         console.log(dados.id_turma, dados.id_professor, dados.id_curso_materia);
         if (verificacaoProfessor.status != 200) {
             return message.ERROR_INVALID_ID_PROFESSOR
@@ -650,7 +647,7 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
         } else if (verificacaoCursoMateria.status != 200) {
             return message.ERROR_INVALID_ID_CURSO_MATERIA
         } else {
-            if (verificacaoTurma.turma[0].idCurso == verificacaoCursoMateria.curso_materia[0].id_curso) {
+            if (verificacaoTurma.turma[0].id_curso == verificacaoCursoMateria.curso_materia[0].id_curso) {
                 let resultDados = await turmaCursoMateriaProfDAO.mdlInsertTurmaCursoMateriaProf(dados)
 
                 if (resultDados) {
