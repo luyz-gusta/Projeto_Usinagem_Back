@@ -139,11 +139,14 @@ const selectByIdAluno = async function (id) {
 
     //Script para buscar um aluno filtrando pelo ID
     let sql = `select tbl_aluno.id,
-        tbl_aluno.nome as nome_aluno, 
-        tbl_aluno.cpf as cpf,
-        date_format(tbl_aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
-        tbl_aluno.email as email_aluno
-    from tbl_aluno where id = ${idAluno}`;
+            tbl_aluno.nome as nome_aluno,
+            tbl_aluno.cpf as cpf,
+            DATE_FORMAT(tbl_aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
+            tbl_aluno.email as email_aluno,
+            tbl_matricula.id as id_matricula,
+            tbl_matricula.numero as numero_matricula
+        from tbl_aluno
+        join tbl_matricula on tbl_aluno.id = tbl_matricula.id_aluno where id_aluno = ${idAluno}`;
 
     //console.log(sql);
     let rsAluno = await prisma.$queryRawUnsafe(sql)

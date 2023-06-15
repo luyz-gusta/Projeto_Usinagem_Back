@@ -212,18 +212,18 @@ const mdlSelectLastByID = async () => {
 
 const mdlInsertProfessor = async (dadosProfessor) => {
     let sql = `insert into tbl_professor(
-        nome, 
-        nif, 
-        telefone, 
-        email, 
-        id_usuario
-        ) values (
-        '${dadosProfessor.nome}', 
-        '${dadosProfessor.nif}', 
-        '${dadosProfessor.telefone}', 
-        '${dadosProfessor.email}', 
-        ${dadosProfessor.id_usuario}
-        );`
+                nome, 
+                nif, 
+                telefone, 
+                email, 
+                id_usuario
+                ) values (
+                '${dadosProfessor.nome}', 
+                '${dadosProfessor.nif}', 
+                '${dadosProfessor.telefone}', 
+                '${dadosProfessor.email}', 
+                ${dadosProfessor.id_usuario}
+                );`
 
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$executeRawUnsafe(sql)        
