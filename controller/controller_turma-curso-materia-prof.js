@@ -510,7 +510,6 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso = async (idProfessor, i
                     }
                 }
 
-                console.log(arrayDados);
                 arrayDados.shift()
 
                 dadosJSON = {
