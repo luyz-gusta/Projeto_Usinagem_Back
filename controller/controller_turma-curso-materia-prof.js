@@ -20,6 +20,7 @@ var controllerTurma = require('./controller_turmas.js')
 var controllerCursoMateria = require('./controller_curso-materia.js')
 var controllerCurso = require('./controller_curso.js')
 var controllerMateria = require('./controller_materia.js')
+var controllerTarefaTurmaCursoMateriaProf = require('./controller_tarefa-turma-curso-materia-professor.js')
 
 /***************Funções***************/
 const pegarTurmas = async (idProfessor) => {
@@ -483,19 +484,31 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso = async (idProfessor, i
             if (dados) {
                 const arrayDados = ['Inicializador']
 
-                dados.map(async dado => {
+                for (let index = 0; index < dados.length; index++) {
                     let status = false
 
                     for (let i = 0; i < arrayDados.length; i++) {
-                        if (arrayDados[i].id_turma == dado.id_turma) {
+                        if (arrayDados[i].id_turma == dados[index].id_turma) {
                             status = true
                         }
                     }
 
+
                     if (status == false) {
-                        arrayDados.push(dado)
+                        let listaTarefas = await controllerTarefaTurmaCursoMateriaProf.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma(dados[index].id_turma)
+                        let tarefas
+
+                        if (listaTarefas.status != 200) {
+                            tarefas = null
+                        } else {
+                            tarefas = listaTarefas.dados
+                        }
+
+                        dados[index].tarefas = tarefas
+                        console.log(dados[index]);
+                        arrayDados.push(dados[index])
                     }
-                })
+                }
 
                 arrayDados.shift()
 
@@ -505,13 +518,55 @@ const ctlGetTurmaCursoMateriaProfPeloIdProfessorEIdCurso = async (idProfessor, i
                     quantidade: arrayDados.length,
                     dados: arrayDados
                 }
-                console.log(arrayDados);
 
                 return dadosJSON
             } else {
                 return message.ERROR_REGISTER_NOT_FOUND
             }
+
         }
+
+        //         dados.map(async dado => {
+        //             let status = false
+
+        //             for (let i = 0; i < arrayDados.length; i++) {
+        //                 if (arrayDados[i].id_turma == dado.id_turma) {
+        //                     status = true
+        //                 }
+        //             }
+
+
+        //             if (status == false) {
+        //                 let listaTarefas = await controllerTarefaTurmaCursoMateriaProf.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma(dado.id_turma)
+        //                 let tarefas
+
+        //                 if(listaTarefas.status != 200){
+        //                     tarefas = null
+        //                 }else{
+        //                     tarefas = listaTarefas.dados
+        //                 }
+
+        //                 dado.tarefas = tarefas
+        //                 console.log(dado);
+        //                 arrayDados.push(dado)
+        //             }
+        //         })
+
+        //         console.log(arrayDados);
+        //         arrayDados.shift()
+
+        //         dadosJSON = {
+        //             status: message.SUCCESS_REQUEST.status,
+        //             message: message.SUCCESS_REQUEST.message,
+        //             quantidade: arrayDados.length,
+        //             dados: arrayDados
+        //         }
+
+        //         return dadosJSON
+        //     } else {
+        //         return message.ERROR_REGISTER_NOT_FOUND
+        //     }
+        // }
     }
 }
 
@@ -584,9 +639,6 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
         let verificacaoTurma = await controllerTurma.ctlGetTurmasID(dados.id_turma)
         let verificacaoCursoMateria = await controllerCursoMateria.ctlGetCursoMateriaByID(dados.id_curso_materia)
 
-        console.log(verificacaoTurma);
-        console.log(verificacaoCursoMateria);
-
         console.log(dados.id_turma, dados.id_professor, dados.id_curso_materia);
         if (verificacaoProfessor.status != 200) {
             return message.ERROR_INVALID_ID_PROFESSOR
@@ -595,7 +647,7 @@ const ctlInserirTurmaCursoMateriaProf = async (dados) => {
         } else if (verificacaoCursoMateria.status != 200) {
             return message.ERROR_INVALID_ID_CURSO_MATERIA
         } else {
-            if (verificacaoTurma.turma[0].idCurso == verificacaoCursoMateria.curso_materia[0].id_curso) {
+            if (verificacaoTurma.turma[0].id_curso == verificacaoCursoMateria.curso_materia[0].id_curso) {
                 let resultDados = await turmaCursoMateriaProfDAO.mdlInsertTurmaCursoMateriaProf(dados)
 
                 if (resultDados) {

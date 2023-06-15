@@ -130,7 +130,7 @@ const ctlGetCursoMateria = async function () {
   
           if (!cursos[curso.id]) {
             cursos[curso.id] = {
-              id: curso.id,
+              id: curso_materia.id,
               id_curso: curso.id,
               nome_curso: curso.nome,
               carga_horaria_curso: curso.carga_horaria,
