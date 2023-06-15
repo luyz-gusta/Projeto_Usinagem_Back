@@ -81,8 +81,6 @@ const ctlGetMargemErroIDResultadoDesejado = async (idResultadoDesejado) => {
 
 const ctlInserirMargemErro = async (dadosMargemErro) => {
     if (
-        dadosMargemErro.minimo == '' || dadosMargemErro.minimo == null || dadosMargemErro.minimo == undefined ||
-        dadosMargemErro.maximo == '' || dadosMargemErro.maximo == null || dadosMargemErro.maximo == undefined ||
         dadosMargemErro.id_resultado_desejado == '' || dadosMargemErro.id_resultado_desejado == null || dadosMargemErro.id_resultado_desejado == undefined || isNaN(dadosMargemErro.id_resultado_desejado)
     ) {
         return message.ERROR_REQUIRE_FIELDS
@@ -115,8 +113,6 @@ const ctlInserirMargemErro = async (dadosMargemErro) => {
 
 const ctlAtualizarMargemErro = async (dadosMargemErro, idMargemErro) => {
     if (
-        dadosMargemErro.minimo == '' || dadosMargemErro.minimo == null || dadosMargemErro.minimo == undefined ||
-        dadosMargemErro.maximo == '' || dadosMargemErro.maximo == null || dadosMargemErro.maximo == undefined ||
         dadosMargemErro.id_resultado_desejado == '' || dadosMargemErro.id_resultado_desejado == null || dadosMargemErro.id_resultado_desejado == undefined || isNaN(dadosMargemErro.id_resultado_desejado)
     ) {
         return message.ERROR_REQUIRE_FIELDS
