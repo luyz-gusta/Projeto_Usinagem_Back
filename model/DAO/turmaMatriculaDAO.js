@@ -66,7 +66,8 @@ const mdlSelectMatriculasByIdTurma = async (idTurma) => {
     let sql = `select turma_matricula.id,
         matricula.id as id_matricula, matricula.numero as numero_matricula, matricula.id_usuario,
         aluno.id as id_aluno, aluno.nome as nome_aluno,
-        aluno.email as email_pessoal, aluno.data_nascimento,
+        aluno.email as email_pessoal, 
+        date_format(aluno.data_nascimento, '%d/%m/%Y'),
         aluno.cpf
     from tbl_turma_matricula as turma_matricula
         inner join tbl_turma as turma 
