@@ -81,7 +81,7 @@ const mdlSelectAllTurma = async function () {
 
     let sql = `select tbl_turma.id as id_turma,
         tbl_turma.nome,
-        date_format(tbl_turma.data_inicio, %Y-%m-%d') as data_inicio ,
+        date_format(tbl_turma.data_inicio, '%Y-%m-%d') as data_inicio ,
         date_format(tbl_turma.data_conclusao, '%Y-%m-%d') as data_conclusao,
         date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio_formatada ,
         date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao_formatada,
@@ -105,7 +105,7 @@ const mdlSelectByIdTurma = async function (id) {
 
     let sql = `select tbl_turma.id as id_turma,
     tbl_turma.nome,
-    date_format(tbl_turma.data_inicio, %Y-%m-%d') as data_inicio ,
+    date_format(tbl_turma.data_inicio, '%Y-%m-%d') as data_inicio ,
         date_format(tbl_turma.data_conclusao, '%Y-%m-%d') as data_conclusao,
         date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio_formatada ,
         date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao_formatada,
@@ -130,7 +130,7 @@ const mdlSelectByNameTurma = async function (nome) {
 
     let sql = `select tbl_turma.id as id_turma,
     tbl_turma.nome,
-    date_format(tbl_turma.data_inicio, %Y-%m-%d') as data_inicio ,
+    date_format(tbl_turma.data_inicio, '%Y-%m-%d') as data_inicio ,
         date_format(tbl_turma.data_conclusao, '%Y-%m-%d') as data_conclusao,
         date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio_formatada ,
         date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao_formatada,
@@ -155,10 +155,10 @@ const mdlSelectTurmaByIDCurso = async function (idCurso) {
 
     let sql = ` select tbl_turma.id as id_turma,
     tbl_turma.nome,
-    date_format(tbl_turma.data_inicio, %Y-%m-%d') as data_inicio ,
-        date_format(tbl_turma.data_conclusao, '%Y-%m-%d') as data_conclusao,
-        date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio_formatada ,
-        date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao_formatada,
+    date_format(tbl_turma.data_inicio, '%Y-%m-%d') as data_inicio ,
+    date_format(tbl_turma.data_conclusao, '%Y-%m-%d') as data_conclusao,
+    date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio_formatada ,
+    date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao_formatada,
     tbl_turma.descricao,
     tbl_turma.semestre,
     tbl_turma.id_curso
