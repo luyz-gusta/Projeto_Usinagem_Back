@@ -83,6 +83,8 @@ const mdlSelectAllTurma = async function () {
         tbl_turma.nome,
         date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio ,
         date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao,
+        date_format(tbl_turma.data_inicio, '%d/%m/%Y') as data_inicio_formatada ,
+        date_format(tbl_turma.data_conclusao, '%d/%m/%Y') as data_conclusao_formatada,
         tbl_turma.descricao,
         tbl_turma.semestre,
         tbl_turma.id_curso
@@ -105,6 +107,8 @@ const mdlSelectByIdTurma = async function (id) {
     tbl_turma.nome,
     date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio ,
     date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao,
+    date_format(tbl_turma.data_inicio, '%d/%m/%Y') as data_inicio_formatada ,
+    date_format(tbl_turma.data_conclusao, '%d/%m/%Y') as data_conclusao_formatada,
     tbl_turma.descricao,
     tbl_turma.semestre,
     tbl_turma.id_curso
@@ -128,6 +132,8 @@ const mdlSelectByNameTurma = async function (nome) {
     tbl_turma.nome,
     date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio ,
     date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao,
+    date_format(tbl_turma.data_inicio, '%d/%m/%Y') as data_inicio_formatada ,
+    date_format(tbl_turma.data_conclusao, '%d/%m/%Y') as data_conclusao_formatada,
     tbl_turma.descricao,
     tbl_turma.semestre,
     tbl_turma.id_curso
@@ -151,6 +157,8 @@ const mdlSelectTurmaByIDCurso = async function (idCurso) {
     tbl_turma.nome,
     date_format(tbl_turma.data_inicio, '%m/%Y') as data_inicio ,
     date_format(tbl_turma.data_conclusao, '%m/%Y') as data_conclusao,
+    date_format(tbl_turma.data_inicio, '%d/%m/%Y') as data_inicio_formatada ,
+    date_format(tbl_turma.data_conclusao, '%d/%m/%Y') as data_conclusao_formatada,
     tbl_turma.descricao,
     tbl_turma.semestre,
     tbl_turma.id_curso
