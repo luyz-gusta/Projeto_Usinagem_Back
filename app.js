@@ -2336,8 +2336,92 @@ app.delete('/v1/projeto-usinagem/turma-curso-materia-prof/:id', cors(), async fu
 
     response.status(resultDados.status)
     response.json(resultDados)
+}) 
+
+/*****************************************************************************************************************
+* Objetivo: API de controle de TAREFA TURMA CURSO_MATERIA PROFESSOR
+* Data: 05/06/2023
+* Autor: Luiz, Muryllo e Millena
+* Versão: 1.0
+******************************************************************************************************************/
+
+var controllerTarefaTurmaCursoMateriaProfessor = require('./controller/controller_tarefa-turma-curso-materia-professor.js')
+
+//EndPoint: Retorna todos os dados de tarefa-turma-curso-materia-prof
+app.get('/v1/projeto-usinagem/tarefa-turma-curso-materia-prof', cors(), async function (request, response) {
+    let idTurma = request.query.idTurma
+
+    if (idTurma) {
+        let dados = await controllerTarefaTurmaCursoMateriaProfessor.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma(idTurma)
+
+        response.status(dados.status)
+        response.json(dados)
+    } else {
+        let dados = await controllerTarefaTurmaCursoMateriaProfessor.ctlGetTarefaTurmaCursoMateriaProfessor()
+
+        response.status(dados.status)
+        response.json(dados)
+    }
+})
+
+app.get('/v1/projeto-usinagem/tarefa-turma-curso-materia-prof/:id', cors(), async function (request, response) {
+    let idCurso = request.params.id
+
+    let dados = await controllerTurmaCursoMateriaProf.ctlGetInformacoesTurmaCursoMateriaProfPeloIdCurso(idCurso)
+
+    response.status(dados.status)
+    response.json(dados)
+})
+
+//EndPoint: Insere um dado novo 
+app.post('/v1/projeto-usinagem/tarefa-turma-curso-materia-prof', cors(), bodyParserJson, async function (request, response) {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDados = await controllerTurmaCursoMateriaProf.ctlInserirTurmaCursoMateriaProf(dadosBody)
+
+        response.status(resultDados.status)
+        response.json(resultDados)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+})
+
+//EndPoint: Atualiza um tarefa-turma-curso-materia-prof existente, filtrando pelo ID
+app.put('/v1/projeto-usinagem/tarefa-turma-curso-materia-prof/:id', cors(), bodyParserJson, async function (request, response) {
+
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        let idTurmaCursoMateriaProf = request.params.id
+
+        let dadosBody = request.body
+
+        let resultDados = await controllerTurmaCursoMateriaProf.ctlAtualizarTurmaCursoMateriaProf(dadosBody, idTurmaCursoMateriaProf)
+
+        response.status(resultDados.status)
+        response.json(resultDados)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
 
 
+//EndPoint: Exclui um tarefa-turma-curso-materia-prof, filtrando pelo ID
+app.delete('/v1/projeto-usinagem/tarefa-turma-curso-materia-prof/:id', cors(), async function (request, response) {
+    let idTurmaCursoMateriaProf = request.params.id
+
+    let resultDados = await controllerTurmaCursoMateriaProf.ctlDeletarTurmaCursoMateriaProf(idTurmaCursoMateriaProf)
+
+    response.status(resultDados.status)
+    response.json(resultDados)
 }) 
 
 
