@@ -7,10 +7,9 @@
 
 //Import do arquivo DAO para acessar dados da Registro de Tempo no BD
 var resultadoDesejadoDAO = require('../model/DAO/resultadoDesejadoDAO.js')
-
 var criterioDAO = require('../model/DAO/criterioDAO.js')
+var controllerMargemErro = require('./controller_margem-erro.js')
 
-var controllerCriterio = require('./controller_criterio.js')
 
 var message = require('./modulo/config.js')
 
@@ -48,6 +47,12 @@ const ctlGetResultadoDesejadoByIdCriterio = async function (idCriterio) {
 
         if (verificacaoIdCriterio) {
             let dadosResultadoDesejado = await resultadoDesejadoDAO.mdlSelectResultadoDesejadoPeloIdCriterio(idCriterio)
+
+            for (let index = 0; index < dadosResultadoDesejado.length; index++) {
+                let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIDResultadoDesejado(dadosResultadoDesejado[index].id)
+
+                dadosResultadoDesejado[index].margem_erro = dadosMargemErro.margem_erro
+            }
 
             if (dadosResultadoDesejado) {
                 dadosResultadoDesejadoJSON.status = message.SUCCESS_REQUEST.status;
