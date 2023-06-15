@@ -2099,13 +2099,32 @@ app.post('/v1/projeto-usinagem/turma-matricula', cors(), bodyParserJson, async f
 
 //EndPoint: Atualiza um turma-matricula existente, filtrando pelo ID
 app.put('/v1/projeto-usinagem/turma-matricula/:id', cors(), bodyParserJson, async function (request, response) {
+    let contentType = request.headers['content-type']
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+        let idTurmaMatricula = request.params.id
+
+        let dadosBody = request.body
+
+        let resultDados = await controllerMatriculaTurma.ctlAtualizarTurmaMatricula(dadosBody,idTurmaMatricula)
+
+        response.status(resultDados.status)
+        response.json(resultDados)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
 })
 
 
 //EndPoint: Exclui um turma-matricula, filtrando pelo ID
 app.delete('/v1/projeto-usinagem/turma-matricula/:id', cors(), async function (request, response) {
+    let idTurmaMatricula = request.params.id
 
+    let resultDados = await controllerMatriculaTurma.ctlDeletarTurmaMatricula(idTurmaMatricula)
+
+    response.status(resultDados.status)
+    response.json(resultDados)
 })
 
 
