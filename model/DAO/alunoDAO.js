@@ -113,7 +113,7 @@ const selectAllAlunos = async function () {
     let sql = `select tbl_aluno.id,
                 tbl_aluno.nome as nome_aluno,
                 tbl_aluno.cpf as cpf,
-                DATE_FORMAT(tbl_aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
+                date_format(tbl_aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
                 tbl_aluno.email as email_aluno,
                 tbl_matricula.id as id_matricula,
                 tbl_matricula.numero as numero_matricula
@@ -144,6 +144,7 @@ const selectByIdAluno = async function (id) {
                 tbl_aluno.id AS id_aluno,
                 tbl_aluno.nome AS nome_aluno,
                 tbl_aluno.cpf,
+                date_format(tbl_aluno.data_nascimento, '%d/%m/%Y') as data_nascimento,
                 tbl_aluno.email AS email_pessoal,
                 tbl_usuario.email AS email_institucional,
                 tbl_usuario.senha
