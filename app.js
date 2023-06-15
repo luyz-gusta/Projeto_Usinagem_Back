@@ -2077,19 +2077,24 @@ app.get('/v1/projeto-usinagem/turma-matricula', cors(), async function (request,
     }
 })
 
-//EndPoint: Retorna o turma-matricula filtrando pelo ID
-app.get('/v1/projeto-usinagem/turma-matricula/:id', cors(), async function (request, response) {
-
-})
-
-//EndPoint: Retorna o turma-matricula filtrando pelo valor do turma-matricula
-app.get('/v1/projeto-usinagem/turma-matricula/valor/:valor', cors(), async function (request, response) {
-
-})
-
 //EndPoint: Insere um dado novo 
 app.post('/v1/projeto-usinagem/turma-matricula', cors(), bodyParserJson, async function (request, response) {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body;
+
+        let resultDados = await controllerMatriculaTurma.ctlInsertTurmaMatricula(dadosBody)
+
+        response.status(resultDados.status)
+        response.json(resultDados)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
 })
 
 //EndPoint: Atualiza um turma-matricula existente, filtrando pelo ID

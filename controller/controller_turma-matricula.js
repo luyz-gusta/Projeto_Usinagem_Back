@@ -15,6 +15,8 @@ var message = require('./modulo/config.js')
 
 //Import do arquivo DAO para acessar dados do aluno no BD
 var turmaMatriculaDAO = require('../model/DAO/turmaMatriculaDAO.js')
+var controllerTurma = require('./controller_turmas.js')
+var controllerMatricula = require('./controller_matricula.js')
 
 //Retorna todos os cursos
 const ctlGetMatriculaTurmas = async () => {
@@ -56,8 +58,42 @@ const ctlGetMatriculaIdTurma = async (idTurma) => {
     }
 }
 
+const ctlInsertTurmaMatricula = async (dadosTurmaMatricula) => {
+    if(
+        dadosTurmaMatricula.id_turma == null || dadosTurmaMatricula.id_turma == '' || dadosTurmaMatricula.id_turma == undefined ||
+        dadosTurmaMatricula.id_matricula == null ||  dadosTurmaMatricula.id_matricula == '' ||  dadosTurmaMatricula.id_matricula == undefined
+    ){
+        return message.ERROR_REQUIRE_FIELDS
+    }else{
+        let verificacaoTurma = await controllerTurma.ctlGetTurmasID(dadosTurmaMatricula.id_turma)
+        let verificacaoMatricula = await controllerMatricula.ctlGetBuscarMatriculaID(dadosTurmaMatricula.id_matricula)
+
+        if(verificacaoTurma.status != 200){
+           return message.ERROR_INVALID_ID_TURMA 
+        }else if(verificacaoMatricula.status != 200){
+            return message.ERROR_INVALID_ID_MATRICULA
+        }else{
+            let resultDados = await turmaMatriculaDAO.mdlInsertTurmasMatriculas(dadosTurmaMatricula)
+
+            if(resultDados){
+                let novaTurmaMatricula = await turmaMatriculaDAO.mdlSelectLastByID()
+
+                let dadosJSON = {
+                    status: message.SUCCESS_CREATED_ITEM.status,
+                    message: message.SUCCESS_CREATED_ITEM.message,
+                    dados: novaTurmaMatricula
+                }
+                return dadosJSON
+            }else{
+                return message.ERROR_INTERNAL_SERVER
+            }
+        }
+    }
+}
+
 
 module.exports = {
     ctlGetMatriculaTurmas,
-    ctlGetMatriculaIdTurma
+    ctlGetMatriculaIdTurma,
+    ctlInsertTurmaMatricula
 }
