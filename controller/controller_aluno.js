@@ -77,6 +77,7 @@ const ctlAtualizarDados = async function (id_matricula, dados) {
         }
 
         dados.id_matricula = id_matricula
+        dados.status_matricula = 1
 
         console.log(dados);
         
