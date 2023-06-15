@@ -668,7 +668,7 @@ const ctlDeletarTurmaCursoMateriaProf = async (id) => {
         return message.ERROR_REQUIRE_FIELDS
     } else {
         //Chama a função do arquivo DAO que irá retornar todos os resgistros do DB
-        let dados = await turmaCursoMateriaProfDAO.mdlSelectAllTurmaCursoMateriaProfByID(id)
+        let dados = await turmaCursoMateriaProfDAO.mdlDeleteTurmaCursoMateriaProf(id)
 
         if (dados) {
             return message.SUCCESS_DELETED_ITEM

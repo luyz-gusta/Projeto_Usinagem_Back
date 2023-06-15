@@ -59,7 +59,59 @@ const mdlSelectMatriculasByIdTurma = async (idTurma) => {
     }
 }
 
+const mdlInsertTurmasMatriculas = async (dadosTurmaMatricula) => {
+    let sql = `insert into tbl_turma_matricula(
+        id_turma, 
+        id_matricula
+        )values(
+            ${dadosTurmaMatricula.id_turma}, 
+            ${dadosTurmaMatricula.id_matricula}
+        );
+    `
+
+    //Executa o scriptSQL no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql)
+
+    if (resultStatus) {
+        return true
+    } else {
+        return false
+    }
+}
+
+const mdlSelectLastByID = async () => {
+    let sql = `select turma_matricula.id,
+    turma.id as id_turma, turma.nome as nome_turma, 
+    turma.semestre as semestre_turma, turma.data_inicio as data_inicio_turma, 
+    turma.descricao as descricao_turma, date_format(turma.data_conclusao, '%m/%Y') as conclusao_turma,
+    matricula.id as id_matricula, matricula.numero as numero_matricula, matricula.id_usuario,
+    aluno.id as id_aluno, aluno.nome as nome_aluno
+from tbl_turma_matricula as turma_matricula
+    inner join tbl_turma as turma 
+         on turma.id = turma_matricula.id_turma
+     inner join tbl_matricula as matricula
+         on matricula.id = turma_matricula.id_matricula
+     inner join tbl_aluno as aluno
+         on aluno.id = matricula.id_aluno
+    order by turma_matricula.id desc limit 1;
+`
+
+
+    let rsMatriculaTurma = await prisma.$queryRawUnsafe(sql)
+
+    if(rsMatriculaTurma.length > 0){
+        return rsMatriculaTurma
+    }else{
+        return false
+    }
+}
+
+
+
+
 module.exports = {
     mdlSelectAllTurmasMatriculas,
-    mdlSelectMatriculasByIdTurma
+    mdlSelectMatriculasByIdTurma,
+    mdlSelectLastByID,
+    mdlInsertTurmasMatriculas
 }
