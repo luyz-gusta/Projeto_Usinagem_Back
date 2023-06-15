@@ -287,6 +287,7 @@ const mdlUpdateDados = async function (dados) {
     let sql = `CALL sp_atualizar_dados(
                 @id_matricula := ${dados.id_matricula},
                 @novo_numero_matricula := ${dados.numero_matricula},
+                @novo_status_matricula := 1,
                 @novo_nome_aluno := '${dados.nome_aluno}',
                 @nova_data_nascimento := '${dados.data_nascimento}',
                 @novo_email_aluno := '${dados.email_aluno}',
