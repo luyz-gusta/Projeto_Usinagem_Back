@@ -9,10 +9,13 @@
 var message = require('./modulo/config.js')
 
 var avaliacaoProfessorDAO = require('../model/DAO/avaliacaoProfessorDAO.js')
-
 var professorDAO = require('../model/DAO/professorDAO.js')
-
 var avaliacaoAlunoDAO = require('../model/DAO/avaliacaoAlunoDAO.js')
+var controllerTarefaTurmaCursoMateriaProf = require('../controller/controller_tarefa-turma-curso-materia-professor')
+var controllerMatricula = require('./controller_matricula.js')
+var controllerCriterio = require('./controller_criterio.js')
+var controllerResultadoDesejado = require('./controller_resultado-desejado.js')
+
 
 const ctlGetAvaliacoesProfessor = async function () {
     let avaliacaoJSON = {}
@@ -54,6 +57,17 @@ const ctlGetAvaliacaoProfessorID = async function (id) {
         }
     }
 }
+
+// const ctlGetAvaliacaoAlunoIdMatricula = async (idMatricula, idTurma, idProfessor) => {
+//     let dadosJSON = {}
+
+//     let aluno = await controllerMatricula.ctlGetBuscarMatriculaID(idMatricula)
+
+//     let listaTarefas = await controllerTarefaTurmaCursoMateriaProf.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor(idTurma, idProfessor)
+
+    
+// }
+
 
 const ctlInserirAvaliacaoProfessor = async (dadosAvaliacaoProfessor) => {
 

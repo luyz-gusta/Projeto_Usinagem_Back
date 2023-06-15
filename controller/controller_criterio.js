@@ -97,8 +97,11 @@ const ctlGetCriterioByIdTarefa = async (idTarefa) => {
             if (dadosCriterio) {
                 const dados = dadosCriterio.map(async criterio => {
                     let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByIdCriterio(criterio.id_criterio)
-                    console.log(dadosResultadoDesejado + criterio.id_criterio);
-                    criterio.resultados = dadosResultadoDesejado.resultado_desejado
+                    if(dadosResultadoDesejado.status == 200){
+                        criterio.resultados = dadosResultadoDesejado.resultado_desejado
+                    }else{
+                        criterio.resultados = null
+                    }
         
                     return await criterio
                 });

@@ -39,7 +39,7 @@ const mdlSelectResultadoDesejadoPeloIdCriterio = async function (id_criterio) {
 
     //Script para buscar todos os itens no BD
     let sql = `select 
-        tbl_resultado_desejado.id, tbl_resultado_desejado.valor
+        tbl_resultado_desejado.id as id_resultado_desejado, tbl_resultado_desejado.valor
     from tbl_resultado_desejado where id_criterio = ${id_criterio};`;
 
     //$queryRawUnsafe(sql) - permite interpretar uma variavel como sendo um sriptSQL

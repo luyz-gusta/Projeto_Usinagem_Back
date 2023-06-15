@@ -103,7 +103,7 @@ const mdlSelectByIdMargemErro = async function (id) {
 const mdlSelectMargemErroByIdResultadoDesejado = async function (idResultadoDesejado) {
     let id_resultado_desejado = idResultadoDesejado
 
-    let sql = `select margem_erro.id, margem_erro.minimo, margem_erro.maximo     
+    let sql = `select margem_erro.id as id_margem_erro, margem_erro.minimo, margem_erro.maximo     
                 from tbl_margem_erro as margem_erro 
                     where margem_erro.id_resultado_desejado = ${id_resultado_desejado};`;
 

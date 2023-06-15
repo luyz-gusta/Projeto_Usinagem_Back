@@ -2326,8 +2326,14 @@ var controllerTarefaTurmaCursoMateriaProfessor = require('./controller/controlle
 //EndPoint: Retorna todos os dados de tarefa-turma-curso-materia-prof
 app.get('/v1/projeto-usinagem/tarefa-turma-curso-materia-prof', cors(), async function (request, response) {
     let idTurma = request.query.idTurma
+    let idProfessor = request.query.idProfessor
 
-    if (idTurma) {
+    if(idTurma && idProfessor){
+        let dados = await controllerTarefaTurmaCursoMateriaProfessor.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor(idTurma, idProfessor)
+
+        response.status(dados.status)
+        response.json(dados)
+    }else if (idTurma) {
         let dados = await controllerTarefaTurmaCursoMateriaProfessor.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma(idTurma)
 
         response.status(dados.status)
