@@ -77,9 +77,9 @@ const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessorEIdMatricula = 
     } else {
         let verificacaoTurma = await turmaDAO.mdlSelectByIdTurma(idTurma)
         let verificarProfessor = await professorDAO.mdlSelectProfessorByID(idProfessor)
-        let verificarMatricula = await matriculaDAO.mdlSelectByIdMatricula(idMatricula)
+        let pegarMatricula = await matriculaDAO.mdlSelectByIdMatricula(idMatricula)
 
-        if (verificacaoTurma && verificarProfessor && verificarMatricula) {
+        if (verificacaoTurma && verificarProfessor && pegarMatricula) {
             let dados = await tarefaTurmaCursoMateriaProfessor.mdlSelectTarefasByIdTurmaAndIdProfessor(idTurma, idProfessor)
 
             for (let index = 0; index < dados.length; index++) {
@@ -98,11 +98,13 @@ const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessorEIdMatricula = 
                 dados[index].criterios = listaCriterios.criterios
             }
 
+            pegarMatricula[0].tarefas = dados
+
             if (dados) {
                 dadosJSON = {
                     status: message.SUCCESS_REQUEST.status,
                     message: message.SUCCESS_REQUEST.message,
-                    dados: dados
+                    dados: pegarMatricula
                 }
                 return dadosJSON
             } else {
