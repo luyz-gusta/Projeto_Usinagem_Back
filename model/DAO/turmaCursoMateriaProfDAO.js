@@ -455,19 +455,33 @@ where curso.id = ${idCurso};
     }
 }
 
-const mdlGetTarefasByIdMateria = async (idMateria) => {
-    let sql = `select 
-	    tarefa.id as id_tarefa,
-        tarefa.nome as nome_tarefa,
-        tarefa.foto_peca
+const mdlGetTarefasByIdMateria = async (idMateria, idCurso) => {
+    let sql = `select tbl_tarefa_turma_curso_materia_professor.id as id_tarefa_turma_curso_materia_professor,
+        materia.id as id_materia,
+        tarefa.id as id_tarefa, tarefa.nome as nome_tarefa,
+        tarefa.tempo_previsto as tempo_previsto_tarefa,
+        tarefa.numero as numero_tarefa,
+        tarefa.foto_peca as foto_peca_tarefa,
+        tipo_tarefa.id as id_tipo_tarefa,
+        tipo_tarefa.nome as nome_tipo_tarefa
     from tbl_tarefa_turma_curso_materia_professor
-	    inner join tbl_tarefa as tarefa 
-		    on tarefa.id = tbl_tarefa_turma_curso_materia_professor.id_tarefa
-	    inner join tbl_turma_curso_materia_professor
-		    on tbl_turma_curso_materia_professor.id = tbl_tarefa_turma_curso_materia_professor.id_turma_curso_materia_professor
-	    inner join tbl_professor as professor
-		    on tbl_turma_curso_materia_professor.id_professor = professor.id
-    where materia.id = ${idMateria};
+        inner join tbl_tarefa as tarefa
+            on tarefa.id = tbl_tarefa_turma_curso_materia_professor.id_tarefa
+        inner join tbl_tipo_tarefa as tipo_tarefa
+            on tipo_tarefa.id = tarefa.id_tipo_tarefa
+        inner join tbl_turma_curso_materia_professor
+            on tbl_turma_curso_materia_professor.id = tbl_tarefa_turma_curso_materia_professor.id_turma_curso_materia_professor
+        inner join tbl_turma as turma
+            on turma.id = tbl_turma_curso_materia_professor.id_turma
+        inner join tbl_professor as professor 
+            on professor.id = tbl_turma_curso_materia_professor.id_professor
+        inner join tbl_curso_materia 
+            on tbl_curso_materia.id = tbl_turma_curso_materia_professor.id_curso_materia
+        inner join tbl_curso as curso 
+            on tbl_curso_materia.id_curso = curso.id
+        inner join tbl_materia as materia
+        on tbl_curso_materia.id_materia = materia.id
+where materia.id = ${idMateria} and curso.id = ${idCurso};
     `
 
     let rsTurmaCursoMateriaProf = await prisma.$queryRawUnsafe(sql)
