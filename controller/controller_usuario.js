@@ -94,7 +94,6 @@ const ctlGetUsuarioEmailSenha = async (email, senha) => {
             let dadosUsuario = await usuarioDao.mdlSelectUsuarioByEmailAndSenha(email, senha)
 
             if (dadosUsuario) {
-                console.log(dadosUsuario[0].nivel);
                 
                 if(dadosUsuario[0].nivel == 'Professor'){
                     let pegarProfessor = await controllerProfessor.ctlGetBuscarProfessorIdUsuario(dadosUsuario[0].id)
@@ -118,7 +117,6 @@ const ctlGetUsuarioEmailSenha = async (email, senha) => {
                     let pegarAluno = await controllerAluno.ctlGetBuscarAlunoIdUsuario(dadosUsuario[0].id)
 
                     if(pegarAluno){
-                        console.log(pegarAluno);
                         dadosUsuariosJSON = {
                             status: message.SUCCESS_REQUEST.status,
                             message: message.SUCCESS_REQUEST.message,

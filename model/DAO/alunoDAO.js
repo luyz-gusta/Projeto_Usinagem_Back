@@ -176,7 +176,7 @@ const mdlSelectAlunoIdUsuario = async function (idUsuario) {
     from tbl_matricula as matricula
 	    inner join tbl_usuario as usuario
 		    on usuario.id = matricula.id_usuario
-    where usuario.id = 5;`;
+    where usuario.id = ${idUsuario};`;
 
     //console.log(sql);
     let rsAluno = await prisma.$queryRawUnsafe(sql)
