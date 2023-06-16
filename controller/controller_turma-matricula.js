@@ -1,5 +1,5 @@
 /************************************************************************************************
- * Objetivo: Responsável pela regra de negócio referente ao CRUD de Cursos
+ * Objetivo: Responsável pela regra de negócio referente ao CRUD de TURMA_MATRICULA
  * Autor: Luiz Gustavo
  * Data: 12/05/2023
  * Versão: 1.0
@@ -13,7 +13,6 @@
 
 var message = require('./modulo/config.js')
 
-//Import do arquivo DAO para acessar dados do aluno no BD
 var turmaMatriculaDAO = require('../model/DAO/turmaMatriculaDAO.js')
 var controllerTurma = require('./controller_turmas.js')
 var controllerMatricula = require('./controller_matricula.js')

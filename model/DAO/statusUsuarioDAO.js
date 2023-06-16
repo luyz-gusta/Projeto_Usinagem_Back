@@ -1,5 +1,5 @@
 /**************************************************************************************
- *  Objetivo: Responsavel pela manipulação de dados dos USUARIO no banco de dados
+ *  Objetivo: Responsavel pela manipulação de dados dos STATUS_USUARIO no banco de dados
  *  Autor: Muryllo e Luiz
  *  Data: 22/05/2023
  *  Versão: 1.0

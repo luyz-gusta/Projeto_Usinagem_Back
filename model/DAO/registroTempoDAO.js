@@ -1,5 +1,5 @@
 /************************************************************************************************
- * Objetivo: Responsável pea manipulação de dados de REGISTRO DE TEMPO no Banco de Dados
+ * Objetivo: Responsável pea manipulação de dados de REGISTRO_TEMPO no Banco de Dados
  * Autor: Luiz Gustavo e Muryllo Vieira
  * Data: 08/06/2023
  * Versão: 1.0

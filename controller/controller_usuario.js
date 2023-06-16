@@ -1,5 +1,5 @@
 /************************************************************************************************
- * Objetivo: Responsável pela regra de negócio referente ao CRUD de Usuarios
+ * Objetivo: Responsável pela regra de negócio referente ao CRUD de USUARIOS
  * Autor: Luiz Gustavo e Muryllo
  * Data: 12/05/2023
  * Versão: 1.0
@@ -13,7 +13,6 @@
 
 var message = require('./modulo/config.js')
 
-//Import do arquivo DAO para acessar dados do aluno no BD
 let usuarioDao = require('../model/DAO/usuarioDAO.js')
 let controllerProfessor = require('./controller_professor.js')
 let controllerAluno = require('./controller_aluno.js')

@@ -1,5 +1,5 @@
 /************************************************************************************************
- * Objetivo: Responsável pela manipulação de dados dos MARGEM ERRO no Banco de Dados
+ * Objetivo: Responsável pela manipulação de dados dos MARGEM_ERRO no Banco de Dados
  * Autor: Luiz Gustavo, Muryllo Vieira e Millena Ferreira
  * Data: 09/06/2023
  * Versão: 1.0

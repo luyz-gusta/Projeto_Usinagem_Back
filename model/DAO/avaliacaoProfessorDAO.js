@@ -1,5 +1,5 @@
 /**************************************************************************************
- *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de TRUMAS
+ *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de AVALIACAO_PROFESSOR
  *  Autor: Luiz, Muryllo e Millena
  *  Data: 10/06/2023
  *  Versão: 1.0

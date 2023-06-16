@@ -1,5 +1,5 @@
 /************************************************************************************************
- * Objetivo: Responsável pea manipulação de dados dos USUARIO no Banco de Dados
+ * Objetivo: Responsável pea manipulação de dados dos TURMA_MATRICULA no Banco de Dados
  * Autor: Luiz Gustavo e Muryllo Vieira
  * Data: 22/05/2023
  * Versão: 1.0

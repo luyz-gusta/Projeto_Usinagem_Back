@@ -1,5 +1,5 @@
 /**************************************************************************************
- *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de TRUMAS
+ *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de TURMAS
  *  Autor: Luiz, Muryllo e Millena
  *  Data: 09/06/2023
  *  Versão: 1.0

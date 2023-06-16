@@ -13,7 +13,6 @@
 
 var message = require('./modulo/config.js')
 
-//Import do arquivo DAO para acessar dados do aluno no BD
 var turmaCursoMateriaProfDAO = require('../model/DAO/turmaCursoMateriaProfDAO.js')
 var controllerProfessor = require('./controller_professor.js')
 var controllerTurma = require('./controller_turmas.js')

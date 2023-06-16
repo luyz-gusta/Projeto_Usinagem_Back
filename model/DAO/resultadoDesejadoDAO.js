@@ -1,5 +1,5 @@
 /************************************************************************************************
- * Objetivo: Responsável pea manipulação de dados de RESULTADO DESEJADO no Banco de Dados
+ * Objetivo: Responsável pea manipulação de dados de RESULTADO_DESEJADO no Banco de Dados
  * Autor: Luiz Gustavo, Muryllo Vieira e Millena
  * Data: 09/06/2023
  * Versão: 1.0
