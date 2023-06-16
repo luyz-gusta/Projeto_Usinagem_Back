@@ -1214,11 +1214,20 @@ var controllerMargemErro = require('./controller/controller_margem-erro.js')
 
 //EndPoint: Retorna todos os dados de Margem_Erro
 app.get('/v1/projeto-usinagem/margem-erro', cors(), async function (request, response) {
-    //Recebe os dados da controller de margem de erro  
-    let dadosMargemErro = await controllerMargemErro.ctlGetMargemErro()
+    let idResultadoDesejado = request.query.idResultadoDesejado
 
-    response.status(dadosMargemErro.status);
-    response.json(dadosMargemErro);
+    if (idResultadoDesejado) {
+        let dadosMargemErro = await controllerMargemErro.ctlGetMargemErroIDResultadoDesejado(idResultadoDesejado)
+
+        response.status(dadosMargemErro.status);
+        response.json(dadosMargemErro);
+    } else {
+        //Recebe os dados da controller de margem de erro  
+        let dadosMargemErro = await controllerMargemErro.ctlGetMargemErro()
+
+        response.status(dadosMargemErro.status);
+        response.json(dadosMargemErro);
+    }
 })
 
 //EndPoint: Retorna o margem-erro filtrando pelo ID
