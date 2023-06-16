@@ -51,7 +51,9 @@ const mdlSelectByIdMatricula = async function (id) {
     //Script para buscar uma matricula filtrando pelo ID
     let sql = `select tbl_matricula.id as id_matricula, tbl_matricula.numero as numero_matricula,
                 tbl_status_matricula.nome as status_matricula,
-                tbl_aluno.id as id_aluno, tbl_aluno.nome as nome_aluno, tbl_aluno.cpf, tbl_aluno.email as email_pessoal,
+                tbl_aluno.id as id_aluno, tbl_aluno.nome as nome_aluno, tbl_aluno.cpf, 
+                date_format(tbl_aluno.data_nascimento, '%Y-%m-%d') as data_nascimento,
+                tbl_aluno.email as email_pessoal,
                 tbl_usuario.email as email_institucional, tbl_usuario.senha,
                 tbl_status_usuario.nivel as nome_status_usuario
             from tbl_matricula
