@@ -1,5 +1,5 @@
 /************************************************************************************************
- * Objetivo: Responsável pela regra de negócio referente ao CRUD de Cursos
+ * Objetivo: Responsável pela regra de negócio referente ao CRUD de TAREFA_TURMA_CURSOS_MATERIA_PROFESSOR
  * Autor: Luiz Gustavo
  * Data: 12/05/2023
  * Versão: 1.0
@@ -65,6 +65,43 @@ const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma = async (idTurma) => {
     }
 }
 
+const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor = async (idTurma, idProfessor) => {
+    let dadosJSON = {}
+
+    if (
+        idTurma == null || idTurma == undefined || idTurma == '' ||
+        idProfessor == null || idProfessor == undefined || idProfessor == '' 
+    ) {
+        return message.ERROR_REQUIRE_FIELDS
+    } else {
+        let verificacaoTurma = await turmaDAO.mdlSelectByIdTurma(idTurma)
+        let verificarProfessor = await professorDAO.mdlSelectProfessorByID(idProfessor)
+
+        if (verificacaoTurma && verificarProfessor) {
+            let dados = await tarefaTurmaCursoMateriaProfessor.mdlSelectTarefasByIdTurmaAndIdProfessor(idTurma, idProfessor)
+
+            for (let index = 0; index < dados.length; index++) {
+                let listaCriterios = await controllerCriterio.ctlGetCriterioByIdTarefa(dados[index].id_tarefa)
+
+                dados[index].criterios = listaCriterios.criterios
+            }
+
+            if (dados) {
+                dadosJSON = {
+                    status: message.SUCCESS_REQUEST.status,
+                    message: message.SUCCESS_REQUEST.message,
+                    dados: dados
+                }
+                return dadosJSON
+            } else {
+                return message.ERROR_REGISTER_NOT_FOUND
+            }
+        } else {
+            return message.ERROR_INVALID_ID_PROFESSOR_TURMA
+        }
+    }
+}
+
 const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessorEIdMatricula = async (idTurma, idProfessor, idMatricula) => {
     let dadosJSON = {}
 
@@ -120,5 +157,6 @@ const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessorEIdMatricula = 
 module.exports = {
     ctlGetTarefaTurmaCursoMateriaProfessor,
     ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma,
+    ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor,
     ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessorEIdMatricula
 }

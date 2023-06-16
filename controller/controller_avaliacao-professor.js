@@ -1,5 +1,5 @@
 /**************************************************************************************
- *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de TRUMAS
+ *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de AVALIACAO_PROFESSOR
  *  Autor: Luiz, Muryllo e Millena
  *  Data: 09/06/2023
  *  Versão: 1.0
@@ -11,10 +11,6 @@ var message = require('./modulo/config.js')
 var avaliacaoProfessorDAO = require('../model/DAO/avaliacaoProfessorDAO.js')
 var professorDAO = require('../model/DAO/professorDAO.js')
 var avaliacaoAlunoDAO = require('../model/DAO/avaliacaoAlunoDAO.js')
-var controllerTarefaTurmaCursoMateriaProf = require('../controller/controller_tarefa-turma-curso-materia-professor')
-var controllerMatricula = require('./controller_matricula.js')
-var controllerCriterio = require('./controller_criterio.js')
-var controllerResultadoDesejado = require('./controller_resultado-desejado.js')
 
 
 const ctlGetAvaliacoesProfessor = async function () {
@@ -58,17 +54,6 @@ const ctlGetAvaliacaoProfessorID = async function (id) {
     }
 }
 
-// const ctlGetAvaliacaoAlunoIdMatricula = async (idMatricula, idTurma, idProfessor) => {
-//     let dadosJSON = {}
-
-//     let aluno = await controllerMatricula.ctlGetBuscarMatriculaID(idMatricula)
-
-//     let listaTarefas = await controllerTarefaTurmaCursoMateriaProf.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor(idTurma, idProfessor)
-
-    
-// }
-
-
 const ctlInserirAvaliacaoProfessor = async (dadosAvaliacaoProfessor) => {
 
     if(
@@ -105,8 +90,6 @@ const ctlInserirAvaliacaoProfessor = async (dadosAvaliacaoProfessor) => {
             }
         }
     }
-
-
 }
 
 const ctlAtualizarAvaliacaoProfessor = async (dadosAvaliacaoProfessor, idAvaliacaoProfessor) => {

@@ -1,5 +1,5 @@
 /**************************************************************************************
- *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de Status da Matricula
+ *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de STATUS_MATRICULA
  *  Autor: Luiz e Muryllo
  *  Data: 31/05/2023
  *  Versão: 1.0

@@ -1,5 +1,5 @@
 /**************************************************************************************
- *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de TIPO DE TAREFA
+ *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de TIPO_TAREFA
  *  Autor: Luiz e Muryllo
  *  Data: 25/05/2023
  *  Versão: 1.0

@@ -1,5 +1,5 @@
 /**************************************************************************************
- *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de STATUS DE USUARIO
+ *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de STATUS_USUARIO
  *  Autor: Muryllo e Luiz
  *  Data: 25/05/2023
  *  Versão: 1.0

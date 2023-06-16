@@ -1,5 +1,5 @@
 /************************************************************************************************
- * Objetivo: Responsável pela regra de negócio referente ao CRUD de Cursos
+ * Objetivo: Responsável pela regra de negócio referente ao CRUD de TURMA_CURSOS_MATERIA_PROFESSOR
  * Autor: Luiz Gustavo
  * Data: 12/05/2023
  * Versão: 1.0

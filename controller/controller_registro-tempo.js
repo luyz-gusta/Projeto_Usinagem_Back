@@ -1,5 +1,5 @@
 /**************************************************************************************
- *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de REGISTRO DE TEMPO
+ *  Objetivo: Responsavel pela regra de negocio referente ao CRUD de REGISTRO_TEMPO
  *  Autor: Luiz e Muryllo
  *  Data: 31/05/2023
  *  Versão: 1.0

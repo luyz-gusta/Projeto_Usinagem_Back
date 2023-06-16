@@ -2360,6 +2360,11 @@ app.get('/v1/projeto-usinagem/tarefa-turma-curso-materia-prof', cors(), async fu
 
         response.status(dados.status)
         response.json(dados)
+    }else if(idTurma && idProfessor){
+        let dados = await controllerTarefaTurmaCursoMateriaProfessor.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor(idTurma, idProfessor)
+
+        response.status(dados.status)
+        response.json(dados)
     } else if (idTurma) {
         let dados = await controllerTarefaTurmaCursoMateriaProfessor.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma(idTurma)
 

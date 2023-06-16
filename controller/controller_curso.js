@@ -1,5 +1,5 @@
 /************************************************************************************************
- * Objetivo: Responsável pela regra de negócio referente ao CRUD de Cursos
+ * Objetivo: Responsável pela regra de negócio referente ao CRUD de CURSOS
  * Autor: Luiz Gustavo
  * Data: 12/05/2023
  * Versão: 1.0

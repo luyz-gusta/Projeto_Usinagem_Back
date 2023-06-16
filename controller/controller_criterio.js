@@ -19,7 +19,7 @@ var controllerTarefa = require('../controller/controller_tarefa.js')
 var controllerResultadoDesejado = require('../controller/controller_resultado-desejado.js')
 var controllerAvaliacaoAluno = require('./controller_avaliacao-aluno.js')
 
-//Retorna a lista de todos os professores
+//Retorna a lista de todos os criterios
 const ctlGetCriterios = async () => {
     let dadosCriterioJSON = {}
 
