@@ -16,7 +16,9 @@ var message = require('./modulo/config.js')
 var tarefaTurmaCursoMateriaProfessor = require('../model/DAO/tarefaTurmaCursoMateriaProfessorDAO.js')
 var turmaDAO = require('../model/DAO/turmaDAO.js')
 var professorDAO = require('../model/DAO/professorDAO.js')
+var matriculaDAO = require('../model/DAO/matriculaDAO.js')
 var controllerCriterio = require('./controller_criterio.js')
+var controllerAvaliacaoAluno = require('./controller_avaliacao-aluno.js')
 
 const ctlGetTarefaTurmaCursoMateriaProfessor = async () => {
     let dadosJSON = {}
@@ -63,24 +65,36 @@ const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma = async (idTurma) => {
     }
 }
 
-const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor = async (idTurma, idProfessor) => {
+const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessorEIdMatricula = async (idTurma, idProfessor, idMatricula) => {
     let dadosJSON = {}
 
     if (
         idTurma == null || idTurma == undefined || idTurma == '' ||
-        idProfessor == null || idProfessor == undefined || idProfessor == ''
+        idProfessor == null || idProfessor == undefined || idProfessor == '' ||
+        idMatricula == null || idMatricula == undefined || idMatricula == ''
     ) {
         return message.ERROR_REQUIRE_FIELDS
     } else {
         let verificacaoTurma = await turmaDAO.mdlSelectByIdTurma(idTurma)
-        let verificarIdProfessor = await professorDAO.mdlSelectProfessorByID(idProfessor)
+        let verificarProfessor = await professorDAO.mdlSelectProfessorByID(idProfessor)
+        let verificarMatricula = await matriculaDAO.mdlSelectByIdMatricula(idMatricula)
 
-        if (verificacaoTurma && verificarIdProfessor) {
+        if (verificacaoTurma && verificarProfessor && verificarMatricula) {
             let dados = await tarefaTurmaCursoMateriaProfessor.mdlSelectTarefasByIdTurmaAndIdProfessor(idTurma, idProfessor)
 
             for (let index = 0; index < dados.length; index++) {
                 let listaCriterios = await controllerCriterio.ctlGetCriterioByIdTarefa(dados[index].id_tarefa)
 
+                for (let i = 0; i < listaCriterios.criterios.length; i++) {
+                    
+                    let respostaCriterio = await controllerAvaliacaoAluno.ctlGetAvaliacaoAlunoIdCriterioEIdMatricula(listaCriterios.criterios[i].id_criterio, idMatricula)
+
+                    if(respostaCriterio.status == 200){
+                        listaCriterios.criterios[i].resposta = respostaCriterio
+                    }else{
+                        listaCriterios.criterios[i].resposta = null
+                    }
+                }
                 dados[index].criterios = listaCriterios.criterios
             }
 
@@ -104,5 +118,5 @@ const ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor = async (idTur
 module.exports = {
     ctlGetTarefaTurmaCursoMateriaProfessor,
     ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma,
-    ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor
+    ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessorEIdMatricula
 }

@@ -1526,11 +1526,28 @@ var controllerAvaliacaoAluno = require('./controller/controller_avaliacao-aluno.
 
 //EndPoint: Retorna todos os dados de AVALIAÇÃO_ALUNO
 app.get('/v1/projeto-usinagem/avaliacao-aluno', cors(), async function (request, response) {
-    //Recebe os dados da controller de avaliacao aluno
-    let dadosAvaliacaoAluno = await controllerAvaliacaoAluno.ctlGetAvaliacoesAlunos()
+    let idCriterio = request.query.idCriterio
+    let idMatricula = request.query.idMatricula
 
-    response.status(dadosAvaliacaoAluno.status);
-    response.json(dadosAvaliacaoAluno);
+    if (idCriterio && idMatricula) {
+        //Recebe os dados da controller de avaliacao aluno
+        let dadosAvaliacaoAluno = await controllerAvaliacaoAluno.ctlGetAvaliacaoAlunoIdCriterioEIdMatricula(idCriterio, idMatricula)
+
+        response.status(dadosAvaliacaoAluno.status);
+        response.json(dadosAvaliacaoAluno);
+    } else if (idCriterio) {
+        //Recebe os dados da controller de avaliacao aluno
+        let dadosAvaliacaoAluno = await controllerAvaliacaoAluno.ctlGetAvaliacaoAlunoIdCriterio(idCriterio)
+
+        response.status(dadosAvaliacaoAluno.status);
+        response.json(dadosAvaliacaoAluno);
+    } else {
+        //Recebe os dados da controller de avaliacao aluno
+        let dadosAvaliacaoAluno = await controllerAvaliacaoAluno.ctlGetAvaliacoesAlunos()
+
+        response.status(dadosAvaliacaoAluno.status);
+        response.json(dadosAvaliacaoAluno);
+    }
 })
 
 //EndPoint: Retorna o avaliação_professor filtrando pelo ID
@@ -2082,7 +2099,7 @@ app.put('/v1/projeto-usinagem/turma-matricula/:id', cors(), bodyParserJson, asyn
 
         let dadosBody = request.body
 
-        let resultDados = await controllerMatriculaTurma.ctlAtualizarTurmaMatricula(dadosBody,idTurmaMatricula)
+        let resultDados = await controllerMatriculaTurma.ctlAtualizarTurmaMatricula(dadosBody, idTurmaMatricula)
 
         response.status(resultDados.status)
         response.json(resultDados)
@@ -2312,7 +2329,7 @@ app.delete('/v1/projeto-usinagem/turma-curso-materia-prof/:id', cors(), async fu
 
     response.status(resultDados.status)
     response.json(resultDados)
-}) 
+})
 
 /*****************************************************************************************************************
 * Objetivo: API de controle de TAREFA TURMA CURSO_MATERIA PROFESSOR
@@ -2327,13 +2344,14 @@ var controllerTarefaTurmaCursoMateriaProfessor = require('./controller/controlle
 app.get('/v1/projeto-usinagem/tarefa-turma-curso-materia-prof', cors(), async function (request, response) {
     let idTurma = request.query.idTurma
     let idProfessor = request.query.idProfessor
+    let idMatricula = request.query.idMatricula
 
-    if(idTurma && idProfessor){
-        let dados = await controllerTarefaTurmaCursoMateriaProfessor.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessor(idTurma, idProfessor)
+    if (idTurma && idProfessor && idMatricula) {
+        let dados = await controllerTarefaTurmaCursoMateriaProfessor.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurmaEIdProfessorEIdMatricula(idTurma, idProfessor, idMatricula)
 
         response.status(dados.status)
         response.json(dados)
-    }else if (idTurma) {
+    } else if (idTurma) {
         let dados = await controllerTarefaTurmaCursoMateriaProfessor.ctlGetTarefaTurmaCursoMateriaProfessorByIdTurma(idTurma)
 
         response.status(dados.status)
@@ -2404,7 +2422,7 @@ app.delete('/v1/projeto-usinagem/tarefa-turma-curso-materia-prof/:id', cors(), a
 
     response.status(resultDados.status)
     response.json(resultDados)
-}) 
+})
 
 
 app.listen(8080, () => console.log('Servidor aguardando requisições na porta 8080.'))

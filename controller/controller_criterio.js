@@ -17,6 +17,7 @@ var message = require('./modulo/config.js')
 var criterioDAO = require('../model/DAO/criterioDAO.js')
 var controllerTarefa = require('../controller/controller_tarefa.js')
 var controllerResultadoDesejado = require('../controller/controller_resultado-desejado.js')
+var controllerAvaliacaoAluno = require('./controller_avaliacao-aluno.js')
 
 //Retorna a lista de todos os professores
 const ctlGetCriterios = async () => {
@@ -97,12 +98,13 @@ const ctlGetCriterioByIdTarefa = async (idTarefa) => {
             if (dadosCriterio) {
                 const dados = dadosCriterio.map(async criterio => {
                     let dadosResultadoDesejado = await controllerResultadoDesejado.ctlGetResultadoDesejadoByIdCriterio(criterio.id_criterio)
+
                     if(dadosResultadoDesejado.status == 200){
                         criterio.resultados = dadosResultadoDesejado.resultado_desejado
                     }else{
                         criterio.resultados = null
                     }
-        
+                    
                     return await criterio
                 });
         
